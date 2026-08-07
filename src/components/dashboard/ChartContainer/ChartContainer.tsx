@@ -37,7 +37,7 @@ export interface ChartContainerProps {
 }
 
 interface CartesianClickState {
-  activeLabel?: string;
+  activeLabel?: string | number;
 }
 
 const isPieType = (type: ChartType) => type === 'pie' || type === 'donut';
@@ -53,7 +53,7 @@ function renderChart(
   const handleCartesianClick = onElementClick
     ? (state: CartesianClickState) => {
         if (state.activeLabel !== undefined) {
-          onElementClick(state.activeLabel);
+          onElementClick(String(state.activeLabel));
         }
       }
     : undefined;
@@ -164,8 +164,9 @@ function renderChart(
             cursor={cursor}
             onClick={
               onElementClick
-                ? (entry: Record<string, string | number>) => {
-                    const label = entry[categoryKey];
+                ? (_entry: unknown, index: number) => {
+                    const item = data[index];
+                    const label = item?.[categoryKey];
                     if (typeof label === 'string') {
                       onElementClick(label);
                     }
