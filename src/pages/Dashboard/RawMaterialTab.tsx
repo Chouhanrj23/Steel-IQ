@@ -1,9 +1,10 @@
+import { useEffect } from 'react';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import mockDataJson from '@mock/mockData.json';
-import type { DashboardMockData, DrillDownNode, DrilldownDimension, KPI } from '@/types/dashboard';
+import type { DashboardMockData, KPI } from '@/types/dashboard';
 import { useDashboardStore, type HierarchyKey } from '@store/dashboard';
 import {
   KPICard,
@@ -12,21 +13,9 @@ import {
   AgentSummaryPanel,
   ConversationalInsightsPanel,
 } from '@components/dashboard';
+import { ROOT_LABEL, HIERARCHY_OPTIONS, getNodeAtPath, getNodesAtPath, flattenLeafValues } from './drillDownUtils';
 
 const mockData = mockDataJson as DashboardMockData;
-
-const ROOT_LABEL: Record<DrilldownDimension, string> = {
-  plant: 'All Plants',
-  time: 'All Time',
-  geography: 'All Locations',
-};
-
-// The hierarchy toggle only ever offers these two — geography (Lead Time) is intentionally
-// not selectable here, so it always renders its full aggregate regardless of drill state.
-const HIERARCHY_OPTIONS: { value: HierarchyKey; label: string }[] = [
-  { value: 'time', label: 'Time' },
-  { value: 'plant', label: 'Plant' },
-];
 
 const RAW_MATERIAL_INSIGHTS = [
   'Iron ore inventory at Rourkela has grown 6.1% quarter-over-quarter while coking coal costs rose per tonne — current stock levels cover roughly 38 days of blast furnace demand, above the 30-day safety threshold.',
@@ -55,9 +44,6 @@ const RAW_MATERIAL_QA_PAIRS = [
   },
 ];
 
-const flattenLeafValues = (nodes: DrillDownNode[]): number[] =>
-  nodes.flatMap((node) => (node.children ? flattenLeafValues(node.children) : [node.value]));
-
 const findKpi = (kpis: KPI[], id: string): KPI => {
   const kpi = kpis.find((item) => item.id === id);
   if (!kpi) {
@@ -66,34 +52,20 @@ const findKpi = (kpis: KPI[], id: string): KPI => {
   return kpi;
 };
 
-/** The single node at the end of `path`, or null if `path` is empty. */
-const getNodeAtPath = (root: DrillDownNode[], path: string[]): DrillDownNode | null => {
-  let node: DrillDownNode | null = null;
-  let level = root;
-  for (const segment of path) {
-    const match = level.find((n) => n.label === segment);
-    if (!match) return node;
-    node = match;
-    level = match.children ?? [];
-  }
-  return node;
-};
-
-/** The array of nodes a chart/sparkline should render for `path` — children of the node at
- * `path`, the root if `path` is empty, or a single-element array if `path` lands on a leaf. */
-const getNodesAtPath = (root: DrillDownNode[], path: string[]): DrillDownNode[] => {
-  if (path.length === 0) return root;
-  const node = getNodeAtPath(root, path);
-  if (!node) return root;
-  return node.children ?? [node];
-};
-
 export const RawMaterialTab = () => {
   const { kpis } = mockData.modules.rawMaterial;
   const drill = useDashboardStore((state) => state.drill);
   const drillInto = useDashboardStore((state) => state.drillInto);
   const drillToHierarchyRoot = useDashboardStore((state) => state.drillToHierarchyRoot);
   const drillToSegment = useDashboardStore((state) => state.drillToSegment);
+
+  // Reset to a clean default whenever this tab mounts (including switching back into it),
+  // since the drill store is shared across tabs and another tab's path won't match this
+  // tab's trees.
+  useEffect(() => {
+    drillToHierarchyRoot('plant');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const inventory = findKpi(kpis, 'iron-ore-inventory');
   const coalCost = findKpi(kpis, 'coking-coal-cost-per-tonne');
