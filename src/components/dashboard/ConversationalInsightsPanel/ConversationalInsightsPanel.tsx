@@ -14,9 +14,10 @@ export interface ConversationalQAPair {
 
 export interface ConversationalInsightsPanelProps {
   qaPairs: ConversationalQAPair[];
+  contextLabel?: string;
 }
 
-export const ConversationalInsightsPanel = ({ qaPairs }: ConversationalInsightsPanelProps) => {
+export const ConversationalInsightsPanel = ({ qaPairs, contextLabel }: ConversationalInsightsPanelProps) => {
   return (
     <Card>
       <Stack spacing={2}>
@@ -24,6 +25,11 @@ export const ConversationalInsightsPanel = ({ qaPairs }: ConversationalInsightsP
           <ForumOutlinedIcon color="secondary" fontSize="small" />
           <Typography variant="h6">Conversational Insights</Typography>
         </Stack>
+        {contextLabel && (
+          <Typography variant="caption" color="text.secondary">
+            Showing: {contextLabel}
+          </Typography>
+        )}
         <Stack spacing={1.5} sx={{ maxHeight: 360, overflowY: 'auto' }}>
           {qaPairs.map((pair, index) => (
             <Stack key={index} spacing={1}>

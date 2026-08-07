@@ -22,6 +22,7 @@ export interface KPICardProps {
   trend: KPITrend;
   status: KPIStatus;
   sparklineData?: number[];
+  onClick?: () => void;
 }
 
 const STATUS_ICON: Record<KPIStatus, SvgIconComponent> = {
@@ -42,62 +43,86 @@ const TREND_ICON: Record<KPITrend, SvgIconComponent> = {
   flat: TrendingFlatIcon,
 };
 
-export const KPICard = ({ title, value, unit, percentChange, trend, status, sparklineData }: KPICardProps) => {
+export const KPICard = ({
+  title,
+  value,
+  unit,
+  percentChange,
+  trend,
+  status,
+  sparklineData,
+  onClick,
+}: KPICardProps) => {
   const color = STATUS_COLORS[status];
   const StatusIcon = STATUS_ICON[status];
   const TrendIcon = TREND_ICON[trend];
   const sign = percentChange > 0 ? '+' : '';
 
   return (
-    <Card>
-      <Stack spacing={1.5}>
-        <Stack direction="row" alignItems="center" justifyContent="space-between">
-          <Typography variant="overline" color="text.secondary">
-            {title}
-          </Typography>
-          <Chip
-            size="small"
-            icon={<StatusIcon fontSize="small" />}
-            label={STATUS_LABEL[status]}
-            variant="outlined"
-            sx={{ color, borderColor: color, '& .MuiChip-icon': { color } }}
-          />
-        </Stack>
-        <Stack direction="row" alignItems="baseline" spacing={0.5}>
-          <Typography variant="h4">{value}</Typography>
-          {unit && (
-            <Typography variant="body2" color="text.secondary">
-              {unit}
+    <Box
+      onClick={onClick}
+      sx={{
+        height: '100%',
+        cursor: onClick ? 'pointer' : 'default',
+        transition: 'box-shadow 0.15s, border-color 0.15s',
+        borderRadius: 3,
+        ...(onClick && {
+          '&:hover': {
+            boxShadow: 2,
+          },
+        }),
+      }}
+    >
+      <Card>
+        <Stack spacing={1.5}>
+          <Stack direction="row" alignItems="center" justifyContent="space-between">
+            <Typography variant="overline" color="text.secondary">
+              {title}
             </Typography>
+            <Chip
+              size="small"
+              icon={<StatusIcon fontSize="small" />}
+              label={STATUS_LABEL[status]}
+              variant="outlined"
+              sx={{ color, borderColor: color, '& .MuiChip-icon': { color } }}
+            />
+          </Stack>
+          <Stack direction="row" alignItems="baseline" spacing={0.5}>
+            <Typography variant="h4">{value}</Typography>
+            {unit && (
+              <Typography variant="body2" color="text.secondary">
+                {unit}
+              </Typography>
+            )}
+          </Stack>
+          <Stack direction="row" alignItems="center" spacing={0.5}>
+            <TrendIcon sx={{ fontSize: 18, color }} />
+            <Typography variant="body2" sx={{ color, fontWeight: 600 }}>
+              {sign}
+              {percentChange}%
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              vs previous period
+            </Typography>
+          </Stack>
+          {sparklineData && sparklineData.length > 1 && (
+            <Box sx={{ height: 36 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={sparklineData.map((v, i) => ({ index: i, value: v }))}>
+                  <Line
+                    type="monotone"
+                    dataKey="value"
+                    stroke={color}
+                    strokeWidth={2}
+                    dot={false}
+                    isAnimationActive={false}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </Box>
           )}
         </Stack>
-        <Stack direction="row" alignItems="center" spacing={0.5}>
-          <TrendIcon sx={{ fontSize: 18, color }} />
-          <Typography variant="body2" sx={{ color, fontWeight: 600 }}>
-            {sign}
-            {percentChange}%
-          </Typography>
-          <Typography variant="caption" color="text.secondary">
-            vs previous period
-          </Typography>
-        </Stack>
-        {sparklineData && sparklineData.length > 1 && (
-          <Box sx={{ height: 36 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={sparklineData.map((v, i) => ({ index: i, value: v }))}>
-                <Line
-                  type="monotone"
-                  dataKey="value"
-                  stroke={color}
-                  strokeWidth={2}
-                  dot={false}
-                  isAnimationActive={false}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </Box>
-        )}
-      </Stack>
-    </Card>
+      </Card>
+    </Box>
   );
 };

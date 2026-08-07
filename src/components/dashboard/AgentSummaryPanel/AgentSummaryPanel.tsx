@@ -6,9 +6,10 @@ import { Card } from '@components/common';
 
 export interface AgentSummaryPanelProps {
   insights: string[];
+  contextLabel?: string;
 }
 
-export const AgentSummaryPanel = ({ insights }: AgentSummaryPanelProps) => {
+export const AgentSummaryPanel = ({ insights, contextLabel }: AgentSummaryPanelProps) => {
   return (
     <Card>
       <Stack spacing={2}>
@@ -16,6 +17,11 @@ export const AgentSummaryPanel = ({ insights }: AgentSummaryPanelProps) => {
           <AutoAwesomeIcon color="secondary" fontSize="small" />
           <Typography variant="h6">Agent Summary</Typography>
         </Stack>
+        {contextLabel && (
+          <Typography variant="caption" color="text.secondary">
+            Showing: {contextLabel}
+          </Typography>
+        )}
         <Stack spacing={1.5}>
           {insights.map((insight, index) => (
             <Box
