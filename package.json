@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:share": "vite build --config vite.share.config.ts",
     "preview": "vite preview",
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
@@ -49,7 +50,8 @@
     "lint-staged": "^15.5.2",
     "prettier": "^3.9.6",
     "typescript": "~6.0.2",
-    "vite": "^8.2.0"
+    "vite": "^8.2.0",
+    "vite-plugin-singlefile": "^2.3.3"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
