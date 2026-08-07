@@ -1,7 +1,7 @@
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import mockDataJson from '@mock/mockData.json';
-import type { DashboardMockData, DrillDownNode, KPI } from '@types/dashboard';
+import type { DashboardMockData, DrillDownNode, KPI } from '@/types/dashboard';
 import {
   KPICard,
   ChartContainer,

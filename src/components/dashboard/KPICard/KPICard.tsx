@@ -12,7 +12,7 @@ import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
 import type { SvgIconComponent } from '@mui/icons-material';
 import { Card } from '@components/common';
 import { STATUS_COLORS } from '../chartPalette';
-import type { KPIStatus, KPITrend } from '@types/dashboard';
+import type { KPIStatus, KPITrend } from '@/types/dashboard';
 
 export interface KPICardProps {
   title: string;
