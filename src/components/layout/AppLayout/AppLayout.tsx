@@ -5,6 +5,7 @@ import { Outlet } from 'react-router-dom';
 import { Header } from '../Header';
 import { Sidebar } from '../Sidebar';
 import { Footer } from '../Footer';
+import { GlobalFilterBar } from '../GlobalFilterBar';
 import { DRAWER_WIDTH } from '@utils/constants';
 
 export const AppLayout = () => {
@@ -25,6 +26,7 @@ export const AppLayout = () => {
         }}
       >
         <Toolbar />
+        <GlobalFilterBar />
         <Box sx={{ flexGrow: 1, p: 3 }}>
           <Outlet />
         </Box>

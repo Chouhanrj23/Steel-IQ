@@ -1,0 +1,1 @@
+export { GlobalFilterBar } from './GlobalFilterBar';
