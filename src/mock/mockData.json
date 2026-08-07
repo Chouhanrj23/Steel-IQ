@@ -1,0 +1,4714 @@
+{
+  "modules": {
+    "rawMaterial": {
+      "label": "Raw Material",
+      "kpis": [
+        {
+          "id": "iron-ore-inventory",
+          "name": "Iron Ore Inventory",
+          "module": "rawMaterial",
+          "unit": "tonnes",
+          "current": 128400,
+          "previous": 121000,
+          "percentChange": 6.1,
+          "trend": "up",
+          "status": "good",
+          "drilldown": {
+            "dimension": "plant",
+            "root": [
+              {
+                "label": "East",
+                "value": 64200,
+                "children": [
+                  {
+                    "label": "Rourkela Plant",
+                    "value": 35952,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 16178
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 12583
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 7191
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Jamshedpur Plant",
+                    "value": 28248,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 12712
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 9887
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 5649
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "Central",
+                "value": 25680,
+                "children": [
+                  {
+                    "label": "Bhilai Plant",
+                    "value": 25680,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 11556
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 8988
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 5136
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "West",
+                "value": 21828,
+                "children": [
+                  {
+                    "label": "Hazira Plant",
+                    "value": 21828,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 9823
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 7640
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 4365
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "South",
+                "value": 16692,
+                "children": [
+                  {
+                    "label": "Bellary Plant",
+                    "value": 16692,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 7511
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 5842
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 3339
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "coking-coal-cost-per-tonne",
+          "name": "Coking Coal Cost per Tonne",
+          "module": "rawMaterial",
+          "unit": "INR",
+          "current": 18450,
+          "previous": 17700,
+          "percentChange": 4.2,
+          "trend": "up",
+          "status": "warning",
+          "drilldown": {
+            "dimension": "time",
+            "root": [
+              {
+                "label": "2024",
+                "value": 8303,
+                "children": [
+                  {
+                    "label": "Q1",
+                    "value": 1827,
+                    "children": [
+                      {
+                        "label": "Jan",
+                        "value": 585
+                      },
+                      {
+                        "label": "Feb",
+                        "value": 603
+                      },
+                      {
+                        "label": "Mar",
+                        "value": 639
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q2",
+                    "value": 1993,
+                    "children": [
+                      {
+                        "label": "Apr",
+                        "value": 638
+                      },
+                      {
+                        "label": "May",
+                        "value": 658
+                      },
+                      {
+                        "label": "Jun",
+                        "value": 697
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q3",
+                    "value": 2159,
+                    "children": [
+                      {
+                        "label": "Jul",
+                        "value": 691
+                      },
+                      {
+                        "label": "Aug",
+                        "value": 712
+                      },
+                      {
+                        "label": "Sep",
+                        "value": 756
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q4",
+                    "value": 2324,
+                    "children": [
+                      {
+                        "label": "Oct",
+                        "value": 744
+                      },
+                      {
+                        "label": "Nov",
+                        "value": 767
+                      },
+                      {
+                        "label": "Dec",
+                        "value": 813
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "2025",
+                "value": 10147,
+                "children": [
+                  {
+                    "label": "Q1",
+                    "value": 2232,
+                    "children": [
+                      {
+                        "label": "Jan",
+                        "value": 714
+                      },
+                      {
+                        "label": "Feb",
+                        "value": 737
+                      },
+                      {
+                        "label": "Mar",
+                        "value": 781
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q2",
+                    "value": 2435,
+                    "children": [
+                      {
+                        "label": "Apr",
+                        "value": 779
+                      },
+                      {
+                        "label": "May",
+                        "value": 804
+                      },
+                      {
+                        "label": "Jun",
+                        "value": 852
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q3",
+                    "value": 2638,
+                    "children": [
+                      {
+                        "label": "Jul",
+                        "value": 844
+                      },
+                      {
+                        "label": "Aug",
+                        "value": 871
+                      },
+                      {
+                        "label": "Sep",
+                        "value": 923
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q4",
+                    "value": 2842,
+                    "children": [
+                      {
+                        "label": "Oct",
+                        "value": 909
+                      },
+                      {
+                        "label": "Nov",
+                        "value": 938
+                      },
+                      {
+                        "label": "Dec",
+                        "value": 995
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "raw-material-wastage-rate",
+          "name": "Raw Material Wastage Rate",
+          "module": "rawMaterial",
+          "unit": "%",
+          "current": 3.8,
+          "previous": 3.4,
+          "percentChange": 11.8,
+          "trend": "up",
+          "status": "warning",
+          "drilldown": {
+            "dimension": "plant",
+            "root": [
+              {
+                "label": "East",
+                "value": 1.9,
+                "children": [
+                  {
+                    "label": "Rourkela Plant",
+                    "value": 1.1,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 0.5
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 0.4
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 0.2
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Jamshedpur Plant",
+                    "value": 0.8,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 0.4
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 0.3
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 0.1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "Central",
+                "value": 0.8,
+                "children": [
+                  {
+                    "label": "Bhilai Plant",
+                    "value": 0.8,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 0.4
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 0.3
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 0.1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "West",
+                "value": 0.6,
+                "children": [
+                  {
+                    "label": "Hazira Plant",
+                    "value": 0.6,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 0.3
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 0.2
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 0.1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "South",
+                "value": 0.5,
+                "children": [
+                  {
+                    "label": "Bellary Plant",
+                    "value": 0.5,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 0.2
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 0.2
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 0.1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "limestone-consumption",
+          "name": "Limestone Consumption",
+          "module": "rawMaterial",
+          "unit": "tonnes",
+          "current": 42600,
+          "previous": 44100,
+          "percentChange": -3.4,
+          "trend": "down",
+          "status": "good",
+          "drilldown": {
+            "dimension": "plant",
+            "root": [
+              {
+                "label": "East",
+                "value": 21300,
+                "children": [
+                  {
+                    "label": "Rourkela Plant",
+                    "value": 11928,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 5368
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 4175
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 2385
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Jamshedpur Plant",
+                    "value": 9372,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 4217
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 3280
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 1875
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "Central",
+                "value": 8520,
+                "children": [
+                  {
+                    "label": "Bhilai Plant",
+                    "value": 8520,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 3834
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 2982
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 1704
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "West",
+                "value": 7242,
+                "children": [
+                  {
+                    "label": "Hazira Plant",
+                    "value": 7242,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 3259
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 2535
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 1448
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "South",
+                "value": 5538,
+                "children": [
+                  {
+                    "label": "Bellary Plant",
+                    "value": 5538,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 2492
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 1938
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 1108
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "raw-material-lead-time",
+          "name": "Raw Material Lead Time",
+          "module": "rawMaterial",
+          "unit": "days",
+          "current": 12.4,
+          "previous": 11.1,
+          "percentChange": 11.7,
+          "trend": "up",
+          "status": "warning",
+          "drilldown": {
+            "dimension": "geography",
+            "root": [
+              {
+                "label": "North",
+                "value": 3,
+                "children": [
+                  {
+                    "label": "Punjab",
+                    "value": 1.7,
+                    "children": [
+                      {
+                        "label": "Ludhiana",
+                        "value": 1.7
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Delhi NCR",
+                    "value": 1.3,
+                    "children": [
+                      {
+                        "label": "Gurugram",
+                        "value": 1.3
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "South",
+                "value": 3.5,
+                "children": [
+                  {
+                    "label": "Karnataka",
+                    "value": 1.9,
+                    "children": [
+                      {
+                        "label": "Bengaluru",
+                        "value": 1.9
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Tamil Nadu",
+                    "value": 1.6,
+                    "children": [
+                      {
+                        "label": "Chennai",
+                        "value": 1.6
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "East",
+                "value": 3.2,
+                "children": [
+                  {
+                    "label": "West Bengal",
+                    "value": 1.8,
+                    "children": [
+                      {
+                        "label": "Kolkata",
+                        "value": 1.8
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Odisha",
+                    "value": 1.4,
+                    "children": [
+                      {
+                        "label": "Bhubaneswar",
+                        "value": 1.4
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "West",
+                "value": 2.7,
+                "children": [
+                  {
+                    "label": "Maharashtra",
+                    "value": 1.5,
+                    "children": [
+                      {
+                        "label": "Mumbai",
+                        "value": 1.5
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Gujarat",
+                    "value": 1.2,
+                    "children": [
+                      {
+                        "label": "Ahmedabad",
+                        "value": 1.2
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "costAnalytics": {
+      "label": "Cost Analytics",
+      "kpis": [
+        {
+          "id": "cost-per-tonne-of-steel",
+          "name": "Cost per Tonne of Steel",
+          "module": "costAnalytics",
+          "unit": "INR",
+          "current": 46200,
+          "previous": 47100,
+          "percentChange": -1.9,
+          "trend": "down",
+          "status": "good",
+          "drilldown": {
+            "dimension": "time",
+            "root": [
+              {
+                "label": "2024",
+                "value": 20790,
+                "children": [
+                  {
+                    "label": "Q1",
+                    "value": 4574,
+                    "children": [
+                      {
+                        "label": "Jan",
+                        "value": 1464
+                      },
+                      {
+                        "label": "Feb",
+                        "value": 1509
+                      },
+                      {
+                        "label": "Mar",
+                        "value": 1601
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q2",
+                    "value": 4990,
+                    "children": [
+                      {
+                        "label": "Apr",
+                        "value": 1597
+                      },
+                      {
+                        "label": "May",
+                        "value": 1647
+                      },
+                      {
+                        "label": "Jun",
+                        "value": 1746
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q3",
+                    "value": 5405,
+                    "children": [
+                      {
+                        "label": "Jul",
+                        "value": 1730
+                      },
+                      {
+                        "label": "Aug",
+                        "value": 1784
+                      },
+                      {
+                        "label": "Sep",
+                        "value": 1891
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q4",
+                    "value": 5821,
+                    "children": [
+                      {
+                        "label": "Oct",
+                        "value": 1863
+                      },
+                      {
+                        "label": "Nov",
+                        "value": 1921
+                      },
+                      {
+                        "label": "Dec",
+                        "value": 2037
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "2025",
+                "value": 25410,
+                "children": [
+                  {
+                    "label": "Q1",
+                    "value": 5590,
+                    "children": [
+                      {
+                        "label": "Jan",
+                        "value": 1789
+                      },
+                      {
+                        "label": "Feb",
+                        "value": 1845
+                      },
+                      {
+                        "label": "Mar",
+                        "value": 1956
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q2",
+                    "value": 6098,
+                    "children": [
+                      {
+                        "label": "Apr",
+                        "value": 1951
+                      },
+                      {
+                        "label": "May",
+                        "value": 2012
+                      },
+                      {
+                        "label": "Jun",
+                        "value": 2135
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q3",
+                    "value": 6607,
+                    "children": [
+                      {
+                        "label": "Jul",
+                        "value": 2114
+                      },
+                      {
+                        "label": "Aug",
+                        "value": 2180
+                      },
+                      {
+                        "label": "Sep",
+                        "value": 2313
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q4",
+                    "value": 7115,
+                    "children": [
+                      {
+                        "label": "Oct",
+                        "value": 2277
+                      },
+                      {
+                        "label": "Nov",
+                        "value": 2348
+                      },
+                      {
+                        "label": "Dec",
+                        "value": 2490
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "energy-cost-ratio",
+          "name": "Energy Cost Ratio",
+          "module": "costAnalytics",
+          "unit": "%",
+          "current": 18.6,
+          "previous": 17.9,
+          "percentChange": 3.9,
+          "trend": "up",
+          "status": "warning",
+          "drilldown": {
+            "dimension": "plant",
+            "root": [
+              {
+                "label": "East",
+                "value": 9.3,
+                "children": [
+                  {
+                    "label": "Rourkela Plant",
+                    "value": 5.2,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 2.3
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 1.8
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 1.1
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Jamshedpur Plant",
+                    "value": 4.1,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 1.8
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 1.4
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 0.9
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "Central",
+                "value": 3.7,
+                "children": [
+                  {
+                    "label": "Bhilai Plant",
+                    "value": 3.7,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 1.7
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 1.3
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 0.7
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "West",
+                "value": 3.2,
+                "children": [
+                  {
+                    "label": "Hazira Plant",
+                    "value": 3.2,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 1.4
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 1.1
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 0.7
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "South",
+                "value": 2.4,
+                "children": [
+                  {
+                    "label": "Bellary Plant",
+                    "value": 2.4,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 1.1
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 0.8
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 0.5
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "labor-cost-variance",
+          "name": "Labor Cost Variance",
+          "module": "costAnalytics",
+          "unit": "%",
+          "current": 2.1,
+          "previous": 3.4,
+          "percentChange": -38.2,
+          "trend": "down",
+          "status": "good",
+          "drilldown": {
+            "dimension": "time",
+            "root": [
+              {
+                "label": "2024",
+                "value": 0.9,
+                "children": [
+                  {
+                    "label": "Q1",
+                    "value": 0.2,
+                    "children": [
+                      {
+                        "label": "Jan",
+                        "value": 0.1
+                      },
+                      {
+                        "label": "Feb",
+                        "value": 0.1
+                      },
+                      {
+                        "label": "Mar",
+                        "value": 0
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q2",
+                    "value": 0.2,
+                    "children": [
+                      {
+                        "label": "Apr",
+                        "value": 0.1
+                      },
+                      {
+                        "label": "May",
+                        "value": 0.1
+                      },
+                      {
+                        "label": "Jun",
+                        "value": 0
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q3",
+                    "value": 0.2,
+                    "children": [
+                      {
+                        "label": "Jul",
+                        "value": 0.1
+                      },
+                      {
+                        "label": "Aug",
+                        "value": 0.1
+                      },
+                      {
+                        "label": "Sep",
+                        "value": 0
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q4",
+                    "value": 0.3,
+                    "children": [
+                      {
+                        "label": "Oct",
+                        "value": 0.1
+                      },
+                      {
+                        "label": "Nov",
+                        "value": 0.1
+                      },
+                      {
+                        "label": "Dec",
+                        "value": 0.1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "2025",
+                "value": 1.2,
+                "children": [
+                  {
+                    "label": "Q1",
+                    "value": 0.3,
+                    "children": [
+                      {
+                        "label": "Jan",
+                        "value": 0.1
+                      },
+                      {
+                        "label": "Feb",
+                        "value": 0.1
+                      },
+                      {
+                        "label": "Mar",
+                        "value": 0.1
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q2",
+                    "value": 0.3,
+                    "children": [
+                      {
+                        "label": "Apr",
+                        "value": 0.1
+                      },
+                      {
+                        "label": "May",
+                        "value": 0.1
+                      },
+                      {
+                        "label": "Jun",
+                        "value": 0.1
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q3",
+                    "value": 0.3,
+                    "children": [
+                      {
+                        "label": "Jul",
+                        "value": 0.1
+                      },
+                      {
+                        "label": "Aug",
+                        "value": 0.1
+                      },
+                      {
+                        "label": "Sep",
+                        "value": 0.1
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q4",
+                    "value": 0.3,
+                    "children": [
+                      {
+                        "label": "Oct",
+                        "value": 0.1
+                      },
+                      {
+                        "label": "Nov",
+                        "value": 0.1
+                      },
+                      {
+                        "label": "Dec",
+                        "value": 0.1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "overhead-cost-ratio",
+          "name": "Overhead Cost Ratio",
+          "module": "costAnalytics",
+          "unit": "%",
+          "current": 9.4,
+          "previous": 9.1,
+          "percentChange": 3.3,
+          "trend": "up",
+          "status": "warning",
+          "drilldown": {
+            "dimension": "time",
+            "root": [
+              {
+                "label": "2024",
+                "value": 4.2,
+                "children": [
+                  {
+                    "label": "Q1",
+                    "value": 0.9,
+                    "children": [
+                      {
+                        "label": "Jan",
+                        "value": 0.3
+                      },
+                      {
+                        "label": "Feb",
+                        "value": 0.3
+                      },
+                      {
+                        "label": "Mar",
+                        "value": 0.3
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q2",
+                    "value": 1,
+                    "children": [
+                      {
+                        "label": "Apr",
+                        "value": 0.3
+                      },
+                      {
+                        "label": "May",
+                        "value": 0.3
+                      },
+                      {
+                        "label": "Jun",
+                        "value": 0.4
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q3",
+                    "value": 1.1,
+                    "children": [
+                      {
+                        "label": "Jul",
+                        "value": 0.4
+                      },
+                      {
+                        "label": "Aug",
+                        "value": 0.4
+                      },
+                      {
+                        "label": "Sep",
+                        "value": 0.3
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q4",
+                    "value": 1.2,
+                    "children": [
+                      {
+                        "label": "Oct",
+                        "value": 0.4
+                      },
+                      {
+                        "label": "Nov",
+                        "value": 0.4
+                      },
+                      {
+                        "label": "Dec",
+                        "value": 0.4
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "2025",
+                "value": 5.2,
+                "children": [
+                  {
+                    "label": "Q1",
+                    "value": 1.1,
+                    "children": [
+                      {
+                        "label": "Jan",
+                        "value": 0.4
+                      },
+                      {
+                        "label": "Feb",
+                        "value": 0.4
+                      },
+                      {
+                        "label": "Mar",
+                        "value": 0.3
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q2",
+                    "value": 1.2,
+                    "children": [
+                      {
+                        "label": "Apr",
+                        "value": 0.4
+                      },
+                      {
+                        "label": "May",
+                        "value": 0.4
+                      },
+                      {
+                        "label": "Jun",
+                        "value": 0.4
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q3",
+                    "value": 1.4,
+                    "children": [
+                      {
+                        "label": "Jul",
+                        "value": 0.4
+                      },
+                      {
+                        "label": "Aug",
+                        "value": 0.5
+                      },
+                      {
+                        "label": "Sep",
+                        "value": 0.5
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q4",
+                    "value": 1.5,
+                    "children": [
+                      {
+                        "label": "Oct",
+                        "value": 0.5
+                      },
+                      {
+                        "label": "Nov",
+                        "value": 0.5
+                      },
+                      {
+                        "label": "Dec",
+                        "value": 0.5
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "production-cost-savings",
+          "name": "Production Cost Savings",
+          "module": "costAnalytics",
+          "unit": "INR Lakh",
+          "current": 312,
+          "previous": 268,
+          "percentChange": 16.4,
+          "trend": "up",
+          "status": "good",
+          "drilldown": {
+            "dimension": "plant",
+            "root": [
+              {
+                "label": "East",
+                "value": 156,
+                "children": [
+                  {
+                    "label": "Rourkela Plant",
+                    "value": 87,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 39
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 30
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 18
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Jamshedpur Plant",
+                    "value": 69,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 31
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 24
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 14
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "Central",
+                "value": 62,
+                "children": [
+                  {
+                    "label": "Bhilai Plant",
+                    "value": 62,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 28
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 22
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 12
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "West",
+                "value": 53,
+                "children": [
+                  {
+                    "label": "Hazira Plant",
+                    "value": 53,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 24
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 19
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 10
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "South",
+                "value": 41,
+                "children": [
+                  {
+                    "label": "Bellary Plant",
+                    "value": 41,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 18
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 14
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 9
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "supplyChain": {
+      "label": "Supply Chain",
+      "kpis": [
+        {
+          "id": "on-time-delivery-rate",
+          "name": "On-Time Delivery Rate",
+          "module": "supplyChain",
+          "unit": "%",
+          "current": 91.2,
+          "previous": 88.6,
+          "percentChange": 2.9,
+          "trend": "up",
+          "status": "good",
+          "drilldown": {
+            "dimension": "geography",
+            "root": [
+              {
+                "label": "North",
+                "value": 21.9,
+                "children": [
+                  {
+                    "label": "Punjab",
+                    "value": 12,
+                    "children": [
+                      {
+                        "label": "Ludhiana",
+                        "value": 12
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Delhi NCR",
+                    "value": 9.9,
+                    "children": [
+                      {
+                        "label": "Gurugram",
+                        "value": 9.9
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "South",
+                "value": 25.5,
+                "children": [
+                  {
+                    "label": "Karnataka",
+                    "value": 14,
+                    "children": [
+                      {
+                        "label": "Bengaluru",
+                        "value": 14
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Tamil Nadu",
+                    "value": 11.5,
+                    "children": [
+                      {
+                        "label": "Chennai",
+                        "value": 11.5
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "East",
+                "value": 23.7,
+                "children": [
+                  {
+                    "label": "West Bengal",
+                    "value": 13,
+                    "children": [
+                      {
+                        "label": "Kolkata",
+                        "value": 13
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Odisha",
+                    "value": 10.7,
+                    "children": [
+                      {
+                        "label": "Bhubaneswar",
+                        "value": 10.7
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "West",
+                "value": 20.1,
+                "children": [
+                  {
+                    "label": "Maharashtra",
+                    "value": 11.1,
+                    "children": [
+                      {
+                        "label": "Mumbai",
+                        "value": 11.1
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Gujarat",
+                    "value": 9,
+                    "children": [
+                      {
+                        "label": "Ahmedabad",
+                        "value": 9
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "order-fulfillment-cycle-time",
+          "name": "Order Fulfillment Cycle Time",
+          "module": "supplyChain",
+          "unit": "days",
+          "current": 6.8,
+          "previous": 7.6,
+          "percentChange": -10.5,
+          "trend": "down",
+          "status": "good",
+          "drilldown": {
+            "dimension": "geography",
+            "root": [
+              {
+                "label": "North",
+                "value": 1.6,
+                "children": [
+                  {
+                    "label": "Punjab",
+                    "value": 0.9,
+                    "children": [
+                      {
+                        "label": "Ludhiana",
+                        "value": 0.9
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Delhi NCR",
+                    "value": 0.7,
+                    "children": [
+                      {
+                        "label": "Gurugram",
+                        "value": 0.7
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "South",
+                "value": 1.9,
+                "children": [
+                  {
+                    "label": "Karnataka",
+                    "value": 1,
+                    "children": [
+                      {
+                        "label": "Bengaluru",
+                        "value": 1
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Tamil Nadu",
+                    "value": 0.9,
+                    "children": [
+                      {
+                        "label": "Chennai",
+                        "value": 0.9
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "East",
+                "value": 1.8,
+                "children": [
+                  {
+                    "label": "West Bengal",
+                    "value": 1,
+                    "children": [
+                      {
+                        "label": "Kolkata",
+                        "value": 1
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Odisha",
+                    "value": 0.8,
+                    "children": [
+                      {
+                        "label": "Bhubaneswar",
+                        "value": 0.8
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "West",
+                "value": 1.5,
+                "children": [
+                  {
+                    "label": "Maharashtra",
+                    "value": 0.8,
+                    "children": [
+                      {
+                        "label": "Mumbai",
+                        "value": 0.8
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Gujarat",
+                    "value": 0.7,
+                    "children": [
+                      {
+                        "label": "Ahmedabad",
+                        "value": 0.7
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "freight-cost-per-tonne",
+          "name": "Freight Cost per Tonne",
+          "module": "supplyChain",
+          "unit": "INR",
+          "current": 2140,
+          "previous": 1985,
+          "percentChange": 7.8,
+          "trend": "up",
+          "status": "warning",
+          "drilldown": {
+            "dimension": "geography",
+            "root": [
+              {
+                "label": "North",
+                "value": 514,
+                "children": [
+                  {
+                    "label": "Punjab",
+                    "value": 283,
+                    "children": [
+                      {
+                        "label": "Ludhiana",
+                        "value": 283
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Delhi NCR",
+                    "value": 231,
+                    "children": [
+                      {
+                        "label": "Gurugram",
+                        "value": 231
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "South",
+                "value": 599,
+                "children": [
+                  {
+                    "label": "Karnataka",
+                    "value": 329,
+                    "children": [
+                      {
+                        "label": "Bengaluru",
+                        "value": 329
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Tamil Nadu",
+                    "value": 270,
+                    "children": [
+                      {
+                        "label": "Chennai",
+                        "value": 270
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "East",
+                "value": 556,
+                "children": [
+                  {
+                    "label": "West Bengal",
+                    "value": 306,
+                    "children": [
+                      {
+                        "label": "Kolkata",
+                        "value": 306
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Odisha",
+                    "value": 250,
+                    "children": [
+                      {
+                        "label": "Bhubaneswar",
+                        "value": 250
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "West",
+                "value": 471,
+                "children": [
+                  {
+                    "label": "Maharashtra",
+                    "value": 259,
+                    "children": [
+                      {
+                        "label": "Mumbai",
+                        "value": 259
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Gujarat",
+                    "value": 212,
+                    "children": [
+                      {
+                        "label": "Ahmedabad",
+                        "value": 212
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "inventory-turnover-ratio",
+          "name": "Inventory Turnover Ratio",
+          "module": "supplyChain",
+          "unit": "x",
+          "current": 5.4,
+          "previous": 5,
+          "percentChange": 8,
+          "trend": "up",
+          "status": "good",
+          "drilldown": {
+            "dimension": "plant",
+            "root": [
+              {
+                "label": "East",
+                "value": 2.7,
+                "children": [
+                  {
+                    "label": "Rourkela Plant",
+                    "value": 1.5,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 0.7
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 0.5
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 0.3
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Jamshedpur Plant",
+                    "value": 1.2,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 0.5
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 0.4
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 0.3
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "Central",
+                "value": 1.1,
+                "children": [
+                  {
+                    "label": "Bhilai Plant",
+                    "value": 1.1,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 0.5
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 0.4
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 0.2
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "West",
+                "value": 0.9,
+                "children": [
+                  {
+                    "label": "Hazira Plant",
+                    "value": 0.9,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 0.4
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 0.3
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 0.2
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "South",
+                "value": 0.7,
+                "children": [
+                  {
+                    "label": "Bellary Plant",
+                    "value": 0.7,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 0.3
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 0.2
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 0.2
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "supplier-reliability-score",
+          "name": "Supplier Reliability Score",
+          "module": "supplyChain",
+          "unit": "%",
+          "current": 87.5,
+          "previous": 85.9,
+          "percentChange": 1.9,
+          "trend": "up",
+          "status": "good",
+          "drilldown": {
+            "dimension": "geography",
+            "root": [
+              {
+                "label": "North",
+                "value": 21,
+                "children": [
+                  {
+                    "label": "Punjab",
+                    "value": 11.6,
+                    "children": [
+                      {
+                        "label": "Ludhiana",
+                        "value": 11.6
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Delhi NCR",
+                    "value": 9.4,
+                    "children": [
+                      {
+                        "label": "Gurugram",
+                        "value": 9.4
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "South",
+                "value": 24.5,
+                "children": [
+                  {
+                    "label": "Karnataka",
+                    "value": 13.5,
+                    "children": [
+                      {
+                        "label": "Bengaluru",
+                        "value": 13.5
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Tamil Nadu",
+                    "value": 11,
+                    "children": [
+                      {
+                        "label": "Chennai",
+                        "value": 11
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "East",
+                "value": 22.8,
+                "children": [
+                  {
+                    "label": "West Bengal",
+                    "value": 12.5,
+                    "children": [
+                      {
+                        "label": "Kolkata",
+                        "value": 12.5
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Odisha",
+                    "value": 10.3,
+                    "children": [
+                      {
+                        "label": "Bhubaneswar",
+                        "value": 10.3
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "West",
+                "value": 19.2,
+                "children": [
+                  {
+                    "label": "Maharashtra",
+                    "value": 10.6,
+                    "children": [
+                      {
+                        "label": "Mumbai",
+                        "value": 10.6
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Gujarat",
+                    "value": 8.6,
+                    "children": [
+                      {
+                        "label": "Ahmedabad",
+                        "value": 8.6
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "procurement": {
+      "label": "Procurement",
+      "kpis": [
+        {
+          "id": "purchase-order-cycle-time",
+          "name": "Purchase Order Cycle Time",
+          "module": "procurement",
+          "unit": "days",
+          "current": 4.2,
+          "previous": 5.1,
+          "percentChange": -17.6,
+          "trend": "down",
+          "status": "good",
+          "drilldown": {
+            "dimension": "time",
+            "root": [
+              {
+                "label": "2024",
+                "value": 1.9,
+                "children": [
+                  {
+                    "label": "Q1",
+                    "value": 0.4,
+                    "children": [
+                      {
+                        "label": "Jan",
+                        "value": 0.1
+                      },
+                      {
+                        "label": "Feb",
+                        "value": 0.1
+                      },
+                      {
+                        "label": "Mar",
+                        "value": 0.2
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q2",
+                    "value": 0.5,
+                    "children": [
+                      {
+                        "label": "Apr",
+                        "value": 0.2
+                      },
+                      {
+                        "label": "May",
+                        "value": 0.2
+                      },
+                      {
+                        "label": "Jun",
+                        "value": 0.1
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q3",
+                    "value": 0.5,
+                    "children": [
+                      {
+                        "label": "Jul",
+                        "value": 0.2
+                      },
+                      {
+                        "label": "Aug",
+                        "value": 0.2
+                      },
+                      {
+                        "label": "Sep",
+                        "value": 0.1
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q4",
+                    "value": 0.5,
+                    "children": [
+                      {
+                        "label": "Oct",
+                        "value": 0.2
+                      },
+                      {
+                        "label": "Nov",
+                        "value": 0.2
+                      },
+                      {
+                        "label": "Dec",
+                        "value": 0.1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "2025",
+                "value": 2.3,
+                "children": [
+                  {
+                    "label": "Q1",
+                    "value": 0.5,
+                    "children": [
+                      {
+                        "label": "Jan",
+                        "value": 0.2
+                      },
+                      {
+                        "label": "Feb",
+                        "value": 0.2
+                      },
+                      {
+                        "label": "Mar",
+                        "value": 0.1
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q2",
+                    "value": 0.6,
+                    "children": [
+                      {
+                        "label": "Apr",
+                        "value": 0.2
+                      },
+                      {
+                        "label": "May",
+                        "value": 0.2
+                      },
+                      {
+                        "label": "Jun",
+                        "value": 0.2
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q3",
+                    "value": 0.6,
+                    "children": [
+                      {
+                        "label": "Jul",
+                        "value": 0.2
+                      },
+                      {
+                        "label": "Aug",
+                        "value": 0.2
+                      },
+                      {
+                        "label": "Sep",
+                        "value": 0.2
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q4",
+                    "value": 0.6,
+                    "children": [
+                      {
+                        "label": "Oct",
+                        "value": 0.2
+                      },
+                      {
+                        "label": "Nov",
+                        "value": 0.2
+                      },
+                      {
+                        "label": "Dec",
+                        "value": 0.2
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "supplier-price-variance",
+          "name": "Supplier Price Variance",
+          "module": "procurement",
+          "unit": "%",
+          "current": 2.9,
+          "previous": 1.8,
+          "percentChange": 61.1,
+          "trend": "up",
+          "status": "warning",
+          "drilldown": {
+            "dimension": "geography",
+            "root": [
+              {
+                "label": "North",
+                "value": 0.7,
+                "children": [
+                  {
+                    "label": "Punjab",
+                    "value": 0.4,
+                    "children": [
+                      {
+                        "label": "Ludhiana",
+                        "value": 0.4
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Delhi NCR",
+                    "value": 0.3,
+                    "children": [
+                      {
+                        "label": "Gurugram",
+                        "value": 0.3
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "South",
+                "value": 0.8,
+                "children": [
+                  {
+                    "label": "Karnataka",
+                    "value": 0.4,
+                    "children": [
+                      {
+                        "label": "Bengaluru",
+                        "value": 0.4
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Tamil Nadu",
+                    "value": 0.4,
+                    "children": [
+                      {
+                        "label": "Chennai",
+                        "value": 0.4
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "East",
+                "value": 0.8,
+                "children": [
+                  {
+                    "label": "West Bengal",
+                    "value": 0.4,
+                    "children": [
+                      {
+                        "label": "Kolkata",
+                        "value": 0.4
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Odisha",
+                    "value": 0.4,
+                    "children": [
+                      {
+                        "label": "Bhubaneswar",
+                        "value": 0.4
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "West",
+                "value": 0.6,
+                "children": [
+                  {
+                    "label": "Maharashtra",
+                    "value": 0.3,
+                    "children": [
+                      {
+                        "label": "Mumbai",
+                        "value": 0.3
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Gujarat",
+                    "value": 0.3,
+                    "children": [
+                      {
+                        "label": "Ahmedabad",
+                        "value": 0.3
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "procurement-cost-savings",
+          "name": "Procurement Cost Savings",
+          "module": "procurement",
+          "unit": "INR Lakh",
+          "current": 186,
+          "previous": 154,
+          "percentChange": 20.8,
+          "trend": "up",
+          "status": "good",
+          "drilldown": {
+            "dimension": "time",
+            "root": [
+              {
+                "label": "2024",
+                "value": 84,
+                "children": [
+                  {
+                    "label": "Q1",
+                    "value": 18,
+                    "children": [
+                      {
+                        "label": "Jan",
+                        "value": 6
+                      },
+                      {
+                        "label": "Feb",
+                        "value": 6
+                      },
+                      {
+                        "label": "Mar",
+                        "value": 6
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q2",
+                    "value": 20,
+                    "children": [
+                      {
+                        "label": "Apr",
+                        "value": 6
+                      },
+                      {
+                        "label": "May",
+                        "value": 7
+                      },
+                      {
+                        "label": "Jun",
+                        "value": 7
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q3",
+                    "value": 22,
+                    "children": [
+                      {
+                        "label": "Jul",
+                        "value": 7
+                      },
+                      {
+                        "label": "Aug",
+                        "value": 7
+                      },
+                      {
+                        "label": "Sep",
+                        "value": 8
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q4",
+                    "value": 24,
+                    "children": [
+                      {
+                        "label": "Oct",
+                        "value": 8
+                      },
+                      {
+                        "label": "Nov",
+                        "value": 8
+                      },
+                      {
+                        "label": "Dec",
+                        "value": 8
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "2025",
+                "value": 102,
+                "children": [
+                  {
+                    "label": "Q1",
+                    "value": 22,
+                    "children": [
+                      {
+                        "label": "Jan",
+                        "value": 7
+                      },
+                      {
+                        "label": "Feb",
+                        "value": 7
+                      },
+                      {
+                        "label": "Mar",
+                        "value": 8
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q2",
+                    "value": 24,
+                    "children": [
+                      {
+                        "label": "Apr",
+                        "value": 8
+                      },
+                      {
+                        "label": "May",
+                        "value": 8
+                      },
+                      {
+                        "label": "Jun",
+                        "value": 8
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q3",
+                    "value": 27,
+                    "children": [
+                      {
+                        "label": "Jul",
+                        "value": 9
+                      },
+                      {
+                        "label": "Aug",
+                        "value": 9
+                      },
+                      {
+                        "label": "Sep",
+                        "value": 9
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q4",
+                    "value": 29,
+                    "children": [
+                      {
+                        "label": "Oct",
+                        "value": 9
+                      },
+                      {
+                        "label": "Nov",
+                        "value": 10
+                      },
+                      {
+                        "label": "Dec",
+                        "value": 10
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "contract-compliance-rate",
+          "name": "Contract Compliance Rate",
+          "module": "procurement",
+          "unit": "%",
+          "current": 96.1,
+          "previous": 94.8,
+          "percentChange": 1.4,
+          "trend": "up",
+          "status": "good",
+          "drilldown": {
+            "dimension": "geography",
+            "root": [
+              {
+                "label": "North",
+                "value": 23.1,
+                "children": [
+                  {
+                    "label": "Punjab",
+                    "value": 12.7,
+                    "children": [
+                      {
+                        "label": "Ludhiana",
+                        "value": 12.7
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Delhi NCR",
+                    "value": 10.4,
+                    "children": [
+                      {
+                        "label": "Gurugram",
+                        "value": 10.4
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "South",
+                "value": 26.9,
+                "children": [
+                  {
+                    "label": "Karnataka",
+                    "value": 14.8,
+                    "children": [
+                      {
+                        "label": "Bengaluru",
+                        "value": 14.8
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Tamil Nadu",
+                    "value": 12.1,
+                    "children": [
+                      {
+                        "label": "Chennai",
+                        "value": 12.1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "East",
+                "value": 25,
+                "children": [
+                  {
+                    "label": "West Bengal",
+                    "value": 13.8,
+                    "children": [
+                      {
+                        "label": "Kolkata",
+                        "value": 13.8
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Odisha",
+                    "value": 11.2,
+                    "children": [
+                      {
+                        "label": "Bhubaneswar",
+                        "value": 11.2
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "West",
+                "value": 21.1,
+                "children": [
+                  {
+                    "label": "Maharashtra",
+                    "value": 11.6,
+                    "children": [
+                      {
+                        "label": "Mumbai",
+                        "value": 11.6
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Gujarat",
+                    "value": 9.5,
+                    "children": [
+                      {
+                        "label": "Ahmedabad",
+                        "value": 9.5
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "vendor-rejection-rate",
+          "name": "Vendor Rejection Rate",
+          "module": "procurement",
+          "unit": "%",
+          "current": 1.6,
+          "previous": 1.2,
+          "percentChange": 33.3,
+          "trend": "up",
+          "status": "critical",
+          "drilldown": {
+            "dimension": "plant",
+            "root": [
+              {
+                "label": "East",
+                "value": 0.8,
+                "children": [
+                  {
+                    "label": "Rourkela Plant",
+                    "value": 0.4,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 0.2
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 0.1
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 0.1
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Jamshedpur Plant",
+                    "value": 0.4,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 0.2
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 0.1
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 0.1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "Central",
+                "value": 0.3,
+                "children": [
+                  {
+                    "label": "Bhilai Plant",
+                    "value": 0.3,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 0.1
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 0.1
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 0.1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "West",
+                "value": 0.3,
+                "children": [
+                  {
+                    "label": "Hazira Plant",
+                    "value": 0.3,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 0.1
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 0.1
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 0.1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "South",
+                "value": 0.2,
+                "children": [
+                  {
+                    "label": "Bellary Plant",
+                    "value": 0.2,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 0.1
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 0.1
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 0
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "product": {
+      "label": "Product",
+      "kpis": [
+        {
+          "id": "production-volume",
+          "name": "Production Volume",
+          "module": "product",
+          "unit": "tonnes",
+          "current": 214500,
+          "previous": 205800,
+          "percentChange": 4.2,
+          "trend": "up",
+          "status": "good",
+          "drilldown": {
+            "dimension": "plant",
+            "root": [
+              {
+                "label": "East",
+                "value": 107250,
+                "children": [
+                  {
+                    "label": "Rourkela Plant",
+                    "value": 60060,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 27027
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 21021
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 12012
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Jamshedpur Plant",
+                    "value": 47190,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 21236
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 16517
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 9437
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "Central",
+                "value": 42900,
+                "children": [
+                  {
+                    "label": "Bhilai Plant",
+                    "value": 42900,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 19305
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 15015
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 8580
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "West",
+                "value": 36465,
+                "children": [
+                  {
+                    "label": "Hazira Plant",
+                    "value": 36465,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 16409
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 12763
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 7293
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "South",
+                "value": 27885,
+                "children": [
+                  {
+                    "label": "Bellary Plant",
+                    "value": 27885,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 12548
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 9760
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 5577
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "yield-rate",
+          "name": "Yield Rate",
+          "module": "product",
+          "unit": "%",
+          "current": 92.3,
+          "previous": 91.6,
+          "percentChange": 0.8,
+          "trend": "up",
+          "status": "good",
+          "drilldown": {
+            "dimension": "plant",
+            "root": [
+              {
+                "label": "East",
+                "value": 46.1,
+                "children": [
+                  {
+                    "label": "Rourkela Plant",
+                    "value": 25.8,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 11.6
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 9
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 5.2
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Jamshedpur Plant",
+                    "value": 20.3,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 9.1
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 7.1
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 4.1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "Central",
+                "value": 18.5,
+                "children": [
+                  {
+                    "label": "Bhilai Plant",
+                    "value": 18.5,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 8.3
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 6.5
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 3.7
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "West",
+                "value": 15.7,
+                "children": [
+                  {
+                    "label": "Hazira Plant",
+                    "value": 15.7,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 7.1
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 5.5
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 3.1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "South",
+                "value": 12,
+                "children": [
+                  {
+                    "label": "Bellary Plant",
+                    "value": 12,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 5.4
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 4.2
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 2.4
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "defect-rate",
+          "name": "Defect Rate",
+          "module": "product",
+          "unit": "%",
+          "current": 2.4,
+          "previous": 1.9,
+          "percentChange": 26.3,
+          "trend": "up",
+          "status": "critical",
+          "drilldown": {
+            "dimension": "plant",
+            "root": [
+              {
+                "label": "East",
+                "value": 1.2,
+                "children": [
+                  {
+                    "label": "Rourkela Plant",
+                    "value": 0.7,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 0.3
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 0.2
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 0.2
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Jamshedpur Plant",
+                    "value": 0.5,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 0.2
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 0.2
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 0.1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "Central",
+                "value": 0.5,
+                "children": [
+                  {
+                    "label": "Bhilai Plant",
+                    "value": 0.5,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 0.2
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 0.2
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 0.1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "West",
+                "value": 0.4,
+                "children": [
+                  {
+                    "label": "Hazira Plant",
+                    "value": 0.4,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 0.2
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 0.1
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 0.1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "South",
+                "value": 0.3,
+                "children": [
+                  {
+                    "label": "Bellary Plant",
+                    "value": 0.3,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 0.1
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 0.1
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 0.1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "capacity-utilization",
+          "name": "Capacity Utilization",
+          "module": "product",
+          "unit": "%",
+          "current": 88.1,
+          "previous": 85.4,
+          "percentChange": 3.2,
+          "trend": "up",
+          "status": "good",
+          "drilldown": {
+            "dimension": "plant",
+            "root": [
+              {
+                "label": "East",
+                "value": 44.1,
+                "children": [
+                  {
+                    "label": "Rourkela Plant",
+                    "value": 24.7,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 11.1
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 8.6
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 5
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Jamshedpur Plant",
+                    "value": 19.4,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 8.7
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 6.8
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 3.9
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "Central",
+                "value": 17.6,
+                "children": [
+                  {
+                    "label": "Bhilai Plant",
+                    "value": 17.6,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 7.9
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 6.2
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 3.5
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "West",
+                "value": 15,
+                "children": [
+                  {
+                    "label": "Hazira Plant",
+                    "value": 15,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 6.8
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 5.3
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 2.9
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "South",
+                "value": 11.4,
+                "children": [
+                  {
+                    "label": "Bellary Plant",
+                    "value": 11.4,
+                    "children": [
+                      {
+                        "label": "Blast Furnace Unit",
+                        "value": 5.1
+                      },
+                      {
+                        "label": "Melt Shop Unit",
+                        "value": 4
+                      },
+                      {
+                        "label": "Rolling Mill Unit",
+                        "value": 2.3
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "value-added-steel-mix",
+          "name": "Value-Added Steel Mix",
+          "module": "product",
+          "unit": "%",
+          "current": 34.6,
+          "previous": 31.2,
+          "percentChange": 10.9,
+          "trend": "up",
+          "status": "good",
+          "drilldown": {
+            "dimension": "time",
+            "root": [
+              {
+                "label": "2024",
+                "value": 15.6,
+                "children": [
+                  {
+                    "label": "Q1",
+                    "value": 3.4,
+                    "children": [
+                      {
+                        "label": "Jan",
+                        "value": 1.1
+                      },
+                      {
+                        "label": "Feb",
+                        "value": 1.1
+                      },
+                      {
+                        "label": "Mar",
+                        "value": 1.2
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q2",
+                    "value": 3.7,
+                    "children": [
+                      {
+                        "label": "Apr",
+                        "value": 1.2
+                      },
+                      {
+                        "label": "May",
+                        "value": 1.2
+                      },
+                      {
+                        "label": "Jun",
+                        "value": 1.3
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q3",
+                    "value": 4.1,
+                    "children": [
+                      {
+                        "label": "Jul",
+                        "value": 1.3
+                      },
+                      {
+                        "label": "Aug",
+                        "value": 1.4
+                      },
+                      {
+                        "label": "Sep",
+                        "value": 1.4
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q4",
+                    "value": 4.4,
+                    "children": [
+                      {
+                        "label": "Oct",
+                        "value": 1.4
+                      },
+                      {
+                        "label": "Nov",
+                        "value": 1.5
+                      },
+                      {
+                        "label": "Dec",
+                        "value": 1.5
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "2025",
+                "value": 19,
+                "children": [
+                  {
+                    "label": "Q1",
+                    "value": 4.2,
+                    "children": [
+                      {
+                        "label": "Jan",
+                        "value": 1.3
+                      },
+                      {
+                        "label": "Feb",
+                        "value": 1.4
+                      },
+                      {
+                        "label": "Mar",
+                        "value": 1.5
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q2",
+                    "value": 4.6,
+                    "children": [
+                      {
+                        "label": "Apr",
+                        "value": 1.5
+                      },
+                      {
+                        "label": "May",
+                        "value": 1.5
+                      },
+                      {
+                        "label": "Jun",
+                        "value": 1.6
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q3",
+                    "value": 4.9,
+                    "children": [
+                      {
+                        "label": "Jul",
+                        "value": 1.6
+                      },
+                      {
+                        "label": "Aug",
+                        "value": 1.6
+                      },
+                      {
+                        "label": "Sep",
+                        "value": 1.7
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q4",
+                    "value": 5.3,
+                    "children": [
+                      {
+                        "label": "Oct",
+                        "value": 1.7
+                      },
+                      {
+                        "label": "Nov",
+                        "value": 1.7
+                      },
+                      {
+                        "label": "Dec",
+                        "value": 1.9
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "marketingFinance": {
+      "label": "Marketing & Finance",
+      "kpis": [
+        {
+          "id": "revenue",
+          "name": "Revenue",
+          "module": "marketingFinance",
+          "unit": "INR Cr",
+          "current": 1842,
+          "previous": 1705,
+          "percentChange": 8,
+          "trend": "up",
+          "status": "good",
+          "drilldown": {
+            "dimension": "geography",
+            "root": [
+              {
+                "label": "North",
+                "value": 442,
+                "children": [
+                  {
+                    "label": "Punjab",
+                    "value": 243,
+                    "children": [
+                      {
+                        "label": "Ludhiana",
+                        "value": 243
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Delhi NCR",
+                    "value": 199,
+                    "children": [
+                      {
+                        "label": "Gurugram",
+                        "value": 199
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "South",
+                "value": 516,
+                "children": [
+                  {
+                    "label": "Karnataka",
+                    "value": 284,
+                    "children": [
+                      {
+                        "label": "Bengaluru",
+                        "value": 284
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Tamil Nadu",
+                    "value": 232,
+                    "children": [
+                      {
+                        "label": "Chennai",
+                        "value": 232
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "East",
+                "value": 479,
+                "children": [
+                  {
+                    "label": "West Bengal",
+                    "value": 263,
+                    "children": [
+                      {
+                        "label": "Kolkata",
+                        "value": 263
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Odisha",
+                    "value": 216,
+                    "children": [
+                      {
+                        "label": "Bhubaneswar",
+                        "value": 216
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "West",
+                "value": 405,
+                "children": [
+                  {
+                    "label": "Maharashtra",
+                    "value": 223,
+                    "children": [
+                      {
+                        "label": "Mumbai",
+                        "value": 223
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Gujarat",
+                    "value": 182,
+                    "children": [
+                      {
+                        "label": "Ahmedabad",
+                        "value": 182
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "ebitda-margin",
+          "name": "EBITDA Margin",
+          "module": "marketingFinance",
+          "unit": "%",
+          "current": 21.4,
+          "previous": 19.8,
+          "percentChange": 8.1,
+          "trend": "up",
+          "status": "good",
+          "drilldown": {
+            "dimension": "time",
+            "root": [
+              {
+                "label": "2024",
+                "value": 9.6,
+                "children": [
+                  {
+                    "label": "Q1",
+                    "value": 2.1,
+                    "children": [
+                      {
+                        "label": "Jan",
+                        "value": 0.7
+                      },
+                      {
+                        "label": "Feb",
+                        "value": 0.7
+                      },
+                      {
+                        "label": "Mar",
+                        "value": 0.7
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q2",
+                    "value": 2.3,
+                    "children": [
+                      {
+                        "label": "Apr",
+                        "value": 0.7
+                      },
+                      {
+                        "label": "May",
+                        "value": 0.8
+                      },
+                      {
+                        "label": "Jun",
+                        "value": 0.8
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q3",
+                    "value": 2.5,
+                    "children": [
+                      {
+                        "label": "Jul",
+                        "value": 0.8
+                      },
+                      {
+                        "label": "Aug",
+                        "value": 0.8
+                      },
+                      {
+                        "label": "Sep",
+                        "value": 0.9
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q4",
+                    "value": 2.7,
+                    "children": [
+                      {
+                        "label": "Oct",
+                        "value": 0.9
+                      },
+                      {
+                        "label": "Nov",
+                        "value": 0.9
+                      },
+                      {
+                        "label": "Dec",
+                        "value": 0.9
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "2025",
+                "value": 11.8,
+                "children": [
+                  {
+                    "label": "Q1",
+                    "value": 2.6,
+                    "children": [
+                      {
+                        "label": "Jan",
+                        "value": 0.8
+                      },
+                      {
+                        "label": "Feb",
+                        "value": 0.9
+                      },
+                      {
+                        "label": "Mar",
+                        "value": 0.9
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q2",
+                    "value": 2.8,
+                    "children": [
+                      {
+                        "label": "Apr",
+                        "value": 0.9
+                      },
+                      {
+                        "label": "May",
+                        "value": 0.9
+                      },
+                      {
+                        "label": "Jun",
+                        "value": 1
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q3",
+                    "value": 3.1,
+                    "children": [
+                      {
+                        "label": "Jul",
+                        "value": 1
+                      },
+                      {
+                        "label": "Aug",
+                        "value": 1
+                      },
+                      {
+                        "label": "Sep",
+                        "value": 1.1
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q4",
+                    "value": 3.3,
+                    "children": [
+                      {
+                        "label": "Oct",
+                        "value": 1.1
+                      },
+                      {
+                        "label": "Nov",
+                        "value": 1.1
+                      },
+                      {
+                        "label": "Dec",
+                        "value": 1.1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "net-profit",
+          "name": "Net Profit",
+          "module": "marketingFinance",
+          "unit": "INR Cr",
+          "current": 268,
+          "previous": 231,
+          "percentChange": 16,
+          "trend": "up",
+          "status": "good",
+          "drilldown": {
+            "dimension": "time",
+            "root": [
+              {
+                "label": "2024",
+                "value": 121,
+                "children": [
+                  {
+                    "label": "Q1",
+                    "value": 27,
+                    "children": [
+                      {
+                        "label": "Jan",
+                        "value": 9
+                      },
+                      {
+                        "label": "Feb",
+                        "value": 9
+                      },
+                      {
+                        "label": "Mar",
+                        "value": 9
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q2",
+                    "value": 29,
+                    "children": [
+                      {
+                        "label": "Apr",
+                        "value": 9
+                      },
+                      {
+                        "label": "May",
+                        "value": 10
+                      },
+                      {
+                        "label": "Jun",
+                        "value": 10
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q3",
+                    "value": 31,
+                    "children": [
+                      {
+                        "label": "Jul",
+                        "value": 10
+                      },
+                      {
+                        "label": "Aug",
+                        "value": 10
+                      },
+                      {
+                        "label": "Sep",
+                        "value": 11
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q4",
+                    "value": 34,
+                    "children": [
+                      {
+                        "label": "Oct",
+                        "value": 11
+                      },
+                      {
+                        "label": "Nov",
+                        "value": 11
+                      },
+                      {
+                        "label": "Dec",
+                        "value": 12
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "2025",
+                "value": 147,
+                "children": [
+                  {
+                    "label": "Q1",
+                    "value": 32,
+                    "children": [
+                      {
+                        "label": "Jan",
+                        "value": 10
+                      },
+                      {
+                        "label": "Feb",
+                        "value": 11
+                      },
+                      {
+                        "label": "Mar",
+                        "value": 11
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q2",
+                    "value": 35,
+                    "children": [
+                      {
+                        "label": "Apr",
+                        "value": 11
+                      },
+                      {
+                        "label": "May",
+                        "value": 12
+                      },
+                      {
+                        "label": "Jun",
+                        "value": 12
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q3",
+                    "value": 38,
+                    "children": [
+                      {
+                        "label": "Jul",
+                        "value": 12
+                      },
+                      {
+                        "label": "Aug",
+                        "value": 13
+                      },
+                      {
+                        "label": "Sep",
+                        "value": 13
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Q4",
+                    "value": 42,
+                    "children": [
+                      {
+                        "label": "Oct",
+                        "value": 13
+                      },
+                      {
+                        "label": "Nov",
+                        "value": 14
+                      },
+                      {
+                        "label": "Dec",
+                        "value": 15
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "market-share",
+          "name": "Market Share",
+          "module": "marketingFinance",
+          "unit": "%",
+          "current": 14.2,
+          "previous": 13.6,
+          "percentChange": 4.4,
+          "trend": "up",
+          "status": "good",
+          "drilldown": {
+            "dimension": "geography",
+            "root": [
+              {
+                "label": "North",
+                "value": 3.4,
+                "children": [
+                  {
+                    "label": "Punjab",
+                    "value": 1.9,
+                    "children": [
+                      {
+                        "label": "Ludhiana",
+                        "value": 1.9
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Delhi NCR",
+                    "value": 1.5,
+                    "children": [
+                      {
+                        "label": "Gurugram",
+                        "value": 1.5
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "South",
+                "value": 4,
+                "children": [
+                  {
+                    "label": "Karnataka",
+                    "value": 2.2,
+                    "children": [
+                      {
+                        "label": "Bengaluru",
+                        "value": 2.2
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Tamil Nadu",
+                    "value": 1.8,
+                    "children": [
+                      {
+                        "label": "Chennai",
+                        "value": 1.8
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "East",
+                "value": 3.7,
+                "children": [
+                  {
+                    "label": "West Bengal",
+                    "value": 2,
+                    "children": [
+                      {
+                        "label": "Kolkata",
+                        "value": 2
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Odisha",
+                    "value": 1.7,
+                    "children": [
+                      {
+                        "label": "Bhubaneswar",
+                        "value": 1.7
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "West",
+                "value": 3.1,
+                "children": [
+                  {
+                    "label": "Maharashtra",
+                    "value": 1.7,
+                    "children": [
+                      {
+                        "label": "Mumbai",
+                        "value": 1.7
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Gujarat",
+                    "value": 1.4,
+                    "children": [
+                      {
+                        "label": "Ahmedabad",
+                        "value": 1.4
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "customer-acquisition-cost",
+          "name": "Customer Acquisition Cost",
+          "module": "marketingFinance",
+          "unit": "INR",
+          "current": 8600,
+          "previous": 9400,
+          "percentChange": -8.5,
+          "trend": "down",
+          "status": "good",
+          "drilldown": {
+            "dimension": "geography",
+            "root": [
+              {
+                "label": "North",
+                "value": 2064,
+                "children": [
+                  {
+                    "label": "Punjab",
+                    "value": 1135,
+                    "children": [
+                      {
+                        "label": "Ludhiana",
+                        "value": 1135
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Delhi NCR",
+                    "value": 929,
+                    "children": [
+                      {
+                        "label": "Gurugram",
+                        "value": 929
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "South",
+                "value": 2408,
+                "children": [
+                  {
+                    "label": "Karnataka",
+                    "value": 1324,
+                    "children": [
+                      {
+                        "label": "Bengaluru",
+                        "value": 1324
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Tamil Nadu",
+                    "value": 1084,
+                    "children": [
+                      {
+                        "label": "Chennai",
+                        "value": 1084
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "East",
+                "value": 2236,
+                "children": [
+                  {
+                    "label": "West Bengal",
+                    "value": 1230,
+                    "children": [
+                      {
+                        "label": "Kolkata",
+                        "value": 1230
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Odisha",
+                    "value": 1006,
+                    "children": [
+                      {
+                        "label": "Bhubaneswar",
+                        "value": 1006
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "West",
+                "value": 1892,
+                "children": [
+                  {
+                    "label": "Maharashtra",
+                    "value": 1041,
+                    "children": [
+                      {
+                        "label": "Mumbai",
+                        "value": 1041
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Gujarat",
+                    "value": 851,
+                    "children": [
+                      {
+                        "label": "Ahmedabad",
+                        "value": 851
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "order-book-value",
+          "name": "Order Book Value",
+          "module": "marketingFinance",
+          "unit": "INR Cr",
+          "current": 3120,
+          "previous": 2860,
+          "percentChange": 9.1,
+          "trend": "up",
+          "status": "good",
+          "drilldown": {
+            "dimension": "geography",
+            "root": [
+              {
+                "label": "North",
+                "value": 749,
+                "children": [
+                  {
+                    "label": "Punjab",
+                    "value": 412,
+                    "children": [
+                      {
+                        "label": "Ludhiana",
+                        "value": 412
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Delhi NCR",
+                    "value": 337,
+                    "children": [
+                      {
+                        "label": "Gurugram",
+                        "value": 337
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "South",
+                "value": 874,
+                "children": [
+                  {
+                    "label": "Karnataka",
+                    "value": 481,
+                    "children": [
+                      {
+                        "label": "Bengaluru",
+                        "value": 481
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Tamil Nadu",
+                    "value": 393,
+                    "children": [
+                      {
+                        "label": "Chennai",
+                        "value": 393
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "East",
+                "value": 811,
+                "children": [
+                  {
+                    "label": "West Bengal",
+                    "value": 446,
+                    "children": [
+                      {
+                        "label": "Kolkata",
+                        "value": 446
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Odisha",
+                    "value": 365,
+                    "children": [
+                      {
+                        "label": "Bhubaneswar",
+                        "value": 365
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "West",
+                "value": 686,
+                "children": [
+                  {
+                    "label": "Maharashtra",
+                    "value": 377,
+                    "children": [
+                      {
+                        "label": "Mumbai",
+                        "value": 377
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Gujarat",
+                    "value": 309,
+                    "children": [
+                      {
+                        "label": "Ahmedabad",
+                        "value": 309
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "hierarchies": {
+    "time": [
+      {
+        "label": "2024",
+        "value": 0,
+        "children": [
+          {
+            "label": "Q1",
+            "value": 0,
+            "children": [
+              {
+                "label": "Jan",
+                "value": 0
+              },
+              {
+                "label": "Feb",
+                "value": 0
+              },
+              {
+                "label": "Mar",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "label": "Q2",
+            "value": 0,
+            "children": [
+              {
+                "label": "Apr",
+                "value": 0
+              },
+              {
+                "label": "May",
+                "value": 0
+              },
+              {
+                "label": "Jun",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "label": "Q3",
+            "value": 0,
+            "children": [
+              {
+                "label": "Jul",
+                "value": 0
+              },
+              {
+                "label": "Aug",
+                "value": 0
+              },
+              {
+                "label": "Sep",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "label": "Q4",
+            "value": 0,
+            "children": [
+              {
+                "label": "Oct",
+                "value": 0
+              },
+              {
+                "label": "Nov",
+                "value": 0
+              },
+              {
+                "label": "Dec",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "2025",
+        "value": 0,
+        "children": [
+          {
+            "label": "Q1",
+            "value": 0,
+            "children": [
+              {
+                "label": "Jan",
+                "value": 0
+              },
+              {
+                "label": "Feb",
+                "value": 0
+              },
+              {
+                "label": "Mar",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "label": "Q2",
+            "value": 0,
+            "children": [
+              {
+                "label": "Apr",
+                "value": 0
+              },
+              {
+                "label": "May",
+                "value": 0
+              },
+              {
+                "label": "Jun",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "label": "Q3",
+            "value": 0,
+            "children": [
+              {
+                "label": "Jul",
+                "value": 0
+              },
+              {
+                "label": "Aug",
+                "value": 0
+              },
+              {
+                "label": "Sep",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "label": "Q4",
+            "value": 0,
+            "children": [
+              {
+                "label": "Oct",
+                "value": 0
+              },
+              {
+                "label": "Nov",
+                "value": 0
+              },
+              {
+                "label": "Dec",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "plant": [
+      {
+        "label": "East",
+        "value": 0,
+        "children": [
+          {
+            "label": "Rourkela Plant",
+            "value": 0,
+            "children": [
+              {
+                "label": "Blast Furnace Unit",
+                "value": 0
+              },
+              {
+                "label": "Melt Shop Unit",
+                "value": 0
+              },
+              {
+                "label": "Rolling Mill Unit",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "label": "Jamshedpur Plant",
+            "value": 0,
+            "children": [
+              {
+                "label": "Blast Furnace Unit",
+                "value": 0
+              },
+              {
+                "label": "Melt Shop Unit",
+                "value": 0
+              },
+              {
+                "label": "Rolling Mill Unit",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "Central",
+        "value": 0,
+        "children": [
+          {
+            "label": "Bhilai Plant",
+            "value": 0,
+            "children": [
+              {
+                "label": "Blast Furnace Unit",
+                "value": 0
+              },
+              {
+                "label": "Melt Shop Unit",
+                "value": 0
+              },
+              {
+                "label": "Rolling Mill Unit",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "West",
+        "value": 0,
+        "children": [
+          {
+            "label": "Hazira Plant",
+            "value": 0,
+            "children": [
+              {
+                "label": "Blast Furnace Unit",
+                "value": 0
+              },
+              {
+                "label": "Melt Shop Unit",
+                "value": 0
+              },
+              {
+                "label": "Rolling Mill Unit",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "South",
+        "value": 0,
+        "children": [
+          {
+            "label": "Bellary Plant",
+            "value": 0,
+            "children": [
+              {
+                "label": "Blast Furnace Unit",
+                "value": 0
+              },
+              {
+                "label": "Melt Shop Unit",
+                "value": 0
+              },
+              {
+                "label": "Rolling Mill Unit",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "geography": [
+      {
+        "label": "North",
+        "value": 0,
+        "children": [
+          {
+            "label": "Punjab",
+            "value": 0,
+            "children": [
+              {
+                "label": "Ludhiana",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "label": "Delhi NCR",
+            "value": 0,
+            "children": [
+              {
+                "label": "Gurugram",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "South",
+        "value": 0,
+        "children": [
+          {
+            "label": "Karnataka",
+            "value": 0,
+            "children": [
+              {
+                "label": "Bengaluru",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "label": "Tamil Nadu",
+            "value": 0,
+            "children": [
+              {
+                "label": "Chennai",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "East",
+        "value": 0,
+        "children": [
+          {
+            "label": "West Bengal",
+            "value": 0,
+            "children": [
+              {
+                "label": "Kolkata",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "label": "Odisha",
+            "value": 0,
+            "children": [
+              {
+                "label": "Bhubaneswar",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "West",
+        "value": 0,
+        "children": [
+          {
+            "label": "Maharashtra",
+            "value": 0,
+            "children": [
+              {
+                "label": "Mumbai",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "label": "Gujarat",
+            "value": 0,
+            "children": [
+              {
+                "label": "Ahmedabad",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
