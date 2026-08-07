@@ -4,6 +4,7 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
+import Box from '@mui/material/Box';
 import MenuIcon from '@mui/icons-material/Menu';
 import { APP_NAME, DRAWER_WIDTH, HEADER_HEIGHT } from '@utils/constants';
 
@@ -36,6 +37,24 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
           >
             <MenuIcon />
           </IconButton>
+          <Box
+            sx={{
+              width: 36,
+              height: 36,
+              borderRadius: 1.5,
+              bgcolor: 'primary.main',
+              color: 'primary.contrastText',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontWeight: 700,
+              fontSize: '1.1rem',
+              flexShrink: 0,
+            }}
+            aria-hidden
+          >
+            S
+          </Box>
           <Typography variant="h6" component="span" sx={{ display: { xs: 'none', sm: 'block' } }}>
             {APP_NAME}
           </Typography>
