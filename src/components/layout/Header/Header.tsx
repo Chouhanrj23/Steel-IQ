@@ -1,18 +1,12 @@
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
-import MenuIcon from '@mui/icons-material/Menu';
-import { APP_NAME, DRAWER_WIDTH, HEADER_HEIGHT } from '@utils/constants';
+import { APP_NAME, HEADER_HEIGHT } from '@utils/constants';
 
-export interface HeaderProps {
-  onMenuClick?: () => void;
-}
-
-export const Header = ({ onMenuClick }: HeaderProps) => {
+export const Header = () => {
   return (
     <AppBar
       position="fixed"
@@ -23,20 +17,11 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
         justifyContent: 'center',
         borderBottom: 1,
         borderColor: 'divider',
-        width: { md: `calc(100% - ${DRAWER_WIDTH}px)` },
-        ml: { md: `${DRAWER_WIDTH}px` },
+        width: '100%',
       }}
     >
       <Toolbar sx={{ justifyContent: 'space-between' }}>
         <Stack direction="row" alignItems="center" spacing={1.5}>
-          <IconButton
-            onClick={onMenuClick}
-            edge="start"
-            sx={{ display: { md: 'none' } }}
-            aria-label="open navigation"
-          >
-            <MenuIcon />
-          </IconButton>
           <Box
             sx={{
               width: 36,
