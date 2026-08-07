@@ -5,6 +5,7 @@ import Tab from '@mui/material/Tab';
 import { PageHeader, EmptyState } from '@components/common';
 import { RawMaterialTab } from './RawMaterialTab';
 import { CostAnalyticsTab } from './CostAnalyticsTab';
+import { SupplyChainTab } from './SupplyChainTab';
 
 const MODULE_TABS = [
   'Raw Material',
@@ -34,7 +35,8 @@ export const Dashboard = () => {
       </Box>
       {activeTab === 0 && <RawMaterialTab />}
       {activeTab === 1 && <CostAnalyticsTab />}
-      {activeTab > 1 && (
+      {activeTab === 2 && <SupplyChainTab />}
+      {activeTab > 2 && (
         <EmptyState
           title={`${MODULE_TABS[activeTab] ?? ''} Coming Soon`}
           description="This module is under active development."
