@@ -3,19 +3,19 @@ import type { PaletteOptions } from '@mui/material/styles';
 export const palette: PaletteOptions = {
   mode: 'light',
   primary: {
-    main: '#1565C0',
-    light: '#5E92F3',
-    dark: '#003C8F',
+    main: '#00338D',
+    light: '#335CA4',
+    dark: '#002463',
     contrastText: '#FFFFFF',
   },
   secondary: {
-    main: '#26A69A',
-    light: '#64D8CB',
-    dark: '#00766C',
+    main: '#6E2C8D',
+    light: '#8B56A4',
+    dark: '#4D1F63',
     contrastText: '#FFFFFF',
   },
   background: {
-    default: '#F6F8FB',
+    default: '#FFFFFF',
     paper: '#FFFFFF',
   },
   text: {
