@@ -1,33 +1,37 @@
 import { create } from 'zustand';
 import type { DrilldownDimension } from '@/types/dashboard';
 
+export type HierarchyKey = DrilldownDimension;
+
 export interface DrillSelection {
-  dimension: DrilldownDimension;
+  hierarchy: HierarchyKey;
   path: string[];
 }
 
 export interface DashboardState {
   drill: DrillSelection;
-  drillInto: (dimension: DrilldownDimension, label: string) => void;
-  drillToDimensionRoot: (dimension: DrilldownDimension) => void;
+  drillInto: (hierarchy: HierarchyKey, label: string) => void;
+  drillToHierarchyRoot: (hierarchy: HierarchyKey) => void;
   drillToSegment: (index: number) => void;
+  setHierarchyPath: (hierarchy: HierarchyKey, path: string[]) => void;
 }
 
-const INITIAL_DRILL: DrillSelection = { dimension: 'plant', path: [] };
+const INITIAL_DRILL: DrillSelection = { hierarchy: 'plant', path: [] };
 
 export const useDashboardStore = create<DashboardState>((set) => ({
   drill: INITIAL_DRILL,
-  drillInto: (dimension, label) =>
+  drillInto: (hierarchy, label) =>
     set((state) => ({
       drill:
-        state.drill.dimension === dimension
-          ? { dimension, path: [...state.drill.path, label] }
-          : { dimension, path: [label] },
+        state.drill.hierarchy === hierarchy
+          ? { hierarchy, path: [...state.drill.path, label] }
+          : { hierarchy, path: [label] },
     })),
-  drillToDimensionRoot: (dimension) => set({ drill: { dimension, path: [] } }),
+  drillToHierarchyRoot: (hierarchy) => set({ drill: { hierarchy, path: [] } }),
   drillToSegment: (index) =>
     set((state) => ({
       drill:
-        index < 0 ? INITIAL_DRILL : { dimension: state.drill.dimension, path: state.drill.path.slice(0, index + 1) },
+        index < 0 ? INITIAL_DRILL : { hierarchy: state.drill.hierarchy, path: state.drill.path.slice(0, index + 1) },
     })),
+  setHierarchyPath: (hierarchy, path) => set({ drill: { hierarchy, path } }),
 }));
