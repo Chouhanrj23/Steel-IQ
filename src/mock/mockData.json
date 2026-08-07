@@ -17,114 +17,930 @@
             "dimension": "plant",
             "root": [
               {
-                "label": "East",
-                "value": 64200,
+                "label": "Rourkela Plant",
+                "value": 35952,
                 "children": [
                   {
-                    "label": "Rourkela Plant",
-                    "value": 35952,
+                    "label": "Line A",
+                    "value": 16178,
                     "children": [
                       {
-                        "label": "Blast Furnace Unit",
-                        "value": 16178
+                        "label": "Melting Shop",
+                        "value": 6471,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 2588
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 2265
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 1618
+                          }
+                        ]
                       },
                       {
-                        "label": "Melt Shop Unit",
-                        "value": 12583
+                        "label": "Rolling Shop",
+                        "value": 5662,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 2265
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 1982
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 1415
+                          }
+                        ]
                       },
                       {
-                        "label": "Rolling Mill Unit",
-                        "value": 7191
+                        "label": "Finishing Shop",
+                        "value": 4045,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 1618
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 1416
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 1011
+                          }
+                        ]
                       }
                     ]
                   },
                   {
-                    "label": "Jamshedpur Plant",
-                    "value": 28248,
+                    "label": "Line B",
+                    "value": 12583,
                     "children": [
                       {
-                        "label": "Blast Furnace Unit",
-                        "value": 12712
+                        "label": "Melting Shop",
+                        "value": 5033,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 2013
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 1762
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 1258
+                          }
+                        ]
                       },
                       {
-                        "label": "Melt Shop Unit",
-                        "value": 9887
+                        "label": "Rolling Shop",
+                        "value": 4404,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 1762
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 1541
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 1101
+                          }
+                        ]
                       },
                       {
-                        "label": "Rolling Mill Unit",
-                        "value": 5649
+                        "label": "Finishing Shop",
+                        "value": 3146,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 1258
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 1101
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 787
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Line C",
+                    "value": 7191,
+                    "children": [
+                      {
+                        "label": "Melting Shop",
+                        "value": 2876,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 1150
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 1007
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 719
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Rolling Shop",
+                        "value": 2517,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 1007
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 881
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 629
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Finishing Shop",
+                        "value": 1798,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 719
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 629
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 450
+                          }
+                        ]
                       }
                     ]
                   }
                 ]
               },
               {
-                "label": "Central",
+                "label": "Jamshedpur Plant",
+                "value": 28248,
+                "children": [
+                  {
+                    "label": "Line A",
+                    "value": 12712,
+                    "children": [
+                      {
+                        "label": "Melting Shop",
+                        "value": 5085,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 2034
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 1780
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 1271
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Rolling Shop",
+                        "value": 4449,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 1780
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 1557
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 1112
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Finishing Shop",
+                        "value": 3178,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 1271
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 1112
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 795
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Line B",
+                    "value": 9887,
+                    "children": [
+                      {
+                        "label": "Melting Shop",
+                        "value": 3955,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 1582
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 1384
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 989
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Rolling Shop",
+                        "value": 3460,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 1384
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 1211
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 865
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Finishing Shop",
+                        "value": 2472,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 989
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 865
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 618
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Line C",
+                    "value": 5649,
+                    "children": [
+                      {
+                        "label": "Melting Shop",
+                        "value": 2260,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 904
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 791
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 565
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Rolling Shop",
+                        "value": 1977,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 791
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 692
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 494
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Finishing Shop",
+                        "value": 1412,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 565
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 494
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 353
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "Bhilai Plant",
                 "value": 25680,
                 "children": [
                   {
-                    "label": "Bhilai Plant",
-                    "value": 25680,
+                    "label": "Line A",
+                    "value": 11556,
                     "children": [
                       {
-                        "label": "Blast Furnace Unit",
-                        "value": 11556
+                        "label": "Melting Shop",
+                        "value": 4622,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 1849
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 1618
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 1155
+                          }
+                        ]
                       },
                       {
-                        "label": "Melt Shop Unit",
-                        "value": 8988
+                        "label": "Rolling Shop",
+                        "value": 4045,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 1618
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 1416
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 1011
+                          }
+                        ]
                       },
                       {
-                        "label": "Rolling Mill Unit",
-                        "value": 5136
+                        "label": "Finishing Shop",
+                        "value": 2889,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 1156
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 1011
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 722
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Line B",
+                    "value": 8988,
+                    "children": [
+                      {
+                        "label": "Melting Shop",
+                        "value": 3595,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 1438
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 1258
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 899
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Rolling Shop",
+                        "value": 3146,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 1258
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 1101
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 787
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Finishing Shop",
+                        "value": 2247,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 899
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 786
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 562
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Line C",
+                    "value": 5136,
+                    "children": [
+                      {
+                        "label": "Melting Shop",
+                        "value": 2054,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 822
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 719
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 513
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Rolling Shop",
+                        "value": 1798,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 719
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 629
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 450
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Finishing Shop",
+                        "value": 1284,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 514
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 449
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 321
+                          }
+                        ]
                       }
                     ]
                   }
                 ]
               },
               {
-                "label": "West",
+                "label": "Hazira Plant",
                 "value": 21828,
                 "children": [
                   {
-                    "label": "Hazira Plant",
-                    "value": 21828,
+                    "label": "Line A",
+                    "value": 9823,
                     "children": [
                       {
-                        "label": "Blast Furnace Unit",
-                        "value": 9823
+                        "label": "Melting Shop",
+                        "value": 3929,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 1572
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 1375
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 982
+                          }
+                        ]
                       },
                       {
-                        "label": "Melt Shop Unit",
-                        "value": 7640
+                        "label": "Rolling Shop",
+                        "value": 3438,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 1375
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 1203
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 860
+                          }
+                        ]
                       },
                       {
-                        "label": "Rolling Mill Unit",
-                        "value": 4365
+                        "label": "Finishing Shop",
+                        "value": 2456,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 982
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 860
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 614
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Line B",
+                    "value": 7640,
+                    "children": [
+                      {
+                        "label": "Melting Shop",
+                        "value": 3056,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 1222
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 1070
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 764
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Rolling Shop",
+                        "value": 2674,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 1070
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 936
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 668
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Finishing Shop",
+                        "value": 1910,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 764
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 669
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 477
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Line C",
+                    "value": 4365,
+                    "children": [
+                      {
+                        "label": "Melting Shop",
+                        "value": 1746,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 698
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 611
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 437
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Rolling Shop",
+                        "value": 1528,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 611
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 535
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 382
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Finishing Shop",
+                        "value": 1091,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 436
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 382
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 273
+                          }
+                        ]
                       }
                     ]
                   }
                 ]
               },
               {
-                "label": "South",
+                "label": "Bellary Plant",
                 "value": 16692,
                 "children": [
                   {
-                    "label": "Bellary Plant",
-                    "value": 16692,
+                    "label": "Line A",
+                    "value": 7511,
                     "children": [
                       {
-                        "label": "Blast Furnace Unit",
-                        "value": 7511
+                        "label": "Melting Shop",
+                        "value": 3004,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 1202
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 1051
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 751
+                          }
+                        ]
                       },
                       {
-                        "label": "Melt Shop Unit",
-                        "value": 5842
+                        "label": "Rolling Shop",
+                        "value": 2629,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 1052
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 920
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 657
+                          }
+                        ]
                       },
                       {
-                        "label": "Rolling Mill Unit",
-                        "value": 3339
+                        "label": "Finishing Shop",
+                        "value": 1878,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 751
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 657
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 470
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Line B",
+                    "value": 5842,
+                    "children": [
+                      {
+                        "label": "Melting Shop",
+                        "value": 2337,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 935
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 818
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 584
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Rolling Shop",
+                        "value": 2045,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 818
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 716
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 511
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Finishing Shop",
+                        "value": 1460,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 584
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 511
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 365
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Line C",
+                    "value": 3339,
+                    "children": [
+                      {
+                        "label": "Melting Shop",
+                        "value": 1336,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 534
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 468
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 334
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Rolling Shop",
+                        "value": 1169,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 468
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 409
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 292
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Finishing Shop",
+                        "value": 834,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 334
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 292
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 208
+                          }
+                        ]
                       }
                     ]
                   }
@@ -156,15 +972,69 @@
                     "children": [
                       {
                         "label": "Jan",
-                        "value": 585
+                        "value": 585,
+                        "children": [
+                          {
+                            "label": "Week 1",
+                            "value": 146
+                          },
+                          {
+                            "label": "Week 2",
+                            "value": 146
+                          },
+                          {
+                            "label": "Week 3",
+                            "value": 146
+                          },
+                          {
+                            "label": "Week 4",
+                            "value": 147
+                          }
+                        ]
                       },
                       {
                         "label": "Feb",
-                        "value": 603
+                        "value": 603,
+                        "children": [
+                          {
+                            "label": "Week 1",
+                            "value": 151
+                          },
+                          {
+                            "label": "Week 2",
+                            "value": 151
+                          },
+                          {
+                            "label": "Week 3",
+                            "value": 151
+                          },
+                          {
+                            "label": "Week 4",
+                            "value": 150
+                          }
+                        ]
                       },
                       {
                         "label": "Mar",
-                        "value": 639
+                        "value": 639,
+                        "children": [
+                          {
+                            "label": "Week 1",
+                            "value": 160
+                          },
+                          {
+                            "label": "Week 2",
+                            "value": 160
+                          },
+                          {
+                            "label": "Week 3",
+                            "value": 160
+                          },
+                          {
+                            "label": "Week 4",
+                            "value": 159
+                          }
+                        ]
                       }
                     ]
                   },
@@ -174,15 +1044,69 @@
                     "children": [
                       {
                         "label": "Apr",
-                        "value": 638
+                        "value": 638,
+                        "children": [
+                          {
+                            "label": "Week 1",
+                            "value": 160
+                          },
+                          {
+                            "label": "Week 2",
+                            "value": 160
+                          },
+                          {
+                            "label": "Week 3",
+                            "value": 160
+                          },
+                          {
+                            "label": "Week 4",
+                            "value": 158
+                          }
+                        ]
                       },
                       {
                         "label": "May",
-                        "value": 658
+                        "value": 658,
+                        "children": [
+                          {
+                            "label": "Week 1",
+                            "value": 165
+                          },
+                          {
+                            "label": "Week 2",
+                            "value": 165
+                          },
+                          {
+                            "label": "Week 3",
+                            "value": 165
+                          },
+                          {
+                            "label": "Week 4",
+                            "value": 163
+                          }
+                        ]
                       },
                       {
                         "label": "Jun",
-                        "value": 697
+                        "value": 697,
+                        "children": [
+                          {
+                            "label": "Week 1",
+                            "value": 174
+                          },
+                          {
+                            "label": "Week 2",
+                            "value": 174
+                          },
+                          {
+                            "label": "Week 3",
+                            "value": 174
+                          },
+                          {
+                            "label": "Week 4",
+                            "value": 175
+                          }
+                        ]
                       }
                     ]
                   },
@@ -192,15 +1116,69 @@
                     "children": [
                       {
                         "label": "Jul",
-                        "value": 691
+                        "value": 691,
+                        "children": [
+                          {
+                            "label": "Week 1",
+                            "value": 173
+                          },
+                          {
+                            "label": "Week 2",
+                            "value": 173
+                          },
+                          {
+                            "label": "Week 3",
+                            "value": 173
+                          },
+                          {
+                            "label": "Week 4",
+                            "value": 172
+                          }
+                        ]
                       },
                       {
                         "label": "Aug",
-                        "value": 712
+                        "value": 712,
+                        "children": [
+                          {
+                            "label": "Week 1",
+                            "value": 178
+                          },
+                          {
+                            "label": "Week 2",
+                            "value": 178
+                          },
+                          {
+                            "label": "Week 3",
+                            "value": 178
+                          },
+                          {
+                            "label": "Week 4",
+                            "value": 178
+                          }
+                        ]
                       },
                       {
                         "label": "Sep",
-                        "value": 756
+                        "value": 756,
+                        "children": [
+                          {
+                            "label": "Week 1",
+                            "value": 189
+                          },
+                          {
+                            "label": "Week 2",
+                            "value": 189
+                          },
+                          {
+                            "label": "Week 3",
+                            "value": 189
+                          },
+                          {
+                            "label": "Week 4",
+                            "value": 189
+                          }
+                        ]
                       }
                     ]
                   },
@@ -210,15 +1188,69 @@
                     "children": [
                       {
                         "label": "Oct",
-                        "value": 744
+                        "value": 744,
+                        "children": [
+                          {
+                            "label": "Week 1",
+                            "value": 186
+                          },
+                          {
+                            "label": "Week 2",
+                            "value": 186
+                          },
+                          {
+                            "label": "Week 3",
+                            "value": 186
+                          },
+                          {
+                            "label": "Week 4",
+                            "value": 186
+                          }
+                        ]
                       },
                       {
                         "label": "Nov",
-                        "value": 767
+                        "value": 767,
+                        "children": [
+                          {
+                            "label": "Week 1",
+                            "value": 192
+                          },
+                          {
+                            "label": "Week 2",
+                            "value": 192
+                          },
+                          {
+                            "label": "Week 3",
+                            "value": 192
+                          },
+                          {
+                            "label": "Week 4",
+                            "value": 191
+                          }
+                        ]
                       },
                       {
                         "label": "Dec",
-                        "value": 813
+                        "value": 813,
+                        "children": [
+                          {
+                            "label": "Week 1",
+                            "value": 203
+                          },
+                          {
+                            "label": "Week 2",
+                            "value": 203
+                          },
+                          {
+                            "label": "Week 3",
+                            "value": 203
+                          },
+                          {
+                            "label": "Week 4",
+                            "value": 204
+                          }
+                        ]
                       }
                     ]
                   }
@@ -234,15 +1266,69 @@
                     "children": [
                       {
                         "label": "Jan",
-                        "value": 714
+                        "value": 714,
+                        "children": [
+                          {
+                            "label": "Week 1",
+                            "value": 179
+                          },
+                          {
+                            "label": "Week 2",
+                            "value": 179
+                          },
+                          {
+                            "label": "Week 3",
+                            "value": 179
+                          },
+                          {
+                            "label": "Week 4",
+                            "value": 177
+                          }
+                        ]
                       },
                       {
                         "label": "Feb",
-                        "value": 737
+                        "value": 737,
+                        "children": [
+                          {
+                            "label": "Week 1",
+                            "value": 184
+                          },
+                          {
+                            "label": "Week 2",
+                            "value": 184
+                          },
+                          {
+                            "label": "Week 3",
+                            "value": 184
+                          },
+                          {
+                            "label": "Week 4",
+                            "value": 185
+                          }
+                        ]
                       },
                       {
                         "label": "Mar",
-                        "value": 781
+                        "value": 781,
+                        "children": [
+                          {
+                            "label": "Week 1",
+                            "value": 195
+                          },
+                          {
+                            "label": "Week 2",
+                            "value": 195
+                          },
+                          {
+                            "label": "Week 3",
+                            "value": 195
+                          },
+                          {
+                            "label": "Week 4",
+                            "value": 196
+                          }
+                        ]
                       }
                     ]
                   },
@@ -252,15 +1338,69 @@
                     "children": [
                       {
                         "label": "Apr",
-                        "value": 779
+                        "value": 779,
+                        "children": [
+                          {
+                            "label": "Week 1",
+                            "value": 195
+                          },
+                          {
+                            "label": "Week 2",
+                            "value": 195
+                          },
+                          {
+                            "label": "Week 3",
+                            "value": 195
+                          },
+                          {
+                            "label": "Week 4",
+                            "value": 194
+                          }
+                        ]
                       },
                       {
                         "label": "May",
-                        "value": 804
+                        "value": 804,
+                        "children": [
+                          {
+                            "label": "Week 1",
+                            "value": 201
+                          },
+                          {
+                            "label": "Week 2",
+                            "value": 201
+                          },
+                          {
+                            "label": "Week 3",
+                            "value": 201
+                          },
+                          {
+                            "label": "Week 4",
+                            "value": 201
+                          }
+                        ]
                       },
                       {
                         "label": "Jun",
-                        "value": 852
+                        "value": 852,
+                        "children": [
+                          {
+                            "label": "Week 1",
+                            "value": 213
+                          },
+                          {
+                            "label": "Week 2",
+                            "value": 213
+                          },
+                          {
+                            "label": "Week 3",
+                            "value": 213
+                          },
+                          {
+                            "label": "Week 4",
+                            "value": 213
+                          }
+                        ]
                       }
                     ]
                   },
@@ -270,15 +1410,69 @@
                     "children": [
                       {
                         "label": "Jul",
-                        "value": 844
+                        "value": 844,
+                        "children": [
+                          {
+                            "label": "Week 1",
+                            "value": 211
+                          },
+                          {
+                            "label": "Week 2",
+                            "value": 211
+                          },
+                          {
+                            "label": "Week 3",
+                            "value": 211
+                          },
+                          {
+                            "label": "Week 4",
+                            "value": 211
+                          }
+                        ]
                       },
                       {
                         "label": "Aug",
-                        "value": 871
+                        "value": 871,
+                        "children": [
+                          {
+                            "label": "Week 1",
+                            "value": 218
+                          },
+                          {
+                            "label": "Week 2",
+                            "value": 218
+                          },
+                          {
+                            "label": "Week 3",
+                            "value": 218
+                          },
+                          {
+                            "label": "Week 4",
+                            "value": 217
+                          }
+                        ]
                       },
                       {
                         "label": "Sep",
-                        "value": 923
+                        "value": 923,
+                        "children": [
+                          {
+                            "label": "Week 1",
+                            "value": 231
+                          },
+                          {
+                            "label": "Week 2",
+                            "value": 231
+                          },
+                          {
+                            "label": "Week 3",
+                            "value": 231
+                          },
+                          {
+                            "label": "Week 4",
+                            "value": 230
+                          }
+                        ]
                       }
                     ]
                   },
@@ -288,15 +1482,69 @@
                     "children": [
                       {
                         "label": "Oct",
-                        "value": 909
+                        "value": 909,
+                        "children": [
+                          {
+                            "label": "Week 1",
+                            "value": 227
+                          },
+                          {
+                            "label": "Week 2",
+                            "value": 227
+                          },
+                          {
+                            "label": "Week 3",
+                            "value": 227
+                          },
+                          {
+                            "label": "Week 4",
+                            "value": 228
+                          }
+                        ]
                       },
                       {
                         "label": "Nov",
-                        "value": 938
+                        "value": 938,
+                        "children": [
+                          {
+                            "label": "Week 1",
+                            "value": 235
+                          },
+                          {
+                            "label": "Week 2",
+                            "value": 235
+                          },
+                          {
+                            "label": "Week 3",
+                            "value": 235
+                          },
+                          {
+                            "label": "Week 4",
+                            "value": 233
+                          }
+                        ]
                       },
                       {
                         "label": "Dec",
-                        "value": 995
+                        "value": 995,
+                        "children": [
+                          {
+                            "label": "Week 1",
+                            "value": 249
+                          },
+                          {
+                            "label": "Week 2",
+                            "value": 249
+                          },
+                          {
+                            "label": "Week 3",
+                            "value": 249
+                          },
+                          {
+                            "label": "Week 4",
+                            "value": 248
+                          }
+                        ]
                       }
                     ]
                   }
@@ -319,114 +1567,930 @@
             "dimension": "plant",
             "root": [
               {
-                "label": "East",
-                "value": 1.9,
+                "label": "Rourkela Plant",
+                "value": 1.1,
                 "children": [
                   {
-                    "label": "Rourkela Plant",
-                    "value": 1.1,
+                    "label": "Line A",
+                    "value": 0.5,
                     "children": [
                       {
-                        "label": "Blast Furnace Unit",
-                        "value": 0.5
+                        "label": "Melting Shop",
+                        "value": 0.2,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0.1
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0.1
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0
+                          }
+                        ]
                       },
                       {
-                        "label": "Melt Shop Unit",
-                        "value": 0.4
+                        "label": "Rolling Shop",
+                        "value": 0.2,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0.1
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0.1
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0
+                          }
+                        ]
                       },
                       {
-                        "label": "Rolling Mill Unit",
-                        "value": 0.2
+                        "label": "Finishing Shop",
+                        "value": 0.1,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0.1
+                          }
+                        ]
                       }
                     ]
                   },
                   {
-                    "label": "Jamshedpur Plant",
-                    "value": 0.8,
+                    "label": "Line B",
+                    "value": 0.4,
                     "children": [
                       {
-                        "label": "Blast Furnace Unit",
-                        "value": 0.4
+                        "label": "Melting Shop",
+                        "value": 0.2,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0.1
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0.1
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0
+                          }
+                        ]
                       },
                       {
-                        "label": "Melt Shop Unit",
-                        "value": 0.3
+                        "label": "Rolling Shop",
+                        "value": 0.1,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0.1
+                          }
+                        ]
                       },
                       {
-                        "label": "Rolling Mill Unit",
-                        "value": 0.1
+                        "label": "Finishing Shop",
+                        "value": 0.1,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0.1
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Line C",
+                    "value": 0.2,
+                    "children": [
+                      {
+                        "label": "Melting Shop",
+                        "value": 0.1,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0.1
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Rolling Shop",
+                        "value": 0.1,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0.1
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Finishing Shop",
+                        "value": 0,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0
+                          }
+                        ]
                       }
                     ]
                   }
                 ]
               },
               {
-                "label": "Central",
+                "label": "Jamshedpur Plant",
                 "value": 0.8,
                 "children": [
                   {
-                    "label": "Bhilai Plant",
-                    "value": 0.8,
+                    "label": "Line A",
+                    "value": 0.4,
                     "children": [
                       {
-                        "label": "Blast Furnace Unit",
-                        "value": 0.4
+                        "label": "Melting Shop",
+                        "value": 0.2,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0.1
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0.1
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0
+                          }
+                        ]
                       },
                       {
-                        "label": "Melt Shop Unit",
-                        "value": 0.3
+                        "label": "Rolling Shop",
+                        "value": 0.1,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0.1
+                          }
+                        ]
                       },
                       {
-                        "label": "Rolling Mill Unit",
-                        "value": 0.1
+                        "label": "Finishing Shop",
+                        "value": 0.1,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0.1
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Line B",
+                    "value": 0.3,
+                    "children": [
+                      {
+                        "label": "Melting Shop",
+                        "value": 0.1,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0.1
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Rolling Shop",
+                        "value": 0.1,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0.1
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Finishing Shop",
+                        "value": 0.1,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0.1
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Line C",
+                    "value": 0.1,
+                    "children": [
+                      {
+                        "label": "Melting Shop",
+                        "value": 0,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Rolling Shop",
+                        "value": 0,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Finishing Shop",
+                        "value": 0.1,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0.1
+                          }
+                        ]
                       }
                     ]
                   }
                 ]
               },
               {
-                "label": "West",
+                "label": "Bhilai Plant",
+                "value": 0.8,
+                "children": [
+                  {
+                    "label": "Line A",
+                    "value": 0.4,
+                    "children": [
+                      {
+                        "label": "Melting Shop",
+                        "value": 0.2,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0.1
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0.1
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Rolling Shop",
+                        "value": 0.1,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0.1
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Finishing Shop",
+                        "value": 0.1,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0.1
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Line B",
+                    "value": 0.3,
+                    "children": [
+                      {
+                        "label": "Melting Shop",
+                        "value": 0.1,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0.1
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Rolling Shop",
+                        "value": 0.1,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0.1
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Finishing Shop",
+                        "value": 0.1,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0.1
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Line C",
+                    "value": 0.1,
+                    "children": [
+                      {
+                        "label": "Melting Shop",
+                        "value": 0,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Rolling Shop",
+                        "value": 0,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Finishing Shop",
+                        "value": 0.1,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0.1
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "Hazira Plant",
                 "value": 0.6,
                 "children": [
                   {
-                    "label": "Hazira Plant",
-                    "value": 0.6,
+                    "label": "Line A",
+                    "value": 0.3,
                     "children": [
                       {
-                        "label": "Blast Furnace Unit",
-                        "value": 0.3
+                        "label": "Melting Shop",
+                        "value": 0.1,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0.1
+                          }
+                        ]
                       },
                       {
-                        "label": "Melt Shop Unit",
-                        "value": 0.2
+                        "label": "Rolling Shop",
+                        "value": 0.1,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0.1
+                          }
+                        ]
                       },
                       {
-                        "label": "Rolling Mill Unit",
-                        "value": 0.1
+                        "label": "Finishing Shop",
+                        "value": 0.1,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0.1
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Line B",
+                    "value": 0.2,
+                    "children": [
+                      {
+                        "label": "Melting Shop",
+                        "value": 0.1,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0.1
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Rolling Shop",
+                        "value": 0.1,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0.1
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Finishing Shop",
+                        "value": 0,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Line C",
+                    "value": 0.1,
+                    "children": [
+                      {
+                        "label": "Melting Shop",
+                        "value": 0,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Rolling Shop",
+                        "value": 0,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Finishing Shop",
+                        "value": 0.1,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0.1
+                          }
+                        ]
                       }
                     ]
                   }
                 ]
               },
               {
-                "label": "South",
+                "label": "Bellary Plant",
                 "value": 0.5,
                 "children": [
                   {
-                    "label": "Bellary Plant",
-                    "value": 0.5,
+                    "label": "Line A",
+                    "value": 0.2,
                     "children": [
                       {
-                        "label": "Blast Furnace Unit",
-                        "value": 0.2
+                        "label": "Melting Shop",
+                        "value": 0.1,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0.1
+                          }
+                        ]
                       },
                       {
-                        "label": "Melt Shop Unit",
-                        "value": 0.2
+                        "label": "Rolling Shop",
+                        "value": 0.1,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0.1
+                          }
+                        ]
                       },
                       {
-                        "label": "Rolling Mill Unit",
-                        "value": 0.1
+                        "label": "Finishing Shop",
+                        "value": 0,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Line B",
+                    "value": 0.2,
+                    "children": [
+                      {
+                        "label": "Melting Shop",
+                        "value": 0.1,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0.1
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Rolling Shop",
+                        "value": 0.1,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0.1
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Finishing Shop",
+                        "value": 0,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Line C",
+                    "value": 0.1,
+                    "children": [
+                      {
+                        "label": "Melting Shop",
+                        "value": 0,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Rolling Shop",
+                        "value": 0,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Finishing Shop",
+                        "value": 0.1,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 0
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 0.1
+                          }
+                        ]
                       }
                     ]
                   }
@@ -449,114 +2513,930 @@
             "dimension": "plant",
             "root": [
               {
-                "label": "East",
-                "value": 21300,
+                "label": "Rourkela Plant",
+                "value": 11928,
                 "children": [
                   {
-                    "label": "Rourkela Plant",
-                    "value": 11928,
+                    "label": "Line A",
+                    "value": 5368,
                     "children": [
                       {
-                        "label": "Blast Furnace Unit",
-                        "value": 5368
+                        "label": "Melting Shop",
+                        "value": 2147,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 859
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 751
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 537
+                          }
+                        ]
                       },
                       {
-                        "label": "Melt Shop Unit",
-                        "value": 4175
+                        "label": "Rolling Shop",
+                        "value": 1879,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 752
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 658
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 469
+                          }
+                        ]
                       },
                       {
-                        "label": "Rolling Mill Unit",
-                        "value": 2385
+                        "label": "Finishing Shop",
+                        "value": 1342,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 537
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 470
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 335
+                          }
+                        ]
                       }
                     ]
                   },
                   {
-                    "label": "Jamshedpur Plant",
-                    "value": 9372,
+                    "label": "Line B",
+                    "value": 4175,
                     "children": [
                       {
-                        "label": "Blast Furnace Unit",
-                        "value": 4217
+                        "label": "Melting Shop",
+                        "value": 1670,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 668
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 585
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 417
+                          }
+                        ]
                       },
                       {
-                        "label": "Melt Shop Unit",
-                        "value": 3280
+                        "label": "Rolling Shop",
+                        "value": 1461,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 584
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 511
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 366
+                          }
+                        ]
                       },
                       {
-                        "label": "Rolling Mill Unit",
-                        "value": 1875
+                        "label": "Finishing Shop",
+                        "value": 1044,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 418
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 365
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 261
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Line C",
+                    "value": 2385,
+                    "children": [
+                      {
+                        "label": "Melting Shop",
+                        "value": 954,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 382
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 334
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 238
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Rolling Shop",
+                        "value": 835,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 334
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 292
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 209
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Finishing Shop",
+                        "value": 596,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 238
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 209
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 149
+                          }
+                        ]
                       }
                     ]
                   }
                 ]
               },
               {
-                "label": "Central",
+                "label": "Jamshedpur Plant",
+                "value": 9372,
+                "children": [
+                  {
+                    "label": "Line A",
+                    "value": 4217,
+                    "children": [
+                      {
+                        "label": "Melting Shop",
+                        "value": 1687,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 675
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 590
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 422
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Rolling Shop",
+                        "value": 1476,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 590
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 517
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 369
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Finishing Shop",
+                        "value": 1054,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 422
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 369
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 263
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Line B",
+                    "value": 3280,
+                    "children": [
+                      {
+                        "label": "Melting Shop",
+                        "value": 1312,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 525
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 459
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 328
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Rolling Shop",
+                        "value": 1148,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 459
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 402
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 287
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Finishing Shop",
+                        "value": 820,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 328
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 287
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 205
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Line C",
+                    "value": 1875,
+                    "children": [
+                      {
+                        "label": "Melting Shop",
+                        "value": 750,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 300
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 263
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 187
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Rolling Shop",
+                        "value": 656,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 262
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 230
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 164
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Finishing Shop",
+                        "value": 469,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 188
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 164
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 117
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "Bhilai Plant",
                 "value": 8520,
                 "children": [
                   {
-                    "label": "Bhilai Plant",
-                    "value": 8520,
+                    "label": "Line A",
+                    "value": 3834,
                     "children": [
                       {
-                        "label": "Blast Furnace Unit",
-                        "value": 3834
+                        "label": "Melting Shop",
+                        "value": 1534,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 614
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 537
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 383
+                          }
+                        ]
                       },
                       {
-                        "label": "Melt Shop Unit",
-                        "value": 2982
+                        "label": "Rolling Shop",
+                        "value": 1342,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 537
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 470
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 335
+                          }
+                        ]
                       },
                       {
-                        "label": "Rolling Mill Unit",
-                        "value": 1704
+                        "label": "Finishing Shop",
+                        "value": 958,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 383
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 335
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 240
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Line B",
+                    "value": 2982,
+                    "children": [
+                      {
+                        "label": "Melting Shop",
+                        "value": 1193,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 477
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 418
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 298
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Rolling Shop",
+                        "value": 1044,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 418
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 365
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 261
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Finishing Shop",
+                        "value": 745,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 298
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 261
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 186
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Line C",
+                    "value": 1704,
+                    "children": [
+                      {
+                        "label": "Melting Shop",
+                        "value": 682,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 273
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 239
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 170
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Rolling Shop",
+                        "value": 596,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 238
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 209
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 149
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Finishing Shop",
+                        "value": 426,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 170
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 149
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 107
+                          }
+                        ]
                       }
                     ]
                   }
                 ]
               },
               {
-                "label": "West",
+                "label": "Hazira Plant",
                 "value": 7242,
                 "children": [
                   {
-                    "label": "Hazira Plant",
-                    "value": 7242,
+                    "label": "Line A",
+                    "value": 3259,
                     "children": [
                       {
-                        "label": "Blast Furnace Unit",
-                        "value": 3259
+                        "label": "Melting Shop",
+                        "value": 1304,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 522
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 456
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 326
+                          }
+                        ]
                       },
                       {
-                        "label": "Melt Shop Unit",
-                        "value": 2535
+                        "label": "Rolling Shop",
+                        "value": 1141,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 456
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 399
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 286
+                          }
+                        ]
                       },
                       {
-                        "label": "Rolling Mill Unit",
-                        "value": 1448
+                        "label": "Finishing Shop",
+                        "value": 814,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 326
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 285
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 203
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Line B",
+                    "value": 2535,
+                    "children": [
+                      {
+                        "label": "Melting Shop",
+                        "value": 1014,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 406
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 355
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 253
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Rolling Shop",
+                        "value": 887,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 355
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 310
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 222
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Finishing Shop",
+                        "value": 634,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 254
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 222
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 158
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Line C",
+                    "value": 1448,
+                    "children": [
+                      {
+                        "label": "Melting Shop",
+                        "value": 579,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 232
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 203
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 144
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Rolling Shop",
+                        "value": 507,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 203
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 177
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 127
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Finishing Shop",
+                        "value": 362,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 145
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 127
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 90
+                          }
+                        ]
                       }
                     ]
                   }
                 ]
               },
               {
-                "label": "South",
+                "label": "Bellary Plant",
                 "value": 5538,
                 "children": [
                   {
-                    "label": "Bellary Plant",
-                    "value": 5538,
+                    "label": "Line A",
+                    "value": 2492,
                     "children": [
                       {
-                        "label": "Blast Furnace Unit",
-                        "value": 2492
+                        "label": "Melting Shop",
+                        "value": 997,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 399
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 349
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 249
+                          }
+                        ]
                       },
                       {
-                        "label": "Melt Shop Unit",
-                        "value": 1938
+                        "label": "Rolling Shop",
+                        "value": 872,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 349
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 305
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 218
+                          }
+                        ]
                       },
                       {
-                        "label": "Rolling Mill Unit",
-                        "value": 1108
+                        "label": "Finishing Shop",
+                        "value": 623,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 249
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 218
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 156
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Line B",
+                    "value": 1938,
+                    "children": [
+                      {
+                        "label": "Melting Shop",
+                        "value": 775,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 310
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 271
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 194
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Rolling Shop",
+                        "value": 678,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 271
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 237
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 170
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Finishing Shop",
+                        "value": 485,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 194
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 170
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 121
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Line C",
+                    "value": 1108,
+                    "children": [
+                      {
+                        "label": "Melting Shop",
+                        "value": 443,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 177
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 155
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 111
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Rolling Shop",
+                        "value": 388,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 155
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 136
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 97
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Finishing Shop",
+                        "value": 277,
+                        "children": [
+                          {
+                            "label": "Unit 1",
+                            "value": 111
+                          },
+                          {
+                            "label": "Unit 2",
+                            "value": 97
+                          },
+                          {
+                            "label": "Unit 3",
+                            "value": 69
+                          }
+                        ]
                       }
                     ]
                   }
