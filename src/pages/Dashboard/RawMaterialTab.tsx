@@ -1,7 +1,8 @@
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import mockDataJson from '@mock/mockData.json';
-import type { DashboardMockData, DrillDownNode, KPI } from '@/types/dashboard';
+import type { DashboardMockData, DrillDownNode, DrilldownDimension, KPI } from '@/types/dashboard';
+import { useDashboardStore } from '@store/dashboard';
 import {
   KPICard,
   ChartContainer,
@@ -11,6 +12,12 @@ import {
 } from '@components/dashboard';
 
 const mockData = mockDataJson as DashboardMockData;
+
+const ROOT_LABEL: Record<DrilldownDimension, string> = {
+  plant: 'All Plants',
+  time: 'All Time',
+  geography: 'All Locations',
+};
 
 const RAW_MATERIAL_INSIGHTS = [
   'Iron ore inventory at Rourkela has grown 6.1% quarter-over-quarter while coking coal costs rose per tonne — current stock levels cover roughly 38 days of blast furnace demand, above the 30-day safety threshold.',
@@ -50,8 +57,34 @@ const findKpi = (kpis: KPI[], id: string): KPI => {
   return kpi;
 };
 
+/** The single node at the end of `path`, or null if `path` is empty. */
+const getNodeAtPath = (root: DrillDownNode[], path: string[]): DrillDownNode | null => {
+  let node: DrillDownNode | null = null;
+  let level = root;
+  for (const segment of path) {
+    const match = level.find((n) => n.label === segment);
+    if (!match) return node;
+    node = match;
+    level = match.children ?? [];
+  }
+  return node;
+};
+
+/** The array of nodes a chart/sparkline should render for `path` — children of the node at
+ * `path`, the root if `path` is empty, or a single-element array if `path` lands on a leaf. */
+const getNodesAtPath = (root: DrillDownNode[], path: string[]): DrillDownNode[] => {
+  if (path.length === 0) return root;
+  const node = getNodeAtPath(root, path);
+  if (!node) return root;
+  return node.children ?? [node];
+};
+
 export const RawMaterialTab = () => {
   const { kpis } = mockData.modules.rawMaterial;
+  const drill = useDashboardStore((state) => state.drill);
+  const drillInto = useDashboardStore((state) => state.drillInto);
+  const drillToDimensionRoot = useDashboardStore((state) => state.drillToDimensionRoot);
+  const drillToSegment = useDashboardStore((state) => state.drillToSegment);
 
   const inventory = findKpi(kpis, 'iron-ore-inventory');
   const coalCost = findKpi(kpis, 'coking-coal-cost-per-tonne');
@@ -61,65 +94,105 @@ export const RawMaterialTab = () => {
 
   const cardKpis = [inventory, coalCost, wastageRate, limestone];
 
-  const inventoryByPlant = inventory.drilldown.root.map((node) => ({ plant: node.label, value: node.value }));
-  const coalCostOverTime = coalCost.drilldown.root.map((node) => ({ period: node.label, value: node.value }));
-  const leadTimeByGeography = leadTime.drilldown.root.map((node) => ({ zone: node.label, value: node.value }));
+  const matchingPathFor = (kpi: KPI): string[] =>
+    drill.dimension === kpi.drilldown.dimension ? drill.path : [];
+
+  const handleChartClick = (kpi: KPI, matchingPath: string[]) => (label: string) => {
+    const nodes = getNodesAtPath(kpi.drilldown.root, matchingPath);
+    const clicked = nodes.find((n) => n.label === label);
+    if (clicked?.children) {
+      drillInto(kpi.drilldown.dimension, label);
+    }
+  };
+
+  const inventoryPath = matchingPathFor(inventory);
+  const coalCostPath = matchingPathFor(coalCost);
+  const leadTimePath = matchingPathFor(leadTime);
+
+  const inventoryByPlant = getNodesAtPath(inventory.drilldown.root, inventoryPath).map((node) => ({
+    plant: node.label,
+    value: node.value,
+  }));
+  const coalCostOverTime = getNodesAtPath(coalCost.drilldown.root, coalCostPath).map((node) => ({
+    period: node.label,
+    value: node.value,
+  }));
+  const leadTimeByGeography = getNodesAtPath(leadTime.drilldown.root, leadTimePath).map((node) => ({
+    zone: node.label,
+    value: node.value,
+  }));
+
+  const titleSuffix = (path: string[]) => (path.length ? ` — ${path.join(' / ')}` : '');
+
+  const breadcrumbPath = [ROOT_LABEL[drill.dimension], ...drill.path];
+  const contextLabel = breadcrumbPath.join(' / ');
 
   return (
     <Stack direction={{ xs: 'column', lg: 'row' }} spacing={3} alignItems="flex-start">
       <Stack spacing={3} sx={{ flex: 1, minWidth: 0, width: '100%' }}>
-        <DrillDownBreadcrumb path={['All Plants', 'East', 'Rourkela Plant']} />
+        <DrillDownBreadcrumb
+          path={breadcrumbPath}
+          onSegmentClick={(index) => drillToSegment(index === 0 ? -1 : index - 1)}
+        />
 
         <Grid container spacing={3}>
-          {cardKpis.map((kpi) => (
-            <Grid key={kpi.id} size={{ xs: 12, sm: 6, md: 3 }}>
-              <KPICard
-                title={kpi.name}
-                value={kpi.current}
-                unit={kpi.unit}
-                percentChange={kpi.percentChange}
-                trend={kpi.trend}
-                status={kpi.status}
-                sparklineData={flattenLeafValues(kpi.drilldown.root)}
-              />
-            </Grid>
-          ))}
+          {cardKpis.map((kpi) => {
+            const matchingPath = matchingPathFor(kpi);
+            const node = matchingPath.length ? getNodeAtPath(kpi.drilldown.root, matchingPath) : null;
+            return (
+              <Grid key={kpi.id} size={{ xs: 12, sm: 6, md: 3 }}>
+                <KPICard
+                  title={kpi.name}
+                  value={node ? node.value : kpi.current}
+                  unit={kpi.unit}
+                  percentChange={kpi.percentChange}
+                  trend={kpi.trend}
+                  status={kpi.status}
+                  sparklineData={flattenLeafValues(getNodesAtPath(kpi.drilldown.root, matchingPath))}
+                  onClick={() => drillToDimensionRoot(kpi.drilldown.dimension)}
+                />
+              </Grid>
+            );
+          })}
         </Grid>
 
         <Grid container spacing={3}>
           <Grid size={{ xs: 12, md: 6, lg: 4 }}>
             <ChartContainer
               type="bar"
-              title="Iron Ore Inventory by Plant"
+              title={`Iron Ore Inventory by Plant${titleSuffix(inventoryPath)}`}
               data={inventoryByPlant}
               categoryKey="plant"
               series={[{ key: 'value', label: 'Inventory (tonnes)' }]}
+              onElementClick={handleChartClick(inventory, inventoryPath)}
             />
           </Grid>
           <Grid size={{ xs: 12, md: 6, lg: 4 }}>
             <ChartContainer
               type="line"
-              title="Coking Coal Cost per Tonne over Time"
+              title={`Coking Coal Cost per Tonne over Time${titleSuffix(coalCostPath)}`}
               data={coalCostOverTime}
               categoryKey="period"
               series={[{ key: 'value', label: 'Cost per Tonne (INR)' }]}
+              onElementClick={handleChartClick(coalCost, coalCostPath)}
             />
           </Grid>
           <Grid size={{ xs: 12, md: 6, lg: 4 }}>
             <ChartContainer
               type="donut"
-              title="Raw Material Lead Time by Geography"
+              title={`Raw Material Lead Time by Geography${titleSuffix(leadTimePath)}`}
               data={leadTimeByGeography}
               categoryKey="zone"
               series={[{ key: 'value', label: 'Lead Time (days)' }]}
+              onElementClick={handleChartClick(leadTime, leadTimePath)}
             />
           </Grid>
         </Grid>
       </Stack>
 
       <Stack spacing={3} sx={{ width: { xs: '100%', lg: 360 }, flexShrink: 0 }}>
-        <AgentSummaryPanel insights={RAW_MATERIAL_INSIGHTS} />
-        <ConversationalInsightsPanel qaPairs={RAW_MATERIAL_QA_PAIRS} />
+        <AgentSummaryPanel insights={RAW_MATERIAL_INSIGHTS} contextLabel={contextLabel} />
+        <ConversationalInsightsPanel qaPairs={RAW_MATERIAL_QA_PAIRS} contextLabel={contextLabel} />
       </Stack>
     </Stack>
   );
