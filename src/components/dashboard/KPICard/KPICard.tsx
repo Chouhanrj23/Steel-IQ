@@ -64,16 +64,23 @@ export const KPICard = ({
       sx={{
         height: '100%',
         cursor: onClick ? 'pointer' : 'default',
-        transition: 'box-shadow 0.15s, border-color 0.15s',
+        transition: 'box-shadow 0.15s, transform 0.15s, border-color 0.15s',
         borderRadius: 3,
         ...(onClick && {
           '&:hover': {
-            boxShadow: 2,
+            boxShadow: 4,
+            transform: 'translateY(-1px)',
           },
         }),
       }}
     >
-      <Card>
+      <Card
+        sx={{
+          borderLeft: `3px solid ${color}`,
+          borderTopLeftRadius: 3,
+          borderBottomLeftRadius: 3,
+        }}
+      >
         <Stack spacing={1.5}>
           <Stack direction="row" alignItems="center" justifyContent="space-between">
             <Typography variant="overline" color="text.secondary">

@@ -27,11 +27,11 @@ import { getQuestionsForTab, resolveQuestionContext } from '@/data/conversationa
 
 const mockData = mockDataJson as DashboardMockData;
 
-const SUPPLY_CHAIN_INSIGHTS = [
-  'On-time delivery rate improved to 91.2% while order fulfillment cycle time shortened to 6.8 days — both gains were partially offset by a rise in freight cost per tonne to ₹2,140, driven by higher inbound logistics rates.',
+const MARKETING_FINANCE_INSIGHTS = [
+  'Revenue held at ₹1,842 Cr with EBITDA margin at 21.4% and net profit of ₹268 Cr — market share stayed steady at 14.2% even as customer acquisition cost rose to ₹8,600, against an order book value of ₹3,120 Cr.',
 ];
 
-const SUPPLY_CHAIN_QUESTIONS = getQuestionsForTab('supplyChain');
+const MARKETING_FINANCE_QUESTIONS = getQuestionsForTab('marketingFinance');
 
 const findKpi = (kpis: KPI[], id: string): KPI => {
   const kpi = kpis.find((item) => item.id === id);
@@ -41,8 +41,8 @@ const findKpi = (kpis: KPI[], id: string): KPI => {
   return kpi;
 };
 
-export const SupplyChainTab = () => {
-  const { kpis } = mockData.modules.supplyChain;
+export const MarketingFinanceTab = () => {
+  const { kpis } = mockData.modules.marketingFinance;
   const drill = useDashboardStore((state) => state.drill);
   const crossFilters = useDashboardStore((state) => state.crossFilters);
   const drillInto = useDashboardStore((state) => state.drillInto);
@@ -51,22 +51,21 @@ export const SupplyChainTab = () => {
 
   // Reset to a clean default whenever this tab mounts (including switching back into it),
   // since the drill store is shared across tabs and another tab's path won't match this
-  // tab's trees.
+  // tab's trees. None of this module's KPIs are plant-dimensioned, so the Plant hierarchy
+  // starts (and stays) at full aggregate for every card — same convention as every other tab.
   useEffect(() => {
     drillToHierarchyRoot('plant');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const onTimeDelivery = findKpi(kpis, 'on-time-delivery-rate');
-  const orderFulfillment = findKpi(kpis, 'order-fulfillment-cycle-time');
-  const freightCost = findKpi(kpis, 'freight-cost-per-tonne');
-  const inventoryTurnover = findKpi(kpis, 'inventory-turnover-ratio');
-  const supplierLeadTime = findKpi(kpis, 'supplier-lead-time');
+  const revenue = findKpi(kpis, 'revenue');
+  const ebitdaMargin = findKpi(kpis, 'ebitda-margin');
+  const netProfit = findKpi(kpis, 'net-profit');
+  const marketShare = findKpi(kpis, 'market-share');
+  const customerAcquisitionCost = findKpi(kpis, 'customer-acquisition-cost');
+  const orderBookValue = findKpi(kpis, 'order-book-value');
 
-  // inventory-turnover-ratio is the only plant-dimensioned KPI in this module (the rest are
-  // geography-dimensioned, which the Time/Plant toggle never offers) — included here so at
-  // least one card demonstrates the drill-click behavior, same as every other tab.
-  const cardKpis = [onTimeDelivery, orderFulfillment, freightCost, supplierLeadTime, inventoryTurnover];
+  const cardKpis = [revenue, ebitdaMargin, netProfit, marketShare, customerAcquisitionCost, orderBookValue];
 
   // Recomputed per KPI so Region/Business Unit/Product Category compose with the Time/Plant
   // drill instead of overriding it — same shape as kpi.drilldown.root, values filtered down.
@@ -83,27 +82,23 @@ export const SupplyChainTab = () => {
     }
   };
 
-  const inventoryTurnoverPath = matchingPathFor(inventoryTurnover);
-  // On-Time Delivery and Freight Cost are geography-dimensioned; the hierarchy toggle only
-  // offers time/plant, so drill.hierarchy can never equal 'geography' and these are always [].
-  // Kept explicit (rather than hardcoding the charts off the raw root) so the "always full
-  // aggregate" behavior is a direct consequence of the same matching logic every other KPI uses.
-  const onTimeDeliveryPath = matchingPathFor(onTimeDelivery);
-  const freightCostPath = matchingPathFor(freightCost);
+  const ebitdaMarginPath = matchingPathFor(ebitdaMargin);
+  const netProfitPath = matchingPathFor(netProfit);
+  // Revenue is geography-dimensioned; the hierarchy toggle only offers time/plant, so
+  // drill.hierarchy can never equal 'geography' and this is always []. Kept explicit (rather
+  // than hardcoding the chart off the raw root) so the "always full aggregate" behavior is a
+  // direct consequence of the same matching logic every other KPI uses.
+  const revenuePath = matchingPathFor(revenue);
 
-  const inventoryTurnoverByPlant = getNodesAtPath(filteredRoot(inventoryTurnover), inventoryTurnoverPath).map(
-    (node) => ({
-      plant: node.label,
-      value: node.value,
-    }),
-  );
-  const onTimeDeliveryByGeography = getNodesAtPath(filteredRoot(onTimeDelivery), onTimeDeliveryPath).map(
-    (node) => ({
-      zone: node.label,
-      value: node.value,
-    }),
-  );
-  const freightCostByGeography = getNodesAtPath(filteredRoot(freightCost), freightCostPath).map((node) => ({
+  const ebitdaMarginOverTime = getNodesAtPath(filteredRoot(ebitdaMargin), ebitdaMarginPath).map((node) => ({
+    period: node.label,
+    value: node.value,
+  }));
+  const netProfitOverTime = getNodesAtPath(filteredRoot(netProfit), netProfitPath).map((node) => ({
+    period: node.label,
+    value: node.value,
+  }));
+  const revenueByGeography = getNodesAtPath(filteredRoot(revenue), revenuePath).map((node) => ({
     zone: node.label,
     value: node.value,
   }));
@@ -112,7 +107,7 @@ export const SupplyChainTab = () => {
 
   const breadcrumbPath = [ROOT_LABEL[drill.hierarchy], ...drill.path];
   const contextLabel = breadcrumbPath.join(' / ');
-  const dynamicSummary = resolveAgentSummary('supplyChain', kpis, drill, crossFilters);
+  const dynamicSummary = resolveAgentSummary('marketingFinance', kpis, drill, crossFilters);
   const questionContext = resolveQuestionContext(drill, crossFilters);
 
   return (
@@ -168,32 +163,31 @@ export const SupplyChainTab = () => {
         <Grid container spacing={3}>
           <Grid size={{ xs: 12, md: 6, lg: 4 }}>
             <ChartContainer
-              type="bar"
-              title={`Inventory Turnover Ratio by Plant${titleSuffix(inventoryTurnoverPath)}`}
-              data={inventoryTurnoverByPlant}
-              categoryKey="plant"
-              series={[{ key: 'value', label: 'Inventory Turnover (x)' }]}
-              onElementClick={handleChartClick(inventoryTurnover, inventoryTurnoverPath)}
+              type="line"
+              title={`EBITDA Margin over Time${titleSuffix(ebitdaMarginPath)}`}
+              data={ebitdaMarginOverTime}
+              categoryKey="period"
+              series={[{ key: 'value', label: 'EBITDA Margin (%)' }]}
+              onElementClick={handleChartClick(ebitdaMargin, ebitdaMarginPath)}
             />
           </Grid>
           <Grid size={{ xs: 12, md: 6, lg: 4 }}>
             <ChartContainer
-              type="line"
-              title="On-Time Delivery Rate by Geography"
-              data={onTimeDeliveryByGeography}
-              categoryKey="zone"
-              series={[{ key: 'value', label: 'On-Time Delivery (%)' }]}
-              // No onElementClick: geography isn't part of the Time/Plant toggle, so this
-              // chart is intentionally non-interactive and always shows the full aggregate.
+              type="area"
+              title={`Net Profit over Time${titleSuffix(netProfitPath)}`}
+              data={netProfitOverTime}
+              categoryKey="period"
+              series={[{ key: 'value', label: 'Net Profit (INR Cr)' }]}
+              onElementClick={handleChartClick(netProfit, netProfitPath)}
             />
           </Grid>
           <Grid size={{ xs: 12, md: 6, lg: 4 }}>
             <ChartContainer
               type="donut"
-              title="Freight Cost per Tonne by Geography"
-              data={freightCostByGeography}
+              title="Revenue by Geography"
+              data={revenueByGeography}
               categoryKey="zone"
-              series={[{ key: 'value', label: 'Freight Cost (INR)' }]}
+              series={[{ key: 'value', label: 'Revenue (INR Cr)' }]}
               // No onElementClick: geography isn't part of the Time/Plant toggle, so this
               // chart is intentionally non-interactive and always shows the full aggregate.
             />
@@ -203,11 +197,11 @@ export const SupplyChainTab = () => {
 
       <Stack spacing={3} sx={{ width: { xs: '100%', lg: 360 }, flexShrink: 0 }}>
         <AgentSummaryPanel
-          insights={dynamicSummary ? [dynamicSummary] : SUPPLY_CHAIN_INSIGHTS}
+          insights={dynamicSummary ? [dynamicSummary] : MARKETING_FINANCE_INSIGHTS}
           contextLabel={contextLabel}
         />
         <ConversationalInsightsPanel
-          questionLibrary={SUPPLY_CHAIN_QUESTIONS}
+          questionLibrary={MARKETING_FINANCE_QUESTIONS}
           context={questionContext}
           contextLabel={contextLabel}
         />
@@ -216,4 +210,4 @@ export const SupplyChainTab = () => {
   );
 };
 
-export default SupplyChainTab;
+export default MarketingFinanceTab;

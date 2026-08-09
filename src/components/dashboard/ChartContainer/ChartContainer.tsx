@@ -1,5 +1,7 @@
 import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import BarChartOutlinedIcon from '@mui/icons-material/BarChartOutlined';
 import {
   ResponsiveContainer,
   BarChart,
@@ -17,7 +19,7 @@ import {
   Tooltip,
   Legend,
 } from 'recharts';
-import { CATEGORICAL_COLORS, CHART_CHROME } from '../chartPalette';
+import { CATEGORICAL_COLORS, CHART_CHROME, TOOLTIP_STYLE } from '../chartPalette';
 
 export type ChartType = 'bar' | 'line' | 'area' | 'pie' | 'donut' | 'stackedBar';
 
@@ -65,9 +67,17 @@ function renderChart(
       return (
         <BarChart data={data} onClick={handleCartesianClick}>
           <CartesianGrid stroke={CHART_CHROME.grid} vertical={false} />
-          <XAxis dataKey={categoryKey} stroke={CHART_CHROME.axis} tick={{ fill: CHART_CHROME.mutedLabel, fontSize: 12 }} />
+          <XAxis
+            dataKey={categoryKey}
+            stroke={CHART_CHROME.axis}
+            tick={{ fill: CHART_CHROME.mutedLabel, fontSize: 12 }}
+          />
           <YAxis stroke={CHART_CHROME.axis} tick={{ fill: CHART_CHROME.mutedLabel, fontSize: 12 }} />
-          <Tooltip />
+          <Tooltip
+            contentStyle={TOOLTIP_STYLE.contentStyle}
+            labelStyle={TOOLTIP_STYLE.labelStyle}
+            itemStyle={TOOLTIP_STYLE.itemStyle}
+          />
           {showLegend && <Legend />}
           {series.map((s, i) => (
             <Bar
@@ -85,9 +95,17 @@ function renderChart(
       return (
         <BarChart data={data} onClick={handleCartesianClick}>
           <CartesianGrid stroke={CHART_CHROME.grid} vertical={false} />
-          <XAxis dataKey={categoryKey} stroke={CHART_CHROME.axis} tick={{ fill: CHART_CHROME.mutedLabel, fontSize: 12 }} />
+          <XAxis
+            dataKey={categoryKey}
+            stroke={CHART_CHROME.axis}
+            tick={{ fill: CHART_CHROME.mutedLabel, fontSize: 12 }}
+          />
           <YAxis stroke={CHART_CHROME.axis} tick={{ fill: CHART_CHROME.mutedLabel, fontSize: 12 }} />
-          <Tooltip />
+          <Tooltip
+            contentStyle={TOOLTIP_STYLE.contentStyle}
+            labelStyle={TOOLTIP_STYLE.labelStyle}
+            itemStyle={TOOLTIP_STYLE.itemStyle}
+          />
           {showLegend && <Legend />}
           {series.map((s, i) => (
             <Bar
@@ -105,9 +123,17 @@ function renderChart(
       return (
         <LineChart data={data} onClick={handleCartesianClick}>
           <CartesianGrid stroke={CHART_CHROME.grid} vertical={false} />
-          <XAxis dataKey={categoryKey} stroke={CHART_CHROME.axis} tick={{ fill: CHART_CHROME.mutedLabel, fontSize: 12 }} />
+          <XAxis
+            dataKey={categoryKey}
+            stroke={CHART_CHROME.axis}
+            tick={{ fill: CHART_CHROME.mutedLabel, fontSize: 12 }}
+          />
           <YAxis stroke={CHART_CHROME.axis} tick={{ fill: CHART_CHROME.mutedLabel, fontSize: 12 }} />
-          <Tooltip />
+          <Tooltip
+            contentStyle={TOOLTIP_STYLE.contentStyle}
+            labelStyle={TOOLTIP_STYLE.labelStyle}
+            itemStyle={TOOLTIP_STYLE.itemStyle}
+          />
           {showLegend && <Legend />}
           {series.map((s, i) => (
             <Line
@@ -127,9 +153,17 @@ function renderChart(
       return (
         <AreaChart data={data} onClick={handleCartesianClick}>
           <CartesianGrid stroke={CHART_CHROME.grid} vertical={false} />
-          <XAxis dataKey={categoryKey} stroke={CHART_CHROME.axis} tick={{ fill: CHART_CHROME.mutedLabel, fontSize: 12 }} />
+          <XAxis
+            dataKey={categoryKey}
+            stroke={CHART_CHROME.axis}
+            tick={{ fill: CHART_CHROME.mutedLabel, fontSize: 12 }}
+          />
           <YAxis stroke={CHART_CHROME.axis} tick={{ fill: CHART_CHROME.mutedLabel, fontSize: 12 }} />
-          <Tooltip />
+          <Tooltip
+            contentStyle={TOOLTIP_STYLE.contentStyle}
+            labelStyle={TOOLTIP_STYLE.labelStyle}
+            itemStyle={TOOLTIP_STYLE.itemStyle}
+          />
           {showLegend && <Legend />}
           {series.map((s, i) => (
             <Area
@@ -152,7 +186,11 @@ function renderChart(
       const valueKey = series[0]?.key ?? 'value';
       return (
         <PieChart>
-          <Tooltip />
+          <Tooltip
+            contentStyle={TOOLTIP_STYLE.contentStyle}
+            labelStyle={TOOLTIP_STYLE.labelStyle}
+            itemStyle={TOOLTIP_STYLE.itemStyle}
+          />
           {showLegend && <Legend />}
           <Pie
             data={data}
@@ -184,6 +222,12 @@ function renderChart(
   }
 }
 
+/** True once at least one row has a nonzero value in at least one series — a chart full of
+ * zeros (e.g. a drill/filter combination with no matching underlying records) is visually
+ * indistinguishable from a broken chart, so it gets the empty-state treatment instead. */
+const hasRenderableData = (data: Record<string, string | number>[], series: ChartSeriesConfig[]): boolean =>
+  data.length > 0 && data.some((row) => series.some((s) => Number(row[s.key]) !== 0));
+
 export const ChartContainer = ({
   type,
   data,
@@ -194,6 +238,7 @@ export const ChartContainer = ({
   onElementClick,
 }: ChartContainerProps) => {
   const showLegend = isPieType(type) ? data.length > 1 : series.length > 1;
+  const hasData = hasRenderableData(data, series);
 
   return (
     <Box>
@@ -202,9 +247,22 @@ export const ChartContainer = ({
           {title}
         </Typography>
       )}
-      <ResponsiveContainer width="100%" height={height}>
-        {renderChart(type, data, categoryKey, series, showLegend, onElementClick)}
-      </ResponsiveContainer>
+      {hasData ? (
+        <ResponsiveContainer width="100%" height={height}>
+          {renderChart(type, data, categoryKey, series, showLegend, onElementClick)}
+        </ResponsiveContainer>
+      ) : (
+        <Stack
+          alignItems="center"
+          justifyContent="center"
+          spacing={1}
+          sx={{ height, color: 'text.secondary' }}
+        >
+          <BarChartOutlinedIcon sx={{ fontSize: 32, color: 'text.disabled' }} />
+          <Typography variant="body2">No data for this selection</Typography>
+          <Typography variant="caption">Try adjusting the plant, time, or filter selection</Typography>
+        </Stack>
+      )}
     </Box>
   );
 };

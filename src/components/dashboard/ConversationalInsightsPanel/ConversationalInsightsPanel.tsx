@@ -1,11 +1,15 @@
+import { useState } from 'react';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import Chip from '@mui/material/Chip';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import SendIcon from '@mui/icons-material/Send';
 import { Card } from '@components/common';
+import type { LibraryQuestion, QuestionCategory, QuestionContext } from '@/data/conversationalQuestions';
+import { fillAnswerTemplate } from '@/data/conversationalQuestions';
 
 export interface ConversationalQAPair {
   question: string;
@@ -13,16 +17,53 @@ export interface ConversationalQAPair {
 }
 
 export interface ConversationalInsightsPanelProps {
-  qaPairs: ConversationalQAPair[];
+  /** Static mode: a fixed set of pre-written Q&A pairs, shown as-is (existing tabs). */
+  qaPairs?: ConversationalQAPair[];
+  /** Interactive mode: clickable question chips whose answers are filled from `context` and
+   * appended to a growing chat thread. When provided, `qaPairs` is ignored. */
+  questionLibrary?: LibraryQuestion[];
+  context?: QuestionContext;
   contextLabel?: string;
 }
 
-export const ConversationalInsightsPanel = ({ qaPairs, contextLabel }: ConversationalInsightsPanelProps) => {
+const CATEGORY_ORDER: QuestionCategory[] = ['Reasoning', 'Intelligent Insight', 'Decision-Making'];
+
+export const ConversationalInsightsPanel = ({
+  qaPairs,
+  questionLibrary,
+  context,
+  contextLabel,
+}: ConversationalInsightsPanelProps) => {
+  const [asked, setAsked] = useState<ConversationalQAPair[]>([]);
+
+  const handleAsk = (libraryQuestion: LibraryQuestion) => {
+    const answer = fillAnswerTemplate(
+      libraryQuestion.answerTemplate,
+      context ?? { plant: 'All Plants', period: 'All Time', bu: 'All Business Units', region: 'All Regions' },
+    );
+    setAsked((prev) => [...prev, { question: libraryQuestion.question, answer }]);
+  };
+
+  const displayPairs = questionLibrary ? asked : (qaPairs ?? []);
+
   return (
     <Card>
       <Stack spacing={2}>
-        <Stack direction="row" alignItems="center" spacing={1}>
-          <ForumOutlinedIcon color="secondary" fontSize="small" />
+        <Stack direction="row" alignItems="center" spacing={1.25}>
+          <Box
+            sx={{
+              width: 32,
+              height: 32,
+              borderRadius: '50%',
+              bgcolor: 'primary.main',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+            }}
+          >
+            <ForumOutlinedIcon sx={{ color: 'primary.contrastText' }} fontSize="small" />
+          </Box>
           <Typography variant="h6">Conversational Insights</Typography>
         </Stack>
         {contextLabel && (
@@ -30,8 +71,40 @@ export const ConversationalInsightsPanel = ({ qaPairs, contextLabel }: Conversat
             Showing: {contextLabel}
           </Typography>
         )}
+        {questionLibrary && (
+          <Stack spacing={1}>
+            {CATEGORY_ORDER.map((category) => {
+              const categoryQuestions = questionLibrary.filter((q) => q.category === category);
+              if (categoryQuestions.length === 0) return null;
+              return (
+                <Stack key={category} spacing={0.5}>
+                  <Typography variant="caption" color="text.secondary">
+                    {category}
+                  </Typography>
+                  <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                    {categoryQuestions.map((q) => (
+                      <Chip
+                        key={q.id}
+                        label={q.question}
+                        size="small"
+                        variant="outlined"
+                        clickable
+                        onClick={() => handleAsk(q)}
+                        sx={{
+                          maxWidth: '100%',
+                          height: 'auto',
+                          '& .MuiChip-label': { whiteSpace: 'normal', py: 0.5 },
+                        }}
+                      />
+                    ))}
+                  </Stack>
+                </Stack>
+              );
+            })}
+          </Stack>
+        )}
         <Stack spacing={1.5} sx={{ maxHeight: 360, overflowY: 'auto' }}>
-          {qaPairs.map((pair, index) => (
+          {displayPairs.map((pair, index) => (
             <Stack key={index} spacing={1}>
               <Box
                 sx={{

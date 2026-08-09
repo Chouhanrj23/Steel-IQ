@@ -1,19 +1,24 @@
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import TuneIcon from '@mui/icons-material/Tune';
 import type { SelectChangeEvent } from '@mui/material/Select';
 import { useDashboardStore } from '@store/dashboard';
 
+type CrossFilterId = 'region' | 'businessUnit' | 'productCategory';
+
 interface FilterDef {
-  id: string;
+  id: CrossFilterId;
   label: string;
+  /** First option is always the "All" sentinel, which maps to `null` in the store. */
   options: string[];
 }
 
-const DECORATIVE_FILTERS: FilterDef[] = [
+const CROSS_FILTERS: FilterDef[] = [
   { id: 'region', label: 'Region', options: ['All Regions', 'East', 'West', 'South', 'Central'] },
   {
     id: 'businessUnit',
@@ -23,11 +28,25 @@ const DECORATIVE_FILTERS: FilterDef[] = [
   {
     id: 'productCategory',
     label: 'Product Category',
-    options: ['All Categories', 'Flat Products', 'Long Products', 'Tubes & Pipes', 'Wire Rods', 'Value-Added Steel'],
+    options: [
+      'All Categories',
+      'Flat Products',
+      'Long Products',
+      'Tubes & Pipes',
+      'Wire Rods',
+      'Value-Added Steel',
+    ],
   },
 ];
 
-const PLANT_OPTIONS = ['All Plants', 'Rourkela Plant', 'Jamshedpur Plant', 'Bhilai Plant', 'Hazira Plant', 'Bellary Plant'];
+const PLANT_OPTIONS = [
+  'All Plants',
+  'Rourkela Plant',
+  'Jamshedpur Plant',
+  'Bhilai Plant',
+  'Hazira Plant',
+  'Bellary Plant',
+];
 const YEAR_OPTIONS = ['All Years', '2024', '2025'];
 const QUARTER_OPTIONS = ['All Quarters', 'Q1', 'Q2', 'Q3', 'Q4'];
 const MONTH_OPTIONS = [
@@ -64,6 +83,16 @@ const QUARTER_OF_MONTH: Record<string, string> = {
 export const GlobalFilterBar = () => {
   const drill = useDashboardStore((state) => state.drill);
   const setHierarchyPath = useDashboardStore((state) => state.setHierarchyPath);
+  const crossFilters = useDashboardStore((state) => state.crossFilters);
+  const setRegion = useDashboardStore((state) => state.setRegion);
+  const setBusinessUnit = useDashboardStore((state) => state.setBusinessUnit);
+  const setProductCategory = useDashboardStore((state) => state.setProductCategory);
+
+  const crossFilterSetters = {
+    region: setRegion,
+    businessUnit: setBusinessUnit,
+    productCategory: setProductCategory,
+  } satisfies Record<CrossFilterId, (value: string | null) => void>;
 
   const plantValue = drill.hierarchy === 'plant' ? (drill.path[0] ?? 'All Plants') : 'All Plants';
   const yearValue = drill.hierarchy === 'time' ? (drill.path[0] ?? 'All Years') : 'All Years';
@@ -97,8 +126,26 @@ export const GlobalFilterBar = () => {
   };
 
   return (
-    <Box sx={{ bgcolor: 'background.paper', borderBottom: 1, borderColor: 'divider', px: 3, py: 1.5 }}>
-      <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+    <Box
+      sx={{
+        bgcolor: 'background.paper',
+        borderBottom: 1,
+        borderColor: 'divider',
+        boxShadow: '0px 1px 2px rgba(16, 24, 40, 0.03)',
+        px: 3,
+        py: 1.5,
+      }}
+    >
+      <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap" useFlexGap>
+        <Stack direction="row" alignItems="center" spacing={0.75} sx={{ color: 'text.secondary', mr: 0.5 }}>
+          <TuneIcon fontSize="small" />
+          <Typography
+            variant="caption"
+            sx={{ fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase' }}
+          >
+            Filters
+          </Typography>
+        </Stack>
         <FormControl size="small" sx={{ minWidth: 160 }}>
           <InputLabel id="plant-filter-label">Plant</InputLabel>
           <Select labelId="plant-filter-label" label="Plant" value={plantValue} onChange={handlePlantChange}>
@@ -110,18 +157,28 @@ export const GlobalFilterBar = () => {
           </Select>
         </FormControl>
 
-        {DECORATIVE_FILTERS.map((filter) => (
-          <FormControl key={filter.id} size="small" sx={{ minWidth: 160 }}>
-            <InputLabel id={`${filter.id}-filter-label`}>{filter.label}</InputLabel>
-            <Select labelId={`${filter.id}-filter-label`} label={filter.label} defaultValue={filter.options[0]}>
-              {filter.options.map((option) => (
-                <MenuItem key={option} value={option}>
-                  {option}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        ))}
+        {CROSS_FILTERS.map((filter) => {
+          const allOption = filter.options[0]!;
+          const value = crossFilters[filter.id] ?? allOption;
+          const setValue = crossFilterSetters[filter.id];
+          return (
+            <FormControl key={filter.id} size="small" sx={{ minWidth: 160 }}>
+              <InputLabel id={`${filter.id}-filter-label`}>{filter.label}</InputLabel>
+              <Select
+                labelId={`${filter.id}-filter-label`}
+                label={filter.label}
+                value={value}
+                onChange={(event) => setValue(event.target.value === allOption ? null : event.target.value)}
+              >
+                {filter.options.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          );
+        })}
 
         <FormControl size="small" sx={{ minWidth: 160 }}>
           <InputLabel id="year-filter-label">Year</InputLabel>

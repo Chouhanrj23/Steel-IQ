@@ -13,7 +13,17 @@ import {
   AgentSummaryPanel,
   ConversationalInsightsPanel,
 } from '@components/dashboard';
-import { ROOT_LABEL, HIERARCHY_OPTIONS, getNodeAtPath, getNodesAtPath, flattenLeafValues } from './drillDownUtils';
+import {
+  ROOT_LABEL,
+  HIERARCHY_OPTIONS,
+  getNodeAtPath,
+  getNodesAtPath,
+  flattenLeafValues,
+  applyCrossFilters,
+  sumRootValues,
+} from './drillDownUtils';
+import { resolveAgentSummary } from '@/data/agentSummaryTemplates';
+import { getQuestionsForTab, resolveQuestionContext } from '@/data/conversationalQuestions';
 
 const mockData = mockDataJson as DashboardMockData;
 
@@ -21,28 +31,7 @@ const RAW_MATERIAL_INSIGHTS = [
   'Iron ore inventory at Rourkela has grown 6.1% quarter-over-quarter while coking coal costs rose per tonne — current stock levels cover roughly 38 days of blast furnace demand, above the 30-day safety threshold.',
 ];
 
-const RAW_MATERIAL_QA_PAIRS = [
-  {
-    question: 'Which plant holds the highest raw material inventory?',
-    answer: 'Rourkela Plant currently holds the largest iron ore inventory among the five plants, followed by Jamshedpur.',
-  },
-  {
-    question: 'Why did coking coal costs increase this quarter?',
-    answer: 'Coking coal cost per tonne rose primarily due to higher import freight rates and global benchmark price increases.',
-  },
-  {
-    question: 'Is the raw material wastage rate within target?',
-    answer: 'The current wastage rate is slightly above target, driven by higher fines generation at two plants.',
-  },
-  {
-    question: 'How many days of limestone supply do we have on hand?',
-    answer: 'Current limestone consumption trends indicate roughly 25 days of on-hand supply at average draw rates.',
-  },
-  {
-    question: 'Which region contributes most to raw material lead time?',
-    answer: 'The South zone shows the longest average lead times, largely due to longer inbound freight distances.',
-  },
-];
+const RAW_MATERIAL_QUESTIONS = getQuestionsForTab('rawMaterial');
 
 const findKpi = (kpis: KPI[], id: string): KPI => {
   const kpi = kpis.find((item) => item.id === id);
@@ -55,6 +44,7 @@ const findKpi = (kpis: KPI[], id: string): KPI => {
 export const RawMaterialTab = () => {
   const { kpis } = mockData.modules.rawMaterial;
   const drill = useDashboardStore((state) => state.drill);
+  const crossFilters = useDashboardStore((state) => state.crossFilters);
   const drillInto = useDashboardStore((state) => state.drillInto);
   const drillToHierarchyRoot = useDashboardStore((state) => state.drillToHierarchyRoot);
   const drillToSegment = useDashboardStore((state) => state.drillToSegment);
@@ -75,6 +65,10 @@ export const RawMaterialTab = () => {
 
   const cardKpis = [inventory, coalCost, wastageRate, limestone];
 
+  // Recomputed per KPI so Region/Business Unit/Product Category compose with the Time/Plant
+  // drill instead of overriding it — same shape as kpi.drilldown.root, values filtered down.
+  const filteredRoot = (kpi: KPI) => applyCrossFilters(kpi.drilldown.root, crossFilters);
+
   const matchingPathFor = (kpi: KPI): string[] =>
     drill.hierarchy === kpi.drilldown.dimension ? drill.path : [];
 
@@ -94,15 +88,15 @@ export const RawMaterialTab = () => {
   // behavior is a direct consequence of the same matching logic every other KPI uses.
   const leadTimePath = matchingPathFor(leadTime);
 
-  const inventoryByPlant = getNodesAtPath(inventory.drilldown.root, inventoryPath).map((node) => ({
+  const inventoryByPlant = getNodesAtPath(filteredRoot(inventory), inventoryPath).map((node) => ({
     plant: node.label,
     value: node.value,
   }));
-  const coalCostOverTime = getNodesAtPath(coalCost.drilldown.root, coalCostPath).map((node) => ({
+  const coalCostOverTime = getNodesAtPath(filteredRoot(coalCost), coalCostPath).map((node) => ({
     period: node.label,
     value: node.value,
   }));
-  const leadTimeByGeography = getNodesAtPath(leadTime.drilldown.root, leadTimePath).map((node) => ({
+  const leadTimeByGeography = getNodesAtPath(filteredRoot(leadTime), leadTimePath).map((node) => ({
     zone: node.label,
     value: node.value,
   }));
@@ -111,6 +105,8 @@ export const RawMaterialTab = () => {
 
   const breadcrumbPath = [ROOT_LABEL[drill.hierarchy], ...drill.path];
   const contextLabel = breadcrumbPath.join(' / ');
+  const dynamicSummary = resolveAgentSummary('rawMaterial', kpis, drill, crossFilters);
+  const questionContext = resolveQuestionContext(drill, crossFilters);
 
   return (
     <Stack direction={{ xs: 'column', lg: 'row' }} spacing={3} alignItems="flex-start">
@@ -140,19 +136,22 @@ export const RawMaterialTab = () => {
         <Grid container spacing={3}>
           {cardKpis.map((kpi) => {
             const matchingPath = matchingPathFor(kpi);
-            const node = matchingPath.length ? getNodeAtPath(kpi.drilldown.root, matchingPath) : null;
+            const root = filteredRoot(kpi);
+            const node = matchingPath.length ? getNodeAtPath(root, matchingPath) : null;
             const isActiveHierarchy = kpi.drilldown.dimension === drill.hierarchy;
             return (
               <Grid key={kpi.id} size={{ xs: 12, sm: 6, md: 3 }}>
                 <KPICard
                   title={kpi.name}
-                  value={node ? node.value : kpi.current}
+                  value={node ? node.value : sumRootValues(root)}
                   unit={kpi.unit}
                   percentChange={kpi.percentChange}
                   trend={kpi.trend}
                   status={kpi.status}
-                  sparklineData={flattenLeafValues(getNodesAtPath(kpi.drilldown.root, matchingPath))}
-                  onClick={isActiveHierarchy ? undefined : () => drillToHierarchyRoot(kpi.drilldown.dimension)}
+                  sparklineData={flattenLeafValues(getNodesAtPath(root, matchingPath))}
+                  onClick={
+                    isActiveHierarchy ? undefined : () => drillToHierarchyRoot(kpi.drilldown.dimension)
+                  }
                 />
               </Grid>
             );
@@ -195,8 +194,15 @@ export const RawMaterialTab = () => {
       </Stack>
 
       <Stack spacing={3} sx={{ width: { xs: '100%', lg: 360 }, flexShrink: 0 }}>
-        <AgentSummaryPanel insights={RAW_MATERIAL_INSIGHTS} contextLabel={contextLabel} />
-        <ConversationalInsightsPanel qaPairs={RAW_MATERIAL_QA_PAIRS} contextLabel={contextLabel} />
+        <AgentSummaryPanel
+          insights={dynamicSummary ? [dynamicSummary] : RAW_MATERIAL_INSIGHTS}
+          contextLabel={contextLabel}
+        />
+        <ConversationalInsightsPanel
+          questionLibrary={RAW_MATERIAL_QUESTIONS}
+          context={questionContext}
+          contextLabel={contextLabel}
+        />
       </Stack>
     </Stack>
   );

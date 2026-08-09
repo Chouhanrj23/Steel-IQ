@@ -1,10 +1,12 @@
 import type { DrillDownNode, DrilldownDimension } from '@/types/dashboard';
-import type { HierarchyKey } from '@store/dashboard';
+import type { CrossFilters, HierarchyKey } from '@store/dashboard';
 
 export const ROOT_LABEL: Record<DrilldownDimension, string> = {
   plant: 'All Plants',
   time: 'All Time',
   geography: 'All Locations',
+  department: 'All Departments',
+  category: 'All Categories',
 };
 
 // The hierarchy toggle only ever offers these two.
@@ -54,3 +56,38 @@ export const getNodesAtPath = (root: DrillDownNode[], path: string[]): DrillDown
 
 export const flattenLeafValues = (nodes: DrillDownNode[]): number[] =>
   nodes.flatMap((node) => (node.children ? flattenLeafValues(node.children) : [node.value]));
+
+/** Rounds away binary floating-point drift (e.g. 0.1 + 0.2) from repeated summation while
+ * keeping enough precision for any KPI's decimal values. */
+const roundForDisplay = (value: number): number => Math.round(value * 1e6) / 1e6;
+
+/** Recomputes a tree with only the leaves matching every active filter counted, propagating
+ * sums back up through parents. Shape (labels/nesting) is untouched, so it can be fed straight
+ * into getNodeAtPath/getNodesAtPath — cross-filters compose with the Time/Plant drill rather
+ * than replacing it. Returns `nodes` unchanged (same reference) when no filter is active. */
+export const applyCrossFilters = (nodes: DrillDownNode[], filters: CrossFilters): DrillDownNode[] => {
+  if (!filters.region && !filters.businessUnit && !filters.productCategory) return nodes;
+
+  const recompute = (node: DrillDownNode): DrillDownNode => {
+    if (!node.children) {
+      const tags = node.tags;
+      const matches =
+        (!filters.region || tags?.region === filters.region) &&
+        (!filters.businessUnit || tags?.businessUnit === filters.businessUnit) &&
+        (!filters.productCategory || tags?.productCategory === filters.productCategory);
+      return { ...node, value: matches ? node.value : 0 };
+    }
+    const children = node.children.map(recompute);
+    return {
+      ...node,
+      children,
+      value: roundForDisplay(children.reduce((sum, child) => sum + child.value, 0)),
+    };
+  };
+
+  return nodes.map(recompute);
+};
+
+/** Sum of a filtered tree's top-level values — the "no drill" aggregate for a KPI card. */
+export const sumRootValues = (nodes: DrillDownNode[]): number =>
+  roundForDisplay(nodes.reduce((sum, node) => sum + node.value, 0));

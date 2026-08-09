@@ -27,11 +27,11 @@ import { getQuestionsForTab, resolveQuestionContext } from '@/data/conversationa
 
 const mockData = mockDataJson as DashboardMockData;
 
-const SUPPLY_CHAIN_INSIGHTS = [
-  'On-time delivery rate improved to 91.2% while order fulfillment cycle time shortened to 6.8 days — both gains were partially offset by a rise in freight cost per tonne to ₹2,140, driven by higher inbound logistics rates.',
+const PRODUCT_INSIGHTS = [
+  'Production volume held at 214,500 tonnes with yield rate at 92.3% and capacity utilization at 88.1% — defect rate stayed contained at 2.4% even as the Value-Added Steel mix rose to 34.6% of total output.',
 ];
 
-const SUPPLY_CHAIN_QUESTIONS = getQuestionsForTab('supplyChain');
+const PRODUCT_QUESTIONS = getQuestionsForTab('product');
 
 const findKpi = (kpis: KPI[], id: string): KPI => {
   const kpi = kpis.find((item) => item.id === id);
@@ -41,8 +41,8 @@ const findKpi = (kpis: KPI[], id: string): KPI => {
   return kpi;
 };
 
-export const SupplyChainTab = () => {
-  const { kpis } = mockData.modules.supplyChain;
+export const ProductTab = () => {
+  const { kpis } = mockData.modules.product;
   const drill = useDashboardStore((state) => state.drill);
   const crossFilters = useDashboardStore((state) => state.crossFilters);
   const drillInto = useDashboardStore((state) => state.drillInto);
@@ -57,16 +57,13 @@ export const SupplyChainTab = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const onTimeDelivery = findKpi(kpis, 'on-time-delivery-rate');
-  const orderFulfillment = findKpi(kpis, 'order-fulfillment-cycle-time');
-  const freightCost = findKpi(kpis, 'freight-cost-per-tonne');
-  const inventoryTurnover = findKpi(kpis, 'inventory-turnover-ratio');
-  const supplierLeadTime = findKpi(kpis, 'supplier-lead-time');
+  const productionVolume = findKpi(kpis, 'production-volume');
+  const yieldRate = findKpi(kpis, 'yield-rate');
+  const defectRate = findKpi(kpis, 'defect-rate');
+  const capacityUtilization = findKpi(kpis, 'capacity-utilization');
+  const valueAddedSteelMix = findKpi(kpis, 'value-added-steel-mix');
 
-  // inventory-turnover-ratio is the only plant-dimensioned KPI in this module (the rest are
-  // geography-dimensioned, which the Time/Plant toggle never offers) — included here so at
-  // least one card demonstrates the drill-click behavior, same as every other tab.
-  const cardKpis = [onTimeDelivery, orderFulfillment, freightCost, supplierLeadTime, inventoryTurnover];
+  const cardKpis = [productionVolume, yieldRate, defectRate, capacityUtilization, valueAddedSteelMix];
 
   // Recomputed per KPI so Region/Business Unit/Product Category compose with the Time/Plant
   // drill instead of overriding it — same shape as kpi.drilldown.root, values filtered down.
@@ -83,28 +80,28 @@ export const SupplyChainTab = () => {
     }
   };
 
-  const inventoryTurnoverPath = matchingPathFor(inventoryTurnover);
-  // On-Time Delivery and Freight Cost are geography-dimensioned; the hierarchy toggle only
-  // offers time/plant, so drill.hierarchy can never equal 'geography' and these are always [].
-  // Kept explicit (rather than hardcoding the charts off the raw root) so the "always full
-  // aggregate" behavior is a direct consequence of the same matching logic every other KPI uses.
-  const onTimeDeliveryPath = matchingPathFor(onTimeDelivery);
-  const freightCostPath = matchingPathFor(freightCost);
+  const productionVolumePath = matchingPathFor(productionVolume);
+  const capacityUtilizationPath = matchingPathFor(capacityUtilization);
+  const valueAddedSteelMixPath = matchingPathFor(valueAddedSteelMix);
 
-  const inventoryTurnoverByPlant = getNodesAtPath(filteredRoot(inventoryTurnover), inventoryTurnoverPath).map(
+  const productionVolumeByPlant = getNodesAtPath(filteredRoot(productionVolume), productionVolumePath).map(
     (node) => ({
       plant: node.label,
       value: node.value,
     }),
   );
-  const onTimeDeliveryByGeography = getNodesAtPath(filteredRoot(onTimeDelivery), onTimeDeliveryPath).map(
-    (node) => ({
-      zone: node.label,
-      value: node.value,
-    }),
-  );
-  const freightCostByGeography = getNodesAtPath(filteredRoot(freightCost), freightCostPath).map((node) => ({
-    zone: node.label,
+  const capacityUtilizationByPlant = getNodesAtPath(
+    filteredRoot(capacityUtilization),
+    capacityUtilizationPath,
+  ).map((node) => ({
+    plant: node.label,
+    value: node.value,
+  }));
+  const valueAddedSteelMixOverTime = getNodesAtPath(
+    filteredRoot(valueAddedSteelMix),
+    valueAddedSteelMixPath,
+  ).map((node) => ({
+    period: node.label,
     value: node.value,
   }));
 
@@ -112,7 +109,7 @@ export const SupplyChainTab = () => {
 
   const breadcrumbPath = [ROOT_LABEL[drill.hierarchy], ...drill.path];
   const contextLabel = breadcrumbPath.join(' / ');
-  const dynamicSummary = resolveAgentSummary('supplyChain', kpis, drill, crossFilters);
+  const dynamicSummary = resolveAgentSummary('product', kpis, drill, crossFilters);
   const questionContext = resolveQuestionContext(drill, crossFilters);
 
   return (
@@ -169,33 +166,31 @@ export const SupplyChainTab = () => {
           <Grid size={{ xs: 12, md: 6, lg: 4 }}>
             <ChartContainer
               type="bar"
-              title={`Inventory Turnover Ratio by Plant${titleSuffix(inventoryTurnoverPath)}`}
-              data={inventoryTurnoverByPlant}
+              title={`Production Volume by Plant${titleSuffix(productionVolumePath)}`}
+              data={productionVolumeByPlant}
               categoryKey="plant"
-              series={[{ key: 'value', label: 'Inventory Turnover (x)' }]}
-              onElementClick={handleChartClick(inventoryTurnover, inventoryTurnoverPath)}
+              series={[{ key: 'value', label: 'Production Volume (tonnes)' }]}
+              onElementClick={handleChartClick(productionVolume, productionVolumePath)}
             />
           </Grid>
           <Grid size={{ xs: 12, md: 6, lg: 4 }}>
             <ChartContainer
               type="line"
-              title="On-Time Delivery Rate by Geography"
-              data={onTimeDeliveryByGeography}
-              categoryKey="zone"
-              series={[{ key: 'value', label: 'On-Time Delivery (%)' }]}
-              // No onElementClick: geography isn't part of the Time/Plant toggle, so this
-              // chart is intentionally non-interactive and always shows the full aggregate.
+              title={`Value-Added Steel Mix over Time${titleSuffix(valueAddedSteelMixPath)}`}
+              data={valueAddedSteelMixOverTime}
+              categoryKey="period"
+              series={[{ key: 'value', label: 'Value-Added Steel Mix (%)' }]}
+              onElementClick={handleChartClick(valueAddedSteelMix, valueAddedSteelMixPath)}
             />
           </Grid>
           <Grid size={{ xs: 12, md: 6, lg: 4 }}>
             <ChartContainer
-              type="donut"
-              title="Freight Cost per Tonne by Geography"
-              data={freightCostByGeography}
-              categoryKey="zone"
-              series={[{ key: 'value', label: 'Freight Cost (INR)' }]}
-              // No onElementClick: geography isn't part of the Time/Plant toggle, so this
-              // chart is intentionally non-interactive and always shows the full aggregate.
+              type="area"
+              title={`Capacity Utilization by Plant${titleSuffix(capacityUtilizationPath)}`}
+              data={capacityUtilizationByPlant}
+              categoryKey="plant"
+              series={[{ key: 'value', label: 'Capacity Utilization (%)' }]}
+              onElementClick={handleChartClick(capacityUtilization, capacityUtilizationPath)}
             />
           </Grid>
         </Grid>
@@ -203,11 +198,11 @@ export const SupplyChainTab = () => {
 
       <Stack spacing={3} sx={{ width: { xs: '100%', lg: 360 }, flexShrink: 0 }}>
         <AgentSummaryPanel
-          insights={dynamicSummary ? [dynamicSummary] : SUPPLY_CHAIN_INSIGHTS}
+          insights={dynamicSummary ? [dynamicSummary] : PRODUCT_INSIGHTS}
           contextLabel={contextLabel}
         />
         <ConversationalInsightsPanel
-          questionLibrary={SUPPLY_CHAIN_QUESTIONS}
+          questionLibrary={PRODUCT_QUESTIONS}
           context={questionContext}
           contextLabel={contextLabel}
         />
@@ -216,4 +211,4 @@ export const SupplyChainTab = () => {
   );
 };
 
-export default SupplyChainTab;
+export default ProductTab;

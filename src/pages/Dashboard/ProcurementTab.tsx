@@ -22,16 +22,16 @@ import {
   applyCrossFilters,
   sumRootValues,
 } from './drillDownUtils';
-import { resolveAgentSummary } from '@/data/agentSummaryTemplates';
 import { getQuestionsForTab, resolveQuestionContext } from '@/data/conversationalQuestions';
+import { resolveAgentSummary } from '@/data/agentSummaryTemplates';
 
 const mockData = mockDataJson as DashboardMockData;
 
-const SUPPLY_CHAIN_INSIGHTS = [
-  'On-time delivery rate improved to 91.2% while order fulfillment cycle time shortened to 6.8 days — both gains were partially offset by a rise in freight cost per tonne to ₹2,140, driven by higher inbound logistics rates.',
+const PROCUREMENT_INSIGHTS = [
+  'Creditors payment terms extended to 38.4 days while actual spend rose 10.1% to ₹18,600 Lakh — the increase was driven far more by Capex (up ~26% on Machinery & Equipment and Plant Expansion) than by Opex (up ~2%), even as vendor on-time delivery improved to 88.4%.',
 ];
 
-const SUPPLY_CHAIN_QUESTIONS = getQuestionsForTab('supplyChain');
+const PROCUREMENT_QUESTIONS = getQuestionsForTab('procurement');
 
 const findKpi = (kpis: KPI[], id: string): KPI => {
   const kpi = kpis.find((item) => item.id === id);
@@ -41,8 +41,8 @@ const findKpi = (kpis: KPI[], id: string): KPI => {
   return kpi;
 };
 
-export const SupplyChainTab = () => {
-  const { kpis } = mockData.modules.supplyChain;
+export const ProcurementTab = () => {
+  const { kpis } = mockData.modules.procurement;
   const drill = useDashboardStore((state) => state.drill);
   const crossFilters = useDashboardStore((state) => state.crossFilters);
   const drillInto = useDashboardStore((state) => state.drillInto);
@@ -57,16 +57,14 @@ export const SupplyChainTab = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const onTimeDelivery = findKpi(kpis, 'on-time-delivery-rate');
-  const orderFulfillment = findKpi(kpis, 'order-fulfillment-cycle-time');
-  const freightCost = findKpi(kpis, 'freight-cost-per-tonne');
-  const inventoryTurnover = findKpi(kpis, 'inventory-turnover-ratio');
-  const supplierLeadTime = findKpi(kpis, 'supplier-lead-time');
+  const creditorsPaymentTerms = findKpi(kpis, 'creditors-payment-terms');
+  const creditorsPaymentTermsByVendor = findKpi(kpis, 'creditors-payment-terms-by-vendor');
+  const actualSpend = findKpi(kpis, 'actual-spend');
+  const actualSpendByCapexOpex = findKpi(kpis, 'actual-spend-by-capex-opex');
+  const vendorOnTimeDelivery = findKpi(kpis, 'vendor-on-time-delivery');
+  const poCycleTime = findKpi(kpis, 'purchase-order-cycle-time');
 
-  // inventory-turnover-ratio is the only plant-dimensioned KPI in this module (the rest are
-  // geography-dimensioned, which the Time/Plant toggle never offers) — included here so at
-  // least one card demonstrates the drill-click behavior, same as every other tab.
-  const cardKpis = [onTimeDelivery, orderFulfillment, freightCost, supplierLeadTime, inventoryTurnover];
+  const cardKpis = [creditorsPaymentTerms, actualSpend, vendorOnTimeDelivery, poCycleTime];
 
   // Recomputed per KPI so Region/Business Unit/Product Category compose with the Time/Plant
   // drill instead of overriding it — same shape as kpi.drilldown.root, values filtered down.
@@ -83,28 +81,39 @@ export const SupplyChainTab = () => {
     }
   };
 
-  const inventoryTurnoverPath = matchingPathFor(inventoryTurnover);
-  // On-Time Delivery and Freight Cost are geography-dimensioned; the hierarchy toggle only
-  // offers time/plant, so drill.hierarchy can never equal 'geography' and these are always [].
-  // Kept explicit (rather than hardcoding the charts off the raw root) so the "always full
-  // aggregate" behavior is a direct consequence of the same matching logic every other KPI uses.
-  const onTimeDeliveryPath = matchingPathFor(onTimeDelivery);
-  const freightCostPath = matchingPathFor(freightCost);
+  const creditorsPaymentTermsPath = matchingPathFor(creditorsPaymentTerms);
+  const actualSpendPath = matchingPathFor(actualSpend);
+  // Both "by vendor category" and "by Capex/Opex" are category-dimensioned; the hierarchy
+  // toggle only offers time/plant, so drill.hierarchy can never equal 'category' and these are
+  // always []. Kept explicit (rather than hardcoding the breakdowns off the raw root) so the
+  // "always full aggregate" behavior is a direct consequence of the same matching logic every
+  // other KPI uses.
+  const creditorsPaymentTermsByVendorPath = matchingPathFor(creditorsPaymentTermsByVendor);
+  const actualSpendByCapexOpexPath = matchingPathFor(actualSpendByCapexOpex);
 
-  const inventoryTurnoverByPlant = getNodesAtPath(filteredRoot(inventoryTurnover), inventoryTurnoverPath).map(
-    (node) => ({
-      plant: node.label,
-      value: node.value,
-    }),
-  );
-  const onTimeDeliveryByGeography = getNodesAtPath(filteredRoot(onTimeDelivery), onTimeDeliveryPath).map(
-    (node) => ({
-      zone: node.label,
-      value: node.value,
-    }),
-  );
-  const freightCostByGeography = getNodesAtPath(filteredRoot(freightCost), freightCostPath).map((node) => ({
-    zone: node.label,
+  const creditorsPaymentTermsByPlant = getNodesAtPath(
+    filteredRoot(creditorsPaymentTerms),
+    creditorsPaymentTermsPath,
+  ).map((node) => ({
+    plant: node.label,
+    value: node.value,
+  }));
+  const creditorsPaymentTermsByVendorCategory = getNodesAtPath(
+    filteredRoot(creditorsPaymentTermsByVendor),
+    creditorsPaymentTermsByVendorPath,
+  ).map((node) => ({
+    category: node.label,
+    value: node.value,
+  }));
+  const actualSpendOverTime = getNodesAtPath(filteredRoot(actualSpend), actualSpendPath).map((node) => ({
+    period: node.label,
+    value: node.value,
+  }));
+  const actualSpendByCapexOpexBreakdown = getNodesAtPath(
+    filteredRoot(actualSpendByCapexOpex),
+    actualSpendByCapexOpexPath,
+  ).map((node) => ({
+    category: node.label,
     value: node.value,
   }));
 
@@ -112,8 +121,8 @@ export const SupplyChainTab = () => {
 
   const breadcrumbPath = [ROOT_LABEL[drill.hierarchy], ...drill.path];
   const contextLabel = breadcrumbPath.join(' / ');
-  const dynamicSummary = resolveAgentSummary('supplyChain', kpis, drill, crossFilters);
   const questionContext = resolveQuestionContext(drill, crossFilters);
+  const dynamicSummary = resolveAgentSummary('procurement', kpis, drill, crossFilters);
 
   return (
     <Stack direction={{ xs: 'column', lg: 'row' }} spacing={3} alignItems="flex-start">
@@ -166,35 +175,45 @@ export const SupplyChainTab = () => {
         </Grid>
 
         <Grid container spacing={3}>
-          <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
             <ChartContainer
               type="bar"
-              title={`Inventory Turnover Ratio by Plant${titleSuffix(inventoryTurnoverPath)}`}
-              data={inventoryTurnoverByPlant}
+              title={`Creditors Payment Terms by Plant${titleSuffix(creditorsPaymentTermsPath)}`}
+              data={creditorsPaymentTermsByPlant}
               categoryKey="plant"
-              series={[{ key: 'value', label: 'Inventory Turnover (x)' }]}
-              onElementClick={handleChartClick(inventoryTurnover, inventoryTurnoverPath)}
+              series={[{ key: 'value', label: 'Payment Terms (days)' }]}
+              onElementClick={handleChartClick(creditorsPaymentTerms, creditorsPaymentTermsPath)}
             />
           </Grid>
-          <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
             <ChartContainer
-              type="line"
-              title="On-Time Delivery Rate by Geography"
-              data={onTimeDeliveryByGeography}
-              categoryKey="zone"
-              series={[{ key: 'value', label: 'On-Time Delivery (%)' }]}
-              // No onElementClick: geography isn't part of the Time/Plant toggle, so this
+              type="donut"
+              title="Creditors Payment Terms by Vendor Category"
+              data={creditorsPaymentTermsByVendorCategory}
+              categoryKey="category"
+              series={[{ key: 'value', label: 'Payment Terms (days)' }]}
+              // No onElementClick: vendor category isn't part of the Time/Plant toggle, so this
               // chart is intentionally non-interactive and always shows the full aggregate.
             />
           </Grid>
-          <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+            <ChartContainer
+              type="line"
+              title={`Actual Spend over Time${titleSuffix(actualSpendPath)}`}
+              data={actualSpendOverTime}
+              categoryKey="period"
+              series={[{ key: 'value', label: 'Actual Spend (₹ Lakh)' }]}
+              onElementClick={handleChartClick(actualSpend, actualSpendPath)}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
             <ChartContainer
               type="donut"
-              title="Freight Cost per Tonne by Geography"
-              data={freightCostByGeography}
-              categoryKey="zone"
-              series={[{ key: 'value', label: 'Freight Cost (INR)' }]}
-              // No onElementClick: geography isn't part of the Time/Plant toggle, so this
+              title="Actual Spend by Capex/Opex"
+              data={actualSpendByCapexOpexBreakdown}
+              categoryKey="category"
+              series={[{ key: 'value', label: 'Actual Spend (₹ Lakh)' }]}
+              // No onElementClick: Capex/Opex isn't part of the Time/Plant toggle, so this
               // chart is intentionally non-interactive and always shows the full aggregate.
             />
           </Grid>
@@ -203,11 +222,11 @@ export const SupplyChainTab = () => {
 
       <Stack spacing={3} sx={{ width: { xs: '100%', lg: 360 }, flexShrink: 0 }}>
         <AgentSummaryPanel
-          insights={dynamicSummary ? [dynamicSummary] : SUPPLY_CHAIN_INSIGHTS}
+          insights={dynamicSummary ? [dynamicSummary] : PROCUREMENT_INSIGHTS}
           contextLabel={contextLabel}
         />
         <ConversationalInsightsPanel
-          questionLibrary={SUPPLY_CHAIN_QUESTIONS}
+          questionLibrary={PROCUREMENT_QUESTIONS}
           context={questionContext}
           contextLabel={contextLabel}
         />
@@ -216,4 +235,4 @@ export const SupplyChainTab = () => {
   );
 };
 
-export default SupplyChainTab;
+export default ProcurementTab;

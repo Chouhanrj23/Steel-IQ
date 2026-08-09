@@ -15,7 +15,9 @@ export const palette: PaletteOptions = {
     contrastText: '#FFFFFF',
   },
   background: {
-    default: '#FFFFFF',
+    // A soft off-white canvas (vs. pure white cards) gives cards visual "lift" without relying
+    // on heavy shadows or borders alone — a standard enterprise-dashboard depth cue.
+    default: '#F6F7FA',
     paper: '#FFFFFF',
   },
   text: {
