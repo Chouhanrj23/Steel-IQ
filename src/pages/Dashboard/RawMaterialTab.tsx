@@ -7,28 +7,35 @@ import mockDataJson from '@mock/mockData.json';
 import type { DashboardMockData, KPI } from '@/types/dashboard';
 import { useDashboardStore, type HierarchyKey } from '@store/dashboard';
 import {
-  KPICard,
+  ConnectedKpiCard,
   ChartContainer,
   DrillDownBreadcrumb,
+  EarlyWarningStrip,
+  ConfigurationPanel,
   AgentSummaryPanel,
   ConversationalInsightsPanel,
 } from '@components/dashboard';
+// Imported directly (not via the '@components/dashboard' barrel) so `echarts` only ends up in
+// the chunk a user downloads when they actually open this tab — see EChartsContainer/index.ts.
+import { LazyEChartsContainer, type TreemapNode } from '@components/dashboard/EChartsContainer';
 import {
   ROOT_LABEL,
   HIERARCHY_OPTIONS,
   getNodeAtPath,
   getNodesAtPath,
-  flattenLeafValues,
   applyCrossFilters,
   sumRootValues,
+  buildContextLabel,
 } from './drillDownUtils';
 import { resolveAgentSummary } from '@/data/agentSummaryTemplates';
+import { describeOverriddenStatuses } from '@/data/earlyWarningRules';
 import { getQuestionsForTab, resolveQuestionContext } from '@/data/conversationalQuestions';
+import { verticalColorOffset } from '@components/dashboard/verticalTheme';
 
 const mockData = mockDataJson as DashboardMockData;
 
 const RAW_MATERIAL_INSIGHTS = [
-  'Iron ore inventory at Rourkela has grown 6.1% quarter-over-quarter while coking coal costs rose per tonne — current stock levels cover roughly 38 days of blast furnace demand, above the 30-day safety threshold.',
+  'Sale of Iron Ore reached 186,000 tonnes this period, up 6.3% on stronger external demand, while Clean Coal Production grew to 92,000 tonnes — Raw Material Wastage Rate and Limestone Consumption both stayed within expected ranges across the plant network.',
 ];
 
 const RAW_MATERIAL_QUESTIONS = getQuestionsForTab('rawMaterial');
@@ -48,22 +55,31 @@ export const RawMaterialTab = () => {
   const drillInto = useDashboardStore((state) => state.drillInto);
   const drillToHierarchyRoot = useDashboardStore((state) => state.drillToHierarchyRoot);
   const drillToSegment = useDashboardStore((state) => state.drillToSegment);
+  const setPlant = useDashboardStore((state) => state.setPlant);
+  const pendingPlantFilter = useDashboardStore((state) => state.pendingPlantFilter);
+  const setPendingPlantFilter = useDashboardStore((state) => state.setPendingPlantFilter);
+  const thresholdOverrides = useDashboardStore((state) => state.thresholdOverrides);
 
-  // Reset to a clean default whenever this tab mounts (including switching back into it),
-  // since the drill store is shared across tabs and another tab's path won't match this
-  // tab's trees.
+  // Reset the in-page drill to a clean default whenever this tab mounts (including switching
+  // back into it), since it's shared across tabs and another tab's path won't match this tab's
+  // trees. Separately, if something navigated here with a specific plant to pre-filter to (the
+  // Overview health cards), apply that as the global Plant cross-filter, once — it composes
+  // with the in-page drill rather than replacing it, now that the two are independent state.
   useEffect(() => {
     drillToHierarchyRoot('plant');
+    if (pendingPlantFilter) {
+      setPlant(pendingPlantFilter);
+      setPendingPlantFilter(null);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const inventory = findKpi(kpis, 'iron-ore-inventory');
-  const coalCost = findKpi(kpis, 'coking-coal-cost-per-tonne');
+  const saleOfIronOre = findKpi(kpis, 'sale-of-iron-ore');
+  const cleanCoalProduction = findKpi(kpis, 'clean-coal-production');
   const wastageRate = findKpi(kpis, 'raw-material-wastage-rate');
   const limestone = findKpi(kpis, 'limestone-consumption');
-  const leadTime = findKpi(kpis, 'raw-material-lead-time');
 
-  const cardKpis = [inventory, coalCost, wastageRate, limestone];
+  const cardKpis = [saleOfIronOre, cleanCoalProduction, wastageRate, limestone];
 
   // Recomputed per KPI so Region/Business Unit/Product Category compose with the Time/Plant
   // drill instead of overriding it — same shape as kpi.drilldown.root, values filtered down.
@@ -80,33 +96,41 @@ export const RawMaterialTab = () => {
     }
   };
 
-  const inventoryPath = matchingPathFor(inventory);
-  const coalCostPath = matchingPathFor(coalCost);
-  // Lead Time is geography-dimensioned; the hierarchy toggle only offers time/plant, so
-  // drill.hierarchy can never equal 'geography' and this is always []. Kept explicit (rather
-  // than hardcoding leadTimeByGeography off the raw root) so the "always full aggregate"
-  // behavior is a direct consequence of the same matching logic every other KPI uses.
-  const leadTimePath = matchingPathFor(leadTime);
+  const saleOfIronOrePath = matchingPathFor(saleOfIronOre);
+  const cleanCoalProductionPath = matchingPathFor(cleanCoalProduction);
+  const wastageRatePath = matchingPathFor(wastageRate);
+  const limestonePath = matchingPathFor(limestone);
 
-  const inventoryByPlant = getNodesAtPath(filteredRoot(inventory), inventoryPath).map((node) => ({
+  const saleOfIronOreOverTime = getNodesAtPath(filteredRoot(saleOfIronOre), saleOfIronOrePath).map(
+    (node) => ({ period: node.label, value: node.value }),
+  );
+  const cleanCoalProductionOverTime = getNodesAtPath(
+    filteredRoot(cleanCoalProduction),
+    cleanCoalProductionPath,
+  ).map((node) => ({ period: node.label, value: node.value }));
+  const wastageRateByPlant = getNodesAtPath(filteredRoot(wastageRate), wastageRatePath).map((node) => ({
     plant: node.label,
     value: node.value,
   }));
-  const coalCostOverTime = getNodesAtPath(filteredRoot(coalCost), coalCostPath).map((node) => ({
-    period: node.label,
-    value: node.value,
-  }));
-  const leadTimeByGeography = getNodesAtPath(filteredRoot(leadTime), leadTimePath).map((node) => ({
-    zone: node.label,
-    value: node.value,
+  // Composition (how total Limestone Consumption splits across Plant, then Line within each
+  // plant), not a flat by-plant comparison — a genuine part-of-whole story a bar chart can only
+  // show one level of. Each node's own `.value` is already the pre-aggregated sum of everything
+  // beneath it (the depth-extension invariant this app maintains throughout), so no re-summing
+  // is needed — just reshape Plant → Line straight from the tree.
+  const limestoneTreemap: TreemapNode[] = filteredRoot(limestone).map((plant) => ({
+    name: plant.label,
+    children: (plant.children ?? []).map((line) => ({ name: line.label, value: line.value })),
   }));
 
   const titleSuffix = (path: string[]) => (path.length ? ` — ${path.join(' / ')}` : '');
 
   const breadcrumbPath = [ROOT_LABEL[drill.hierarchy], ...drill.path];
-  const contextLabel = breadcrumbPath.join(' / ');
+  const contextLabel = buildContextLabel(drill, cardKpis);
   const dynamicSummary = resolveAgentSummary('rawMaterial', kpis, drill, crossFilters);
   const questionContext = resolveQuestionContext(drill, crossFilters);
+  const overrideNotes = describeOverriddenStatuses(cardKpis, { threshold: thresholdOverrides });
+  const baseInsights = dynamicSummary ? [dynamicSummary] : RAW_MATERIAL_INSIGHTS;
+  const insights = overrideNotes.length > 0 ? [...baseInsights, ...overrideNotes] : baseInsights;
 
   return (
     <Stack direction={{ xs: 'column', lg: 'row' }} spacing={3} alignItems="flex-start">
@@ -119,7 +143,7 @@ export const RawMaterialTab = () => {
           <ToggleButtonGroup
             size="small"
             exclusive
-            value={drill.hierarchy === 'geography' ? null : drill.hierarchy}
+            value={drill.hierarchy}
             onChange={(_event, value: HierarchyKey | null) => {
               if (value) drillToHierarchyRoot(value);
             }}
@@ -133,6 +157,8 @@ export const RawMaterialTab = () => {
           </ToggleButtonGroup>
         </Stack>
 
+        <EarlyWarningStrip module="rawMaterial" kpis={kpis} />
+
         <Grid container spacing={3}>
           {cardKpis.map((kpi) => {
             const matchingPath = matchingPathFor(kpi);
@@ -140,64 +166,68 @@ export const RawMaterialTab = () => {
             const node = matchingPath.length ? getNodeAtPath(root, matchingPath) : null;
             const isActiveHierarchy = kpi.drilldown.dimension === drill.hierarchy;
             return (
-              <Grid key={kpi.id} size={{ xs: 12, sm: 6, md: 3 }}>
-                <KPICard
-                  title={kpi.name}
-                  value={node ? node.value : sumRootValues(root)}
-                  unit={kpi.unit}
-                  percentChange={kpi.percentChange}
-                  trend={kpi.trend}
-                  status={kpi.status}
-                  sparklineData={flattenLeafValues(getNodesAtPath(root, matchingPath))}
-                  onClick={
-                    isActiveHierarchy ? undefined : () => drillToHierarchyRoot(kpi.drilldown.dimension)
-                  }
-                />
-              </Grid>
+              <ConnectedKpiCard
+                key={kpi.id}
+                kpi={kpi}
+                value={node ? node.value : sumRootValues(root)}
+                onClick={isActiveHierarchy ? undefined : () => drillToHierarchyRoot(kpi.drilldown.dimension)}
+              />
             );
           })}
         </Grid>
 
         <Grid container spacing={3}>
-          <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
             <ChartContainer
-              type="bar"
-              title={`Iron Ore Inventory by Plant${titleSuffix(inventoryPath)}`}
-              data={inventoryByPlant}
-              categoryKey="plant"
-              series={[{ key: 'value', label: 'Inventory (tonnes)' }]}
-              onElementClick={handleChartClick(inventory, inventoryPath)}
+              type="area"
+              title={`Sale of Iron Ore over Time${titleSuffix(saleOfIronOrePath)}`}
+              data={saleOfIronOreOverTime}
+              categoryKey="period"
+              series={[{ key: 'value', label: 'Sale of Iron Ore (tonnes)' }]}
+              onElementClick={handleChartClick(saleOfIronOre, saleOfIronOrePath)}
+              colorOffset={verticalColorOffset('rawMaterial', 0)}
             />
           </Grid>
-          <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
             <ChartContainer
               type="line"
-              title={`Coking Coal Cost per Tonne over Time${titleSuffix(coalCostPath)}`}
-              data={coalCostOverTime}
+              title={`Clean Coal Production over Time${titleSuffix(cleanCoalProductionPath)}`}
+              data={cleanCoalProductionOverTime}
               categoryKey="period"
-              series={[{ key: 'value', label: 'Cost per Tonne (INR)' }]}
-              onElementClick={handleChartClick(coalCost, coalCostPath)}
+              series={[{ key: 'value', label: 'Clean Coal Production (tonnes)' }]}
+              onElementClick={handleChartClick(cleanCoalProduction, cleanCoalProductionPath)}
+              colorOffset={verticalColorOffset('rawMaterial', 1)}
             />
           </Grid>
-          <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+            {/* A rate (%) per plant, not a continuous series between plants — 'bar' instead of
+                the previous 'area', which visually implied an ordering/continuity across plants
+                that isn't meaningful. */}
             <ChartContainer
-              type="donut"
-              title="Raw Material Lead Time by Geography"
-              data={leadTimeByGeography}
-              categoryKey="zone"
-              series={[{ key: 'value', label: 'Lead Time (days)' }]}
-              // No onElementClick: geography isn't part of the Time/Plant toggle, so this
-              // chart is intentionally non-interactive and always shows the full aggregate.
+              type="bar"
+              title={`Raw Material Wastage Rate by Plant${titleSuffix(wastageRatePath)}`}
+              data={wastageRateByPlant}
+              categoryKey="plant"
+              series={[{ key: 'value', label: 'Wastage Rate (%)' }]}
+              onElementClick={handleChartClick(wastageRate, wastageRatePath)}
+              colorOffset={verticalColorOffset('rawMaterial', 2)}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+            <LazyEChartsContainer
+              type="treemap"
+              title={`Limestone Consumption by Plant & Line${titleSuffix(limestonePath)}`}
+              unit="tonnes"
+              data={limestoneTreemap}
+              onElementClick={handleChartClick(limestone, limestonePath)}
             />
           </Grid>
         </Grid>
       </Stack>
 
       <Stack spacing={3} sx={{ width: { xs: '100%', lg: 360 }, flexShrink: 0 }}>
-        <AgentSummaryPanel
-          insights={dynamicSummary ? [dynamicSummary] : RAW_MATERIAL_INSIGHTS}
-          contextLabel={contextLabel}
-        />
+        <ConfigurationPanel module="rawMaterial" kpis={kpis} />
+        <AgentSummaryPanel insights={insights} contextLabel={contextLabel} />
         <ConversationalInsightsPanel
           questionLibrary={RAW_MATERIAL_QUESTIONS}
           context={questionContext}

@@ -1,15 +1,12 @@
-import { useState } from 'react';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import Chip from '@mui/material/Chip';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import SendIcon from '@mui/icons-material/Send';
 import { Card } from '@components/common';
-import type { LibraryQuestion, QuestionCategory, QuestionContext } from '@/data/conversationalQuestions';
-import { fillAnswerTemplate } from '@/data/conversationalQuestions';
+import type { LibraryQuestion, QuestionContext } from '@/data/conversationalQuestions';
 
 export interface ConversationalQAPair {
   question: string;
@@ -19,32 +16,22 @@ export interface ConversationalQAPair {
 export interface ConversationalInsightsPanelProps {
   /** Static mode: a fixed set of pre-written Q&A pairs, shown as-is (existing tabs). */
   qaPairs?: ConversationalQAPair[];
-  /** Interactive mode: clickable question chips whose answers are filled from `context` and
-   * appended to a growing chat thread. When provided, `qaPairs` is ignored. */
+  /** Interactive mode: same context-driven panel as the static one, minus suggested-question
+   * chips — kept as a prop (rather than removed from every tab) so tabs don't need touching
+   * just to stop showing suggestions. */
   questionLibrary?: LibraryQuestion[];
   context?: QuestionContext;
   contextLabel?: string;
 }
 
-const CATEGORY_ORDER: QuestionCategory[] = ['Reasoning', 'Intelligent Insight', 'Decision-Making'];
-
 export const ConversationalInsightsPanel = ({
   qaPairs,
   questionLibrary,
-  context,
   contextLabel,
 }: ConversationalInsightsPanelProps) => {
-  const [asked, setAsked] = useState<ConversationalQAPair[]>([]);
-
-  const handleAsk = (libraryQuestion: LibraryQuestion) => {
-    const answer = fillAnswerTemplate(
-      libraryQuestion.answerTemplate,
-      context ?? { plant: 'All Plants', period: 'All Time', bu: 'All Business Units', region: 'All Regions' },
-    );
-    setAsked((prev) => [...prev, { question: libraryQuestion.question, answer }]);
-  };
-
-  const displayPairs = questionLibrary ? asked : (qaPairs ?? []);
+  // No suggested-question chips — the interactive mode's chat thread stays empty (nothing
+  // populates it without a chip to click) rather than pre-seeding fake conversation history.
+  const displayPairs = questionLibrary ? [] : (qaPairs ?? []);
 
   return (
     <Card>
@@ -70,38 +57,6 @@ export const ConversationalInsightsPanel = ({
           <Typography variant="caption" color="text.secondary">
             Showing: {contextLabel}
           </Typography>
-        )}
-        {questionLibrary && (
-          <Stack spacing={1}>
-            {CATEGORY_ORDER.map((category) => {
-              const categoryQuestions = questionLibrary.filter((q) => q.category === category);
-              if (categoryQuestions.length === 0) return null;
-              return (
-                <Stack key={category} spacing={0.5}>
-                  <Typography variant="caption" color="text.secondary">
-                    {category}
-                  </Typography>
-                  <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-                    {categoryQuestions.map((q) => (
-                      <Chip
-                        key={q.id}
-                        label={q.question}
-                        size="small"
-                        variant="outlined"
-                        clickable
-                        onClick={() => handleAsk(q)}
-                        sx={{
-                          maxWidth: '100%',
-                          height: 'auto',
-                          '& .MuiChip-label': { whiteSpace: 'normal', py: 0.5 },
-                        }}
-                      />
-                    ))}
-                  </Stack>
-                </Stack>
-              );
-            })}
-          </Stack>
         )}
         <Stack spacing={1.5} sx={{ maxHeight: 360, overflowY: 'auto' }}>
           {displayPairs.map((pair, index) => (

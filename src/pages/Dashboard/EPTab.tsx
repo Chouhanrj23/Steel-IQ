@@ -7,9 +7,11 @@ import mockDataJson from '@mock/mockData.json';
 import type { DashboardMockData, KPI } from '@/types/dashboard';
 import { useDashboardStore, type HierarchyKey } from '@store/dashboard';
 import {
-  KPICard,
+  ConnectedKpiCard,
   ChartContainer,
   DrillDownBreadcrumb,
+  EarlyWarningStrip,
+  ConfigurationPanel,
   AgentSummaryPanel,
   ConversationalInsightsPanel,
 } from '@components/dashboard';
@@ -18,20 +20,21 @@ import {
   HIERARCHY_OPTIONS,
   getNodeAtPath,
   getNodesAtPath,
-  flattenLeafValues,
   applyCrossFilters,
   sumRootValues,
+  buildContextLabel,
 } from './drillDownUtils';
 import { resolveAgentSummary } from '@/data/agentSummaryTemplates';
 import { getQuestionsForTab, resolveQuestionContext } from '@/data/conversationalQuestions';
+import { describeOverriddenStatuses } from '@/data/earlyWarningRules';
 
 const mockData = mockDataJson as DashboardMockData;
 
-const PRODUCT_INSIGHTS = [
-  'Production volume held at 214,500 tonnes with yield rate at 92.3% and capacity utilization at 88.1% — defect rate stayed contained at 2.4% even as the Value-Added Steel mix rose to 34.6% of total output.',
+const EP_INSIGHTS = [
+  'Spend vs Plan reached ₹4,820 Cr against an annual plan of ₹5,500 Cr, with Scheme Closure improving to 68% — Capex Utilization Rate climbed to 82.4% even as Project Milestone Adherence slipped to 74.1%, pointing to a handful of plants running behind their approved schedules.',
 ];
 
-const PRODUCT_QUESTIONS = getQuestionsForTab('product');
+const EP_QUESTIONS = getQuestionsForTab('ep');
 
 const findKpi = (kpis: KPI[], id: string): KPI => {
   const kpi = kpis.find((item) => item.id === id);
@@ -41,29 +44,30 @@ const findKpi = (kpis: KPI[], id: string): KPI => {
   return kpi;
 };
 
-export const ProductTab = () => {
-  const { kpis } = mockData.modules.product;
+export const EPTab = () => {
+  const { kpis } = mockData.modules.ep;
   const drill = useDashboardStore((state) => state.drill);
   const crossFilters = useDashboardStore((state) => state.crossFilters);
   const drillInto = useDashboardStore((state) => state.drillInto);
   const drillToHierarchyRoot = useDashboardStore((state) => state.drillToHierarchyRoot);
   const drillToSegment = useDashboardStore((state) => state.drillToSegment);
+  const thresholdOverrides = useDashboardStore((state) => state.thresholdOverrides);
 
   // Reset to a clean default whenever this tab mounts (including switching back into it),
   // since the drill store is shared across tabs and another tab's path won't match this
-  // tab's trees.
+  // tab's trees. None of E&P's KPIs are plant-dimensioned, so the Plant hierarchy starts (and
+  // stays) at full aggregate for every card — same convention as every other tab.
   useEffect(() => {
     drillToHierarchyRoot('plant');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const productionVolume = findKpi(kpis, 'production-volume');
-  const yieldRate = findKpi(kpis, 'yield-rate');
-  const defectRate = findKpi(kpis, 'defect-rate');
-  const capacityUtilization = findKpi(kpis, 'capacity-utilization');
-  const valueAddedSteelMix = findKpi(kpis, 'value-added-steel-mix');
+  const spendVsPlan = findKpi(kpis, 'ep-spend-vs-plan');
+  const schemeClosure = findKpi(kpis, 'ep-scheme-closure');
+  const capexUtilizationRate = findKpi(kpis, 'ep-capex-utilization-rate');
+  const projectMilestoneAdherence = findKpi(kpis, 'ep-project-milestone-adherence');
 
-  const cardKpis = [productionVolume, yieldRate, defectRate, capacityUtilization, valueAddedSteelMix];
+  const cardKpis = [spendVsPlan, schemeClosure, capexUtilizationRate, projectMilestoneAdherence];
 
   // Recomputed per KPI so Region/Business Unit/Product Category compose with the Time/Plant
   // drill instead of overriding it — same shape as kpi.drilldown.root, values filtered down.
@@ -80,37 +84,36 @@ export const ProductTab = () => {
     }
   };
 
-  const productionVolumePath = matchingPathFor(productionVolume);
-  const capacityUtilizationPath = matchingPathFor(capacityUtilization);
-  const valueAddedSteelMixPath = matchingPathFor(valueAddedSteelMix);
+  const spendVsPlanPath = matchingPathFor(spendVsPlan);
+  const schemeClosurePath = matchingPathFor(schemeClosure);
+  const capexUtilizationRatePath = matchingPathFor(capexUtilizationRate);
+  const projectMilestoneAdherencePath = matchingPathFor(projectMilestoneAdherence);
 
-  const productionVolumeByPlant = getNodesAtPath(filteredRoot(productionVolume), productionVolumePath).map(
-    (node) => ({
-      plant: node.label,
-      value: node.value,
-    }),
-  );
-  const capacityUtilizationByPlant = getNodesAtPath(
-    filteredRoot(capacityUtilization),
-    capacityUtilizationPath,
-  ).map((node) => ({
-    plant: node.label,
-    value: node.value,
-  }));
-  const valueAddedSteelMixOverTime = getNodesAtPath(
-    filteredRoot(valueAddedSteelMix),
-    valueAddedSteelMixPath,
-  ).map((node) => ({
+  const spendVsPlanOverTime = getNodesAtPath(filteredRoot(spendVsPlan), spendVsPlanPath).map((node) => ({
     period: node.label,
     value: node.value,
   }));
+  const schemeClosureOverTime = getNodesAtPath(filteredRoot(schemeClosure), schemeClosurePath).map(
+    (node) => ({ period: node.label, value: node.value }),
+  );
+  const capexUtilizationRateOverTime = getNodesAtPath(
+    filteredRoot(capexUtilizationRate),
+    capexUtilizationRatePath,
+  ).map((node) => ({ period: node.label, value: node.value }));
+  const projectMilestoneAdherenceOverTime = getNodesAtPath(
+    filteredRoot(projectMilestoneAdherence),
+    projectMilestoneAdherencePath,
+  ).map((node) => ({ period: node.label, value: node.value }));
 
   const titleSuffix = (path: string[]) => (path.length ? ` — ${path.join(' / ')}` : '');
 
   const breadcrumbPath = [ROOT_LABEL[drill.hierarchy], ...drill.path];
-  const contextLabel = breadcrumbPath.join(' / ');
-  const dynamicSummary = resolveAgentSummary('product', kpis, drill, crossFilters);
+  const contextLabel = buildContextLabel(drill, cardKpis);
+  const dynamicSummary = resolveAgentSummary('ep', kpis, drill, crossFilters);
   const questionContext = resolveQuestionContext(drill, crossFilters);
+  const overrideNotes = describeOverriddenStatuses(cardKpis, { threshold: thresholdOverrides });
+  const baseInsights = dynamicSummary ? [dynamicSummary] : EP_INSIGHTS;
+  const insights = overrideNotes.length > 0 ? [...baseInsights, ...overrideNotes] : baseInsights;
 
   return (
     <Stack direction={{ xs: 'column', lg: 'row' }} spacing={3} alignItems="flex-start">
@@ -137,6 +140,8 @@ export const ProductTab = () => {
           </ToggleButtonGroup>
         </Stack>
 
+        <EarlyWarningStrip module="ep" kpis={kpis} />
+
         <Grid container spacing={3}>
           {cardKpis.map((kpi) => {
             const matchingPath = matchingPathFor(kpi);
@@ -144,65 +149,65 @@ export const ProductTab = () => {
             const node = matchingPath.length ? getNodeAtPath(root, matchingPath) : null;
             const isActiveHierarchy = kpi.drilldown.dimension === drill.hierarchy;
             return (
-              <Grid key={kpi.id} size={{ xs: 12, sm: 6, md: 3 }}>
-                <KPICard
-                  title={kpi.name}
-                  value={node ? node.value : sumRootValues(root)}
-                  unit={kpi.unit}
-                  percentChange={kpi.percentChange}
-                  trend={kpi.trend}
-                  status={kpi.status}
-                  sparklineData={flattenLeafValues(getNodesAtPath(root, matchingPath))}
-                  onClick={
-                    isActiveHierarchy ? undefined : () => drillToHierarchyRoot(kpi.drilldown.dimension)
-                  }
-                />
-              </Grid>
+              <ConnectedKpiCard
+                key={kpi.id}
+                kpi={kpi}
+                value={node ? node.value : sumRootValues(root)}
+                onClick={isActiveHierarchy ? undefined : () => drillToHierarchyRoot(kpi.drilldown.dimension)}
+              />
             );
           })}
         </Grid>
 
         <Grid container spacing={3}>
-          <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
             <ChartContainer
               type="bar"
-              title={`Production Volume by Plant${titleSuffix(productionVolumePath)}`}
-              data={productionVolumeByPlant}
-              categoryKey="plant"
-              series={[{ key: 'value', label: 'Production Volume (tonnes)' }]}
-              onElementClick={handleChartClick(productionVolume, productionVolumePath)}
+              title={`Spend vs Plan over Time${titleSuffix(spendVsPlanPath)}`}
+              data={spendVsPlanOverTime}
+              categoryKey="period"
+              series={[{ key: 'value', label: 'Spend vs Plan (INR Cr)' }]}
+              onElementClick={handleChartClick(spendVsPlan, spendVsPlanPath)}
             />
           </Grid>
-          <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
             <ChartContainer
               type="line"
-              title={`Value-Added Steel Mix over Time${titleSuffix(valueAddedSteelMixPath)}`}
-              data={valueAddedSteelMixOverTime}
+              title={`Scheme Closure over Time${titleSuffix(schemeClosurePath)}`}
+              data={schemeClosureOverTime}
               categoryKey="period"
-              series={[{ key: 'value', label: 'Value-Added Steel Mix (%)' }]}
-              onElementClick={handleChartClick(valueAddedSteelMix, valueAddedSteelMixPath)}
+              series={[{ key: 'value', label: 'Scheme Closure (%)' }]}
+              onElementClick={handleChartClick(schemeClosure, schemeClosurePath)}
             />
           </Grid>
-          <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
             <ChartContainer
               type="area"
-              title={`Capacity Utilization by Plant${titleSuffix(capacityUtilizationPath)}`}
-              data={capacityUtilizationByPlant}
-              categoryKey="plant"
-              series={[{ key: 'value', label: 'Capacity Utilization (%)' }]}
-              onElementClick={handleChartClick(capacityUtilization, capacityUtilizationPath)}
+              title={`Capex Utilization Rate over Time${titleSuffix(capexUtilizationRatePath)}`}
+              data={capexUtilizationRateOverTime}
+              categoryKey="period"
+              series={[{ key: 'value', label: 'Capex Utilization Rate (%)' }]}
+              onElementClick={handleChartClick(capexUtilizationRate, capexUtilizationRatePath)}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+            <ChartContainer
+              type="bar"
+              title={`Project Milestone Adherence over Time${titleSuffix(projectMilestoneAdherencePath)}`}
+              data={projectMilestoneAdherenceOverTime}
+              categoryKey="period"
+              series={[{ key: 'value', label: 'Milestone Adherence (%)' }]}
+              onElementClick={handleChartClick(projectMilestoneAdherence, projectMilestoneAdherencePath)}
             />
           </Grid>
         </Grid>
       </Stack>
 
       <Stack spacing={3} sx={{ width: { xs: '100%', lg: 360 }, flexShrink: 0 }}>
-        <AgentSummaryPanel
-          insights={dynamicSummary ? [dynamicSummary] : PRODUCT_INSIGHTS}
-          contextLabel={contextLabel}
-        />
+        <ConfigurationPanel module="ep" kpis={kpis} />
+        <AgentSummaryPanel insights={insights} contextLabel={contextLabel} />
         <ConversationalInsightsPanel
-          questionLibrary={PRODUCT_QUESTIONS}
+          questionLibrary={EP_QUESTIONS}
           context={questionContext}
           contextLabel={contextLabel}
         />
@@ -211,4 +216,4 @@ export const ProductTab = () => {
   );
 };
 
-export default ProductTab;
+export default EPTab;

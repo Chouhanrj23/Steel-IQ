@@ -7,9 +7,11 @@ import mockDataJson from '@mock/mockData.json';
 import type { DashboardMockData, KPI } from '@/types/dashboard';
 import { useDashboardStore, type HierarchyKey } from '@store/dashboard';
 import {
-  KPICard,
+  ConnectedKpiCard,
   ChartContainer,
   DrillDownBreadcrumb,
+  EarlyWarningStrip,
+  ConfigurationPanel,
   AgentSummaryPanel,
   ConversationalInsightsPanel,
 } from '@components/dashboard';
@@ -18,17 +20,18 @@ import {
   HIERARCHY_OPTIONS,
   getNodeAtPath,
   getNodesAtPath,
-  flattenLeafValues,
   applyCrossFilters,
   sumRootValues,
+  buildContextLabel,
 } from './drillDownUtils';
 import { getQuestionsForTab, resolveQuestionContext } from '@/data/conversationalQuestions';
 import { resolveAgentSummary } from '@/data/agentSummaryTemplates';
+import { describeOverriddenStatuses } from '@/data/earlyWarningRules';
 
 const mockData = mockDataJson as DashboardMockData;
 
 const PROCUREMENT_INSIGHTS = [
-  'Creditors payment terms extended to 38.4 days while actual spend rose 10.1% to ₹18,600 Lakh — the increase was driven far more by Capex (up ~26% on Machinery & Equipment and Plant Expansion) than by Opex (up ~2%), even as vendor on-time delivery improved to 88.4%.',
+  'Creditors Payment Terms now run 38.4 days while Actual Spend rose to ₹18,600 Lakh, led by the Raw Materials category — Vendor On-Time Delivery improved to 88.4% even as Purchase Order Cycle Time tightened to 4.2 days.',
 ];
 
 const PROCUREMENT_QUESTIONS = getQuestionsForTab('procurement');
@@ -48,6 +51,7 @@ export const ProcurementTab = () => {
   const drillInto = useDashboardStore((state) => state.drillInto);
   const drillToHierarchyRoot = useDashboardStore((state) => state.drillToHierarchyRoot);
   const drillToSegment = useDashboardStore((state) => state.drillToSegment);
+  const thresholdOverrides = useDashboardStore((state) => state.thresholdOverrides);
 
   // Reset to a clean default whenever this tab mounts (including switching back into it),
   // since the drill store is shared across tabs and another tab's path won't match this
@@ -58,9 +62,7 @@ export const ProcurementTab = () => {
   }, []);
 
   const creditorsPaymentTerms = findKpi(kpis, 'creditors-payment-terms');
-  const creditorsPaymentTermsByVendor = findKpi(kpis, 'creditors-payment-terms-by-vendor');
   const actualSpend = findKpi(kpis, 'actual-spend');
-  const actualSpendByCapexOpex = findKpi(kpis, 'actual-spend-by-capex-opex');
   const vendorOnTimeDelivery = findKpi(kpis, 'vendor-on-time-delivery');
   const poCycleTime = findKpi(kpis, 'purchase-order-cycle-time');
 
@@ -83,46 +85,35 @@ export const ProcurementTab = () => {
 
   const creditorsPaymentTermsPath = matchingPathFor(creditorsPaymentTerms);
   const actualSpendPath = matchingPathFor(actualSpend);
-  // Both "by vendor category" and "by Capex/Opex" are category-dimensioned; the hierarchy
-  // toggle only offers time/plant, so drill.hierarchy can never equal 'category' and these are
-  // always []. Kept explicit (rather than hardcoding the breakdowns off the raw root) so the
-  // "always full aggregate" behavior is a direct consequence of the same matching logic every
-  // other KPI uses.
-  const creditorsPaymentTermsByVendorPath = matchingPathFor(creditorsPaymentTermsByVendor);
-  const actualSpendByCapexOpexPath = matchingPathFor(actualSpendByCapexOpex);
+  const vendorOnTimeDeliveryPath = matchingPathFor(vendorOnTimeDelivery);
+  const poCycleTimePath = matchingPathFor(poCycleTime);
 
-  const creditorsPaymentTermsByPlant = getNodesAtPath(
+  const creditorsPaymentTermsOverTime = getNodesAtPath(
     filteredRoot(creditorsPaymentTerms),
     creditorsPaymentTermsPath,
-  ).map((node) => ({
-    plant: node.label,
-    value: node.value,
-  }));
-  const creditorsPaymentTermsByVendorCategory = getNodesAtPath(
-    filteredRoot(creditorsPaymentTermsByVendor),
-    creditorsPaymentTermsByVendorPath,
-  ).map((node) => ({
-    category: node.label,
-    value: node.value,
-  }));
+  ).map((node) => ({ period: node.label, value: node.value }));
   const actualSpendOverTime = getNodesAtPath(filteredRoot(actualSpend), actualSpendPath).map((node) => ({
     period: node.label,
     value: node.value,
   }));
-  const actualSpendByCapexOpexBreakdown = getNodesAtPath(
-    filteredRoot(actualSpendByCapexOpex),
-    actualSpendByCapexOpexPath,
-  ).map((node) => ({
-    category: node.label,
+  const vendorOnTimeDeliveryByPlant = getNodesAtPath(
+    filteredRoot(vendorOnTimeDelivery),
+    vendorOnTimeDeliveryPath,
+  ).map((node) => ({ plant: node.label, value: node.value }));
+  const poCycleTimeOverTime = getNodesAtPath(filteredRoot(poCycleTime), poCycleTimePath).map((node) => ({
+    period: node.label,
     value: node.value,
   }));
 
   const titleSuffix = (path: string[]) => (path.length ? ` — ${path.join(' / ')}` : '');
 
   const breadcrumbPath = [ROOT_LABEL[drill.hierarchy], ...drill.path];
-  const contextLabel = breadcrumbPath.join(' / ');
+  const contextLabel = buildContextLabel(drill, cardKpis);
   const questionContext = resolveQuestionContext(drill, crossFilters);
   const dynamicSummary = resolveAgentSummary('procurement', kpis, drill, crossFilters);
+  const overrideNotes = describeOverriddenStatuses(cardKpis, { threshold: thresholdOverrides });
+  const baseInsights = dynamicSummary ? [dynamicSummary] : PROCUREMENT_INSIGHTS;
+  const insights = overrideNotes.length > 0 ? [...baseInsights, ...overrideNotes] : baseInsights;
 
   return (
     <Stack direction={{ xs: 'column', lg: 'row' }} spacing={3} alignItems="flex-start">
@@ -149,6 +140,8 @@ export const ProcurementTab = () => {
           </ToggleButtonGroup>
         </Stack>
 
+        <EarlyWarningStrip module="procurement" kpis={kpis} />
+
         <Grid container spacing={3}>
           {cardKpis.map((kpi) => {
             const matchingPath = matchingPathFor(kpi);
@@ -156,20 +149,12 @@ export const ProcurementTab = () => {
             const node = matchingPath.length ? getNodeAtPath(root, matchingPath) : null;
             const isActiveHierarchy = kpi.drilldown.dimension === drill.hierarchy;
             return (
-              <Grid key={kpi.id} size={{ xs: 12, sm: 6, md: 3 }}>
-                <KPICard
-                  title={kpi.name}
-                  value={node ? node.value : sumRootValues(root)}
-                  unit={kpi.unit}
-                  percentChange={kpi.percentChange}
-                  trend={kpi.trend}
-                  status={kpi.status}
-                  sparklineData={flattenLeafValues(getNodesAtPath(root, matchingPath))}
-                  onClick={
-                    isActiveHierarchy ? undefined : () => drillToHierarchyRoot(kpi.drilldown.dimension)
-                  }
-                />
-              </Grid>
+              <ConnectedKpiCard
+                key={kpi.id}
+                kpi={kpi}
+                value={node ? node.value : sumRootValues(root)}
+                onClick={isActiveHierarchy ? undefined : () => drillToHierarchyRoot(kpi.drilldown.dimension)}
+              />
             );
           })}
         </Grid>
@@ -178,22 +163,11 @@ export const ProcurementTab = () => {
           <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
             <ChartContainer
               type="bar"
-              title={`Creditors Payment Terms by Plant${titleSuffix(creditorsPaymentTermsPath)}`}
-              data={creditorsPaymentTermsByPlant}
-              categoryKey="plant"
+              title={`Creditors Payment Terms over Time${titleSuffix(creditorsPaymentTermsPath)}`}
+              data={creditorsPaymentTermsOverTime}
+              categoryKey="period"
               series={[{ key: 'value', label: 'Payment Terms (days)' }]}
               onElementClick={handleChartClick(creditorsPaymentTerms, creditorsPaymentTermsPath)}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
-            <ChartContainer
-              type="donut"
-              title="Creditors Payment Terms by Vendor Category"
-              data={creditorsPaymentTermsByVendorCategory}
-              categoryKey="category"
-              series={[{ key: 'value', label: 'Payment Terms (days)' }]}
-              // No onElementClick: vendor category isn't part of the Time/Plant toggle, so this
-              // chart is intentionally non-interactive and always shows the full aggregate.
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
@@ -208,23 +182,30 @@ export const ProcurementTab = () => {
           </Grid>
           <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
             <ChartContainer
-              type="donut"
-              title="Actual Spend by Capex/Opex"
-              data={actualSpendByCapexOpexBreakdown}
-              categoryKey="category"
-              series={[{ key: 'value', label: 'Actual Spend (₹ Lakh)' }]}
-              // No onElementClick: Capex/Opex isn't part of the Time/Plant toggle, so this
-              // chart is intentionally non-interactive and always shows the full aggregate.
+              type="area"
+              title={`Vendor On-Time Delivery by Plant${titleSuffix(vendorOnTimeDeliveryPath)}`}
+              data={vendorOnTimeDeliveryByPlant}
+              categoryKey="plant"
+              series={[{ key: 'value', label: 'On-Time Delivery (%)' }]}
+              onElementClick={handleChartClick(vendorOnTimeDelivery, vendorOnTimeDeliveryPath)}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+            <ChartContainer
+              type="bar"
+              title={`Purchase Order Cycle Time over Time${titleSuffix(poCycleTimePath)}`}
+              data={poCycleTimeOverTime}
+              categoryKey="period"
+              series={[{ key: 'value', label: 'PO Cycle Time (days)' }]}
+              onElementClick={handleChartClick(poCycleTime, poCycleTimePath)}
             />
           </Grid>
         </Grid>
       </Stack>
 
       <Stack spacing={3} sx={{ width: { xs: '100%', lg: 360 }, flexShrink: 0 }}>
-        <AgentSummaryPanel
-          insights={dynamicSummary ? [dynamicSummary] : PROCUREMENT_INSIGHTS}
-          contextLabel={contextLabel}
-        />
+        <ConfigurationPanel module="procurement" kpis={kpis} />
+        <AgentSummaryPanel insights={insights} contextLabel={contextLabel} />
         <ConversationalInsightsPanel
           questionLibrary={PROCUREMENT_QUESTIONS}
           context={questionContext}

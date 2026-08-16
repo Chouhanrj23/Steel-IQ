@@ -6,10 +6,9 @@ import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import TuneIcon from '@mui/icons-material/Tune';
-import type { SelectChangeEvent } from '@mui/material/Select';
 import { useDashboardStore } from '@store/dashboard';
 
-type CrossFilterId = 'region' | 'businessUnit' | 'productCategory';
+type CrossFilterId = 'plant' | 'region' | 'businessUnit' | 'productCategory';
 
 interface FilterDef {
   id: CrossFilterId;
@@ -18,7 +17,24 @@ interface FilterDef {
   options: string[];
 }
 
+// Plant lives in this same list (not wired to `drill` like the Time/Plant breadcrumb toggle
+// each tab renders) so it composes with Region/Business Unit/Product Category and with
+// Year/Quarter/Month via simple AND logic, rather than the two Plant controls fighting over one
+// shared hierarchy/path slot — the bug the filter audit found (picking a Plant here used to
+// silently discard an active Year/Quarter/Month selection, and vice versa).
 const CROSS_FILTERS: FilterDef[] = [
+  {
+    id: 'plant',
+    label: 'Plant',
+    options: [
+      'All Plants',
+      'Rourkela Plant',
+      'Jamshedpur Plant',
+      'Bhilai Plant',
+      'Hazira Plant',
+      'Bellary Plant',
+    ],
+  },
   { id: 'region', label: 'Region', options: ['All Regions', 'East', 'West', 'South', 'Central'] },
   {
     id: 'businessUnit',
@@ -39,14 +55,6 @@ const CROSS_FILTERS: FilterDef[] = [
   },
 ];
 
-const PLANT_OPTIONS = [
-  'All Plants',
-  'Rourkela Plant',
-  'Jamshedpur Plant',
-  'Bhilai Plant',
-  'Hazira Plant',
-  'Bellary Plant',
-];
 const YEAR_OPTIONS = ['All Years', '2024', '2025'];
 const QUARTER_OPTIONS = ['All Quarters', 'Q1', 'Q2', 'Q3', 'Q4'];
 const MONTH_OPTIONS = [
@@ -65,6 +73,10 @@ const MONTH_OPTIONS = [
   'Dec',
 ];
 
+const YEAR_LABELS = new Set(YEAR_OPTIONS.slice(1));
+const QUARTER_LABELS = new Set(QUARTER_OPTIONS.slice(1));
+const MONTH_LABELS = new Set(MONTH_OPTIONS.slice(1));
+
 const QUARTER_OF_MONTH: Record<string, string> = {
   Jan: 'Q1',
   Feb: 'Q1',
@@ -80,6 +92,22 @@ const QUARTER_OF_MONTH: Record<string, string> = {
   Dec: 'Q4',
 };
 
+/** Reads Year/Quarter/Month back out of `drill.path` by classifying each segment against the
+ * three disjoint label sets, rather than assuming a fixed `[year, quarter, month]` position —
+ * a Quarter or Month picked without a Year (see `handleTimeChange`) produces a one-segment path
+ * like `['Q2']`, which a positional `path[0]/[1]/[2]` read would misread as a Year. */
+const parseTimePath = (path: string[]): { year: string; quarter: string; month: string } => {
+  let year = 'All Years';
+  let quarter = 'All Quarters';
+  let month = 'All Months';
+  for (const segment of path) {
+    if (YEAR_LABELS.has(segment)) year = segment;
+    else if (QUARTER_LABELS.has(segment)) quarter = segment;
+    else if (MONTH_LABELS.has(segment)) month = segment;
+  }
+  return { year, quarter, month };
+};
+
 export const GlobalFilterBar = () => {
   const drill = useDashboardStore((state) => state.drill);
   const setHierarchyPath = useDashboardStore((state) => state.setHierarchyPath);
@@ -87,30 +115,35 @@ export const GlobalFilterBar = () => {
   const setRegion = useDashboardStore((state) => state.setRegion);
   const setBusinessUnit = useDashboardStore((state) => state.setBusinessUnit);
   const setProductCategory = useDashboardStore((state) => state.setProductCategory);
+  const setPlant = useDashboardStore((state) => state.setPlant);
 
   const crossFilterSetters = {
+    plant: setPlant,
     region: setRegion,
     businessUnit: setBusinessUnit,
     productCategory: setProductCategory,
   } satisfies Record<CrossFilterId, (value: string | null) => void>;
 
-  const plantValue = drill.hierarchy === 'plant' ? (drill.path[0] ?? 'All Plants') : 'All Plants';
-  const yearValue = drill.hierarchy === 'time' ? (drill.path[0] ?? 'All Years') : 'All Years';
-  const quarterValue = drill.hierarchy === 'time' ? (drill.path[1] ?? 'All Quarters') : 'All Quarters';
-  const monthValue = drill.hierarchy === 'time' ? (drill.path[2] ?? 'All Months') : 'All Months';
-
-  const handlePlantChange = (event: SelectChangeEvent) => {
-    const value = event.target.value;
-    setHierarchyPath('plant', value === 'All Plants' ? [] : [value]);
-  };
+  const {
+    year: yearValue,
+    quarter: quarterValue,
+    month: monthValue,
+  } = drill.hierarchy === 'time'
+    ? parseTimePath(drill.path)
+    : { year: 'All Years', quarter: 'All Quarters', month: 'All Months' };
 
   const handleTimeChange = (next: { year?: string; quarter?: string; month?: string }) => {
     const year = next.year ?? yearValue;
     const quarter = next.quarter ?? quarterValue;
     const month = next.month ?? monthValue;
 
+    const mostSpecificYearless = month !== 'All Months' ? month : quarter !== 'All Quarters' ? quarter : null;
+
     if (year === 'All Years') {
-      setHierarchyPath('time', []);
+      // No Year picked -- if a Quarter/Month is set, filter on it across every year (a
+      // one-segment path like ['Q2'], which getNodeAtPath/getNodesAtPath aggregate across all
+      // years rather than guessing one) instead of silently discarding the selection.
+      setHierarchyPath('time', mostSpecificYearless ? [mostSpecificYearless] : []);
       return;
     }
     if (month !== 'All Months') {
@@ -146,16 +179,6 @@ export const GlobalFilterBar = () => {
             Filters
           </Typography>
         </Stack>
-        <FormControl size="small" sx={{ minWidth: 160 }}>
-          <InputLabel id="plant-filter-label">Plant</InputLabel>
-          <Select labelId="plant-filter-label" label="Plant" value={plantValue} onChange={handlePlantChange}>
-            {PLANT_OPTIONS.map((option) => (
-              <MenuItem key={option} value={option}>
-                {option}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
 
         {CROSS_FILTERS.map((filter) => {
           const allOption = filter.options[0]!;

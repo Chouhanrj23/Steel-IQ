@@ -7,9 +7,11 @@ import mockDataJson from '@mock/mockData.json';
 import type { DashboardMockData, KPI } from '@/types/dashboard';
 import { useDashboardStore, type HierarchyKey } from '@store/dashboard';
 import {
-  KPICard,
+  ConnectedKpiCard,
   ChartContainer,
   DrillDownBreadcrumb,
+  EarlyWarningStrip,
+  ConfigurationPanel,
   AgentSummaryPanel,
   ConversationalInsightsPanel,
 } from '@components/dashboard';
@@ -18,17 +20,19 @@ import {
   HIERARCHY_OPTIONS,
   getNodeAtPath,
   getNodesAtPath,
-  flattenLeafValues,
   applyCrossFilters,
   sumRootValues,
+  buildContextLabel,
 } from './drillDownUtils';
 import { resolveAgentSummary } from '@/data/agentSummaryTemplates';
 import { getQuestionsForTab, resolveQuestionContext } from '@/data/conversationalQuestions';
+import { describeOverriddenStatuses } from '@/data/earlyWarningRules';
+import { verticalColorOffset } from '@components/dashboard/verticalTheme';
 
 const mockData = mockDataJson as DashboardMockData;
 
 const MARKETING_FINANCE_INSIGHTS = [
-  'Revenue held at ₹1,842 Cr with EBITDA margin at 21.4% and net profit of ₹268 Cr — market share stayed steady at 14.2% even as customer acquisition cost rose to ₹8,600, against an order book value of ₹3,120 Cr.',
+  'Factoring & Collection Trend reached ₹6,240 Lakh, led by Key Account Customers in the Automotive vertical, while Interest on Overdue rose to ₹184 Lakh — Conversion Cost Trend edged up to ₹8,450, even as Net Profit grew to ₹268 Cr.',
 ];
 
 const MARKETING_FINANCE_QUESTIONS = getQuestionsForTab('marketingFinance');
@@ -48,6 +52,7 @@ export const MarketingFinanceTab = () => {
   const drillInto = useDashboardStore((state) => state.drillInto);
   const drillToHierarchyRoot = useDashboardStore((state) => state.drillToHierarchyRoot);
   const drillToSegment = useDashboardStore((state) => state.drillToSegment);
+  const thresholdOverrides = useDashboardStore((state) => state.thresholdOverrides);
 
   // Reset to a clean default whenever this tab mounts (including switching back into it),
   // since the drill store is shared across tabs and another tab's path won't match this
@@ -58,14 +63,12 @@ export const MarketingFinanceTab = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const revenue = findKpi(kpis, 'revenue');
-  const ebitdaMargin = findKpi(kpis, 'ebitda-margin');
+  const factoringCollection = findKpi(kpis, 'mf-factoring-collection-trend');
+  const interestOnOverdue = findKpi(kpis, 'mf-interest-on-overdue');
+  const conversionCost = findKpi(kpis, 'mf-conversion-cost-trend');
   const netProfit = findKpi(kpis, 'net-profit');
-  const marketShare = findKpi(kpis, 'market-share');
-  const customerAcquisitionCost = findKpi(kpis, 'customer-acquisition-cost');
-  const orderBookValue = findKpi(kpis, 'order-book-value');
 
-  const cardKpis = [revenue, ebitdaMargin, netProfit, marketShare, customerAcquisitionCost, orderBookValue];
+  const cardKpis = [factoringCollection, interestOnOverdue, conversionCost, netProfit];
 
   // Recomputed per KPI so Region/Business Unit/Product Category compose with the Time/Plant
   // drill instead of overriding it — same shape as kpi.drilldown.root, values filtered down.
@@ -82,33 +85,36 @@ export const MarketingFinanceTab = () => {
     }
   };
 
-  const ebitdaMarginPath = matchingPathFor(ebitdaMargin);
+  const factoringCollectionPath = matchingPathFor(factoringCollection);
+  const interestOnOverduePath = matchingPathFor(interestOnOverdue);
+  const conversionCostPath = matchingPathFor(conversionCost);
   const netProfitPath = matchingPathFor(netProfit);
-  // Revenue is geography-dimensioned; the hierarchy toggle only offers time/plant, so
-  // drill.hierarchy can never equal 'geography' and this is always []. Kept explicit (rather
-  // than hardcoding the chart off the raw root) so the "always full aggregate" behavior is a
-  // direct consequence of the same matching logic every other KPI uses.
-  const revenuePath = matchingPathFor(revenue);
 
-  const ebitdaMarginOverTime = getNodesAtPath(filteredRoot(ebitdaMargin), ebitdaMarginPath).map((node) => ({
-    period: node.label,
-    value: node.value,
-  }));
+  const factoringCollectionOverTime = getNodesAtPath(
+    filteredRoot(factoringCollection),
+    factoringCollectionPath,
+  ).map((node) => ({ period: node.label, value: node.value }));
+  const interestOnOverdueOverTime = getNodesAtPath(
+    filteredRoot(interestOnOverdue),
+    interestOnOverduePath,
+  ).map((node) => ({ period: node.label, value: node.value }));
+  const conversionCostOverTime = getNodesAtPath(filteredRoot(conversionCost), conversionCostPath).map(
+    (node) => ({ period: node.label, value: node.value }),
+  );
   const netProfitOverTime = getNodesAtPath(filteredRoot(netProfit), netProfitPath).map((node) => ({
     period: node.label,
-    value: node.value,
-  }));
-  const revenueByGeography = getNodesAtPath(filteredRoot(revenue), revenuePath).map((node) => ({
-    zone: node.label,
     value: node.value,
   }));
 
   const titleSuffix = (path: string[]) => (path.length ? ` — ${path.join(' / ')}` : '');
 
   const breadcrumbPath = [ROOT_LABEL[drill.hierarchy], ...drill.path];
-  const contextLabel = breadcrumbPath.join(' / ');
+  const contextLabel = buildContextLabel(drill, cardKpis);
   const dynamicSummary = resolveAgentSummary('marketingFinance', kpis, drill, crossFilters);
   const questionContext = resolveQuestionContext(drill, crossFilters);
+  const overrideNotes = describeOverriddenStatuses(cardKpis, { threshold: thresholdOverrides });
+  const baseInsights = dynamicSummary ? [dynamicSummary] : MARKETING_FINANCE_INSIGHTS;
+  const insights = overrideNotes.length > 0 ? [...baseInsights, ...overrideNotes] : baseInsights;
 
   return (
     <Stack direction={{ xs: 'column', lg: 'row' }} spacing={3} alignItems="flex-start">
@@ -135,6 +141,8 @@ export const MarketingFinanceTab = () => {
           </ToggleButtonGroup>
         </Stack>
 
+        <EarlyWarningStrip module="marketingFinance" kpis={kpis} />
+
         <Grid container spacing={3}>
           {cardKpis.map((kpi) => {
             const matchingPath = matchingPathFor(kpi);
@@ -142,64 +150,67 @@ export const MarketingFinanceTab = () => {
             const node = matchingPath.length ? getNodeAtPath(root, matchingPath) : null;
             const isActiveHierarchy = kpi.drilldown.dimension === drill.hierarchy;
             return (
-              <Grid key={kpi.id} size={{ xs: 12, sm: 6, md: 3 }}>
-                <KPICard
-                  title={kpi.name}
-                  value={node ? node.value : sumRootValues(root)}
-                  unit={kpi.unit}
-                  percentChange={kpi.percentChange}
-                  trend={kpi.trend}
-                  status={kpi.status}
-                  sparklineData={flattenLeafValues(getNodesAtPath(root, matchingPath))}
-                  onClick={
-                    isActiveHierarchy ? undefined : () => drillToHierarchyRoot(kpi.drilldown.dimension)
-                  }
-                />
-              </Grid>
+              <ConnectedKpiCard
+                key={kpi.id}
+                kpi={kpi}
+                value={node ? node.value : sumRootValues(root)}
+                onClick={isActiveHierarchy ? undefined : () => drillToHierarchyRoot(kpi.drilldown.dimension)}
+              />
             );
           })}
         </Grid>
 
         <Grid container spacing={3}>
-          <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
             <ChartContainer
-              type="line"
-              title={`EBITDA Margin over Time${titleSuffix(ebitdaMarginPath)}`}
-              data={ebitdaMarginOverTime}
+              type="bar"
+              title={`Factoring & Collection Trend over Time${titleSuffix(factoringCollectionPath)}`}
+              data={factoringCollectionOverTime}
               categoryKey="period"
-              series={[{ key: 'value', label: 'EBITDA Margin (%)' }]}
-              onElementClick={handleChartClick(ebitdaMargin, ebitdaMarginPath)}
+              series={[{ key: 'value', label: 'Collections (₹ Lakh)' }]}
+              onElementClick={handleChartClick(factoringCollection, factoringCollectionPath)}
+              colorOffset={verticalColorOffset('marketingFinance', 0)}
             />
           </Grid>
-          <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+            <ChartContainer
+              type="line"
+              title={`Interest on Overdue over Time${titleSuffix(interestOnOverduePath)}`}
+              data={interestOnOverdueOverTime}
+              categoryKey="period"
+              series={[{ key: 'value', label: 'Interest (₹ Lakh)' }]}
+              onElementClick={handleChartClick(interestOnOverdue, interestOnOverduePath)}
+              colorOffset={verticalColorOffset('marketingFinance', 1)}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
             <ChartContainer
               type="area"
+              title={`Conversion Cost Trend over Time${titleSuffix(conversionCostPath)}`}
+              data={conversionCostOverTime}
+              categoryKey="period"
+              series={[{ key: 'value', label: 'Conversion Cost (INR)' }]}
+              onElementClick={handleChartClick(conversionCost, conversionCostPath)}
+              colorOffset={verticalColorOffset('marketingFinance', 2)}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+            <ChartContainer
+              type="bar"
               title={`Net Profit over Time${titleSuffix(netProfitPath)}`}
               data={netProfitOverTime}
               categoryKey="period"
               series={[{ key: 'value', label: 'Net Profit (INR Cr)' }]}
               onElementClick={handleChartClick(netProfit, netProfitPath)}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-            <ChartContainer
-              type="donut"
-              title="Revenue by Geography"
-              data={revenueByGeography}
-              categoryKey="zone"
-              series={[{ key: 'value', label: 'Revenue (INR Cr)' }]}
-              // No onElementClick: geography isn't part of the Time/Plant toggle, so this
-              // chart is intentionally non-interactive and always shows the full aggregate.
+              colorOffset={verticalColorOffset('marketingFinance', 3)}
             />
           </Grid>
         </Grid>
       </Stack>
 
       <Stack spacing={3} sx={{ width: { xs: '100%', lg: 360 }, flexShrink: 0 }}>
-        <AgentSummaryPanel
-          insights={dynamicSummary ? [dynamicSummary] : MARKETING_FINANCE_INSIGHTS}
-          contextLabel={contextLabel}
-        />
+        <ConfigurationPanel module="marketingFinance" kpis={kpis} />
+        <AgentSummaryPanel insights={insights} contextLabel={contextLabel} />
         <ConversationalInsightsPanel
           questionLibrary={MARKETING_FINANCE_QUESTIONS}
           context={questionContext}

@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -36,6 +37,12 @@ export interface ChartContainerProps {
   title?: string;
   height?: number;
   onElementClick?: (categoryLabel: string) => void;
+  /** Rotates which `CATEGORICAL_COLORS` entry a single-series chart starts from. Without this,
+   * every single-series chart lands on index 0 (blue) — `series.map((s, i) => ...)` only ever
+   * produces `i=0` when there's one series, so a tab's four single-metric charts all rendered in
+   * the same blue regardless of what they showed. Pass each chart in a row a different offset
+   * (0/1/2/3) so the row reads as four distinct colors instead of four shades of one. */
+  colorOffset?: number;
 }
 
 interface CartesianClickState {
@@ -44,12 +51,54 @@ interface CartesianClickState {
 
 const isPieType = (type: ChartType) => type === 'pie' || type === 'donut';
 
+// A muted, brand-teal-tinted band instead of Recharts' default flat grey — echoes the highlight
+// an ECharts `axisPointer`/bar-hover shows, so hovering a Recharts chart and an EChartsContainer
+// chart reads as the same interaction language rather than two different chart libraries.
+const HOVER_CURSOR_FILL = 'rgba(20, 107, 99, 0.06)';
+const HOVER_CURSOR_LINE = { stroke: CHART_CHROME.axis, strokeDasharray: '4 4' };
+const TOOLTIP_ANIMATION = { animationDuration: 200, animationEasing: 'ease-out' as const };
+
+const gradientId = (prefix: string, i: number) => `${prefix}-grad-${i}`;
+
+const colorAt = (i: number, colorOffset: number): string =>
+  CATEGORICAL_COLORS[(i + colorOffset) % CATEGORICAL_COLORS.length] as string;
+
+/** One `<linearGradient>` per series color actually used, so a bar/area's `fill="url(#...)"`
+ * resolves — SVG gradients are per-document defs, and multiple ChartContainer instances render
+ * on the same page at once (four per tab), so ids are namespaced per instance via `useId()`
+ * rather than by color index alone, which would collide across cards. */
+const GradientDefs = ({
+  prefix,
+  count,
+  bottomOpacity,
+  colorOffset,
+}: {
+  prefix: string;
+  count: number;
+  bottomOpacity: number;
+  colorOffset: number;
+}) => (
+  <defs>
+    {Array.from({ length: count }, (_, i) => {
+      const color = colorAt(i, colorOffset);
+      return (
+        <linearGradient key={i} id={gradientId(prefix, i)} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity={1} />
+          <stop offset="100%" stopColor={color} stopOpacity={bottomOpacity} />
+        </linearGradient>
+      );
+    })}
+  </defs>
+);
+
 function renderChart(
   type: ChartType,
   data: Record<string, string | number>[],
   categoryKey: string,
   series: ChartSeriesConfig[],
   showLegend: boolean,
+  gradientPrefix: string,
+  colorOffset: number,
   onElementClick?: (categoryLabel: string) => void,
 ) {
   const handleCartesianClick = onElementClick
@@ -66,6 +115,12 @@ function renderChart(
     case 'bar':
       return (
         <BarChart data={data} onClick={handleCartesianClick}>
+          <GradientDefs
+            prefix={gradientPrefix}
+            count={series.length}
+            bottomOpacity={0.55}
+            colorOffset={colorOffset}
+          />
           <CartesianGrid stroke={CHART_CHROME.grid} vertical={false} />
           <XAxis
             dataKey={categoryKey}
@@ -77,6 +132,8 @@ function renderChart(
             contentStyle={TOOLTIP_STYLE.contentStyle}
             labelStyle={TOOLTIP_STYLE.labelStyle}
             itemStyle={TOOLTIP_STYLE.itemStyle}
+            cursor={{ fill: HOVER_CURSOR_FILL }}
+            {...TOOLTIP_ANIMATION}
           />
           {showLegend && <Legend />}
           {series.map((s, i) => (
@@ -84,7 +141,7 @@ function renderChart(
               key={s.key}
               dataKey={s.key}
               name={s.label}
-              fill={CATEGORICAL_COLORS[i % CATEGORICAL_COLORS.length]}
+              fill={`url(#${gradientId(gradientPrefix, i)})`}
               radius={[4, 4, 0, 0]}
               cursor={cursor}
             />
@@ -94,6 +151,12 @@ function renderChart(
     case 'stackedBar':
       return (
         <BarChart data={data} onClick={handleCartesianClick}>
+          <GradientDefs
+            prefix={gradientPrefix}
+            count={series.length}
+            bottomOpacity={0.55}
+            colorOffset={colorOffset}
+          />
           <CartesianGrid stroke={CHART_CHROME.grid} vertical={false} />
           <XAxis
             dataKey={categoryKey}
@@ -105,6 +168,8 @@ function renderChart(
             contentStyle={TOOLTIP_STYLE.contentStyle}
             labelStyle={TOOLTIP_STYLE.labelStyle}
             itemStyle={TOOLTIP_STYLE.itemStyle}
+            cursor={{ fill: HOVER_CURSOR_FILL }}
+            {...TOOLTIP_ANIMATION}
           />
           {showLegend && <Legend />}
           {series.map((s, i) => (
@@ -113,7 +178,7 @@ function renderChart(
               dataKey={s.key}
               name={s.label}
               stackId="stack"
-              fill={CATEGORICAL_COLORS[i % CATEGORICAL_COLORS.length]}
+              fill={`url(#${gradientId(gradientPrefix, i)})`}
               cursor={cursor}
             />
           ))}
@@ -133,6 +198,8 @@ function renderChart(
             contentStyle={TOOLTIP_STYLE.contentStyle}
             labelStyle={TOOLTIP_STYLE.labelStyle}
             itemStyle={TOOLTIP_STYLE.itemStyle}
+            cursor={HOVER_CURSOR_LINE}
+            {...TOOLTIP_ANIMATION}
           />
           {showLegend && <Legend />}
           {series.map((s, i) => (
@@ -141,10 +208,10 @@ function renderChart(
               type="monotone"
               dataKey={s.key}
               name={s.label}
-              stroke={CATEGORICAL_COLORS[i % CATEGORICAL_COLORS.length]}
+              stroke={colorAt(i, colorOffset)}
               strokeWidth={2}
               dot={{ r: 3, cursor }}
-              activeDot={{ r: 5, cursor }}
+              activeDot={{ r: 6, cursor, stroke: '#FFFFFF', strokeWidth: 2 }}
             />
           ))}
         </LineChart>
@@ -152,6 +219,12 @@ function renderChart(
     case 'area':
       return (
         <AreaChart data={data} onClick={handleCartesianClick}>
+          <GradientDefs
+            prefix={gradientPrefix}
+            count={series.length}
+            bottomOpacity={0.03}
+            colorOffset={colorOffset}
+          />
           <CartesianGrid stroke={CHART_CHROME.grid} vertical={false} />
           <XAxis
             dataKey={categoryKey}
@@ -163,6 +236,8 @@ function renderChart(
             contentStyle={TOOLTIP_STYLE.contentStyle}
             labelStyle={TOOLTIP_STYLE.labelStyle}
             itemStyle={TOOLTIP_STYLE.itemStyle}
+            cursor={HOVER_CURSOR_LINE}
+            {...TOOLTIP_ANIMATION}
           />
           {showLegend && <Legend />}
           {series.map((s, i) => (
@@ -171,12 +246,12 @@ function renderChart(
               type="monotone"
               dataKey={s.key}
               name={s.label}
-              stroke={CATEGORICAL_COLORS[i % CATEGORICAL_COLORS.length]}
-              fill={CATEGORICAL_COLORS[i % CATEGORICAL_COLORS.length]}
-              fillOpacity={0.2}
+              stroke={colorAt(i, colorOffset)}
+              fill={`url(#${gradientId(gradientPrefix, i)})`}
+              fillOpacity={1}
               strokeWidth={2}
               dot={{ r: 3, cursor }}
-              activeDot={{ r: 5, cursor }}
+              activeDot={{ r: 6, cursor, stroke: '#FFFFFF', strokeWidth: 2 }}
             />
           ))}
         </AreaChart>
@@ -190,6 +265,7 @@ function renderChart(
             contentStyle={TOOLTIP_STYLE.contentStyle}
             labelStyle={TOOLTIP_STYLE.labelStyle}
             itemStyle={TOOLTIP_STYLE.itemStyle}
+            {...TOOLTIP_ANIMATION}
           />
           {showLegend && <Legend />}
           <Pie
@@ -213,7 +289,10 @@ function renderChart(
             }
           >
             {data.map((_, i) => (
-              <Cell key={i} fill={CATEGORICAL_COLORS[i % CATEGORICAL_COLORS.length]} />
+              // A thin white stroke between wedges — same segmentation cue as EChartsContainer's
+              // treemap borders — so a donut and a treemap read as the same "chrome," not two
+              // different libraries' default styles.
+              <Cell key={i} fill={colorAt(i, colorOffset)} stroke="#FFFFFF" strokeWidth={2} />
             ))}
           </Pie>
         </PieChart>
@@ -236,7 +315,9 @@ export const ChartContainer = ({
   title,
   height = 300,
   onElementClick,
+  colorOffset = 0,
 }: ChartContainerProps) => {
+  const gradientPrefix = useId();
   const showLegend = isPieType(type) ? data.length > 1 : series.length > 1;
   const hasData = hasRenderableData(data, series);
 
@@ -249,7 +330,16 @@ export const ChartContainer = ({
       )}
       {hasData ? (
         <ResponsiveContainer width="100%" height={height}>
-          {renderChart(type, data, categoryKey, series, showLegend, onElementClick)}
+          {renderChart(
+            type,
+            data,
+            categoryKey,
+            series,
+            showLegend,
+            gradientPrefix,
+            colorOffset,
+            onElementClick,
+          )}
         </ResponsiveContainer>
       ) : (
         <Stack
