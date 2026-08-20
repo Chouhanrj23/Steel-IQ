@@ -8,7 +8,6 @@ import PrecisionManufacturingOutlinedIcon from '@mui/icons-material/PrecisionMan
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import AccountBalanceOutlinedIcon from '@mui/icons-material/AccountBalanceOutlined';
 import type { SvgIconComponent } from '@mui/icons-material';
-import { CATEGORICAL_COLORS } from './chartPalette';
 import type { ModuleKey } from '@/types/dashboard';
 
 export type VerticalDensity = 'industrial' | 'financial' | 'standard';
@@ -51,14 +50,3 @@ export const VERTICAL_THEME: Record<ModuleKey, VerticalThemeEntry> = {
 const PREVIEW_MODULES = new Set<ModuleKey>(['rawMaterial', 'marketingFinance']);
 
 export const isPreviewModule = (module: ModuleKey): boolean => PREVIEW_MODULES.has(module);
-
-/** `ChartContainer`'s `colorOffset` for the `index`-th chart in a preview-module tab's row, so
- * that row's *first* chart lands on the vertical's own accent instead of always starting the
- * rotation at index 0 — the concrete form of "the tab's accent carries through into its
- * content." Falls back to a plain `index` (today's default rotation) for a vertical whose
- * accent isn't one of the eight `CATEGORICAL_COLORS` entries (only periwinkle/TSPL, currently),
- * rather than erroring. */
-export const verticalColorOffset = (module: ModuleKey, index: number): number => {
-  const base = CATEGORICAL_COLORS.indexOf(VERTICAL_THEME[module].accent);
-  return base === -1 ? index : (base + index) % CATEGORICAL_COLORS.length;
-};

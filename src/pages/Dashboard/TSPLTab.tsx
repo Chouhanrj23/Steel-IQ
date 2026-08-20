@@ -55,6 +55,7 @@ export const TSPLTab = () => {
   const drillToHierarchyRoot = useDashboardStore((state) => state.drillToHierarchyRoot);
   const drillToSegment = useDashboardStore((state) => state.drillToSegment);
   const thresholdOverrides = useDashboardStore((state) => state.thresholdOverrides);
+  const varianceOverrides = useDashboardStore((state) => state.varianceOverrides);
 
   // Reset to a clean default whenever this tab mounts (including switching back into it),
   // since the drill store is shared across tabs and another tab's path won't match this
@@ -118,7 +119,10 @@ export const TSPLTab = () => {
   // below assumes index 0 of that array is always the hierarchy root, and inserting an extra
   // leading segment would shift every other segment's click target off by one.
   const contextLabel = buildContextLabel(drill, cardKpis, TSPL_FULL_NAME);
-  const dynamicSummary = resolveAgentSummary('tspl', kpis, drill, crossFilters);
+  const dynamicSummary = resolveAgentSummary('tspl', kpis, drill, crossFilters, {
+    threshold: thresholdOverrides,
+    variance: varianceOverrides,
+  });
   const questionContext = resolveQuestionContext(drill, crossFilters);
   const overrideNotes = describeOverriddenStatuses(cardKpis, { threshold: thresholdOverrides });
   const baseInsights = dynamicSummary ? [dynamicSummary] : TSPL_INSIGHTS;
@@ -190,6 +194,7 @@ export const TSPLTab = () => {
               categoryKey="period"
               series={[{ key: 'value', label: 'SRM Expenses (₹ Lakh)' }]}
               onElementClick={handleChartClick(srmExpenses, srmExpensesPath)}
+              colorOffset={0}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
@@ -200,6 +205,7 @@ export const TSPLTab = () => {
               categoryKey="period"
               series={[{ key: 'value', label: 'Customer Rejections (%)' }]}
               onElementClick={handleChartClick(customerRejections, customerRejectionsPath)}
+              colorOffset={1}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
@@ -210,6 +216,7 @@ export const TSPLTab = () => {
               categoryKey="period"
               series={[{ key: 'value', label: 'OTIF Delivery (%)' }]}
               onElementClick={handleChartClick(otifDelivery, otifDeliveryPath)}
+              colorOffset={2}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
@@ -220,6 +227,7 @@ export const TSPLTab = () => {
               categoryKey="period"
               series={[{ key: 'value', label: 'Realization/Ton (INR)' }]}
               onElementClick={handleChartClick(realizationPerTon, realizationPerTonPath)}
+              colorOffset={3}
             />
           </Grid>
         </Grid>

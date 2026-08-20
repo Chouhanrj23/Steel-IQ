@@ -1,4 +1,4 @@
-import type { DrillDownNode, DrilldownDimension, KPI } from '@/types/dashboard';
+import type { DrillDownNode, DrilldownDimension, KPI, RecordTags } from '@/types/dashboard';
 import type { CrossFilters, DrillSelection, HierarchyKey } from '@store/dashboard';
 
 export const ROOT_LABEL: Record<DrilldownDimension, string> = {
@@ -196,23 +196,35 @@ export const applyCrossFilters = (nodes: DrillDownNode[], filters: CrossFilters)
 export const sumRootValues = (nodes: DrillDownNode[]): number =>
   roundForDisplay(nodes.reduce((sum, node) => sum + node.value, 0));
 
+/** Whether `kpi` has at least one leaf tagged with `tags[key] === value` — the shared walk behind
+ * `kpiSupportsProductCategory`/`kpiSupportsPlant` below. */
+const kpiSupportsTagValue = (kpi: KPI, key: keyof RecordTags, value: string): boolean => {
+  let supported = false;
+  const walk = (nodes: DrillDownNode[]) => {
+    for (const node of nodes) {
+      if (node.children) walk(node.children);
+      else if (node.tags?.[key] === value) supported = true;
+    }
+  };
+  walk(kpi.drilldown.root);
+  return supported;
+};
+
 /** Whether `kpi` has at least one leaf tagged with `category`. Most non-plant-dimensioned KPIs'
  * mock data only models 4 of the 5 Product Category values (missing "Wire Rods" specifically —
  * plant-dimensioned KPIs have all 5) — rather than treating that gap as a data bug to patch
  * everywhere, a KPI/category combination that was simply never modeled is surfaced as "N/A, not
  * applicable" instead of a bare "0", which would otherwise look like a real (if uninteresting)
  * filtered result. */
-export const kpiSupportsProductCategory = (kpi: KPI, category: string): boolean => {
-  let supported = false;
-  const walk = (nodes: DrillDownNode[]) => {
-    for (const node of nodes) {
-      if (node.children) walk(node.children);
-      else if (node.tags?.productCategory === category) supported = true;
-    }
-  };
-  walk(kpi.drilldown.root);
-  return supported;
-};
+export const kpiSupportsProductCategory = (kpi: KPI, category: string): boolean =>
+  kpiSupportsTagValue(kpi, 'productCategory', category);
+
+/** Same gap as Product Category above, but for Plant: most non-plant-dimensioned KPIs are each
+ * missing exactly one Plant value from their mock leaves (which one varies per KPI) — without this
+ * check, picking that Plant in the global filter bar renders an unexplained "0" for that KPI
+ * instead of the same "N/A, not applicable" treatment Product Category already gets. */
+export const kpiSupportsPlant = (kpi: KPI, plant: string): boolean =>
+  kpiSupportsTagValue(kpi, 'plant', plant);
 
 /** The Agent Summary/Conversational Insights "Showing:" caption — built from the in-page
  * Time/Plant drill-down breadcrumb (unrelated to the global filter bar's own Plant/Region/BU/

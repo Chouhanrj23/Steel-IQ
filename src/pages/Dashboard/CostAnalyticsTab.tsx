@@ -100,6 +100,7 @@ export const CostAnalyticsTab = () => {
   const drillToHierarchyRoot = useDashboardStore((state) => state.drillToHierarchyRoot);
   const drillToSegment = useDashboardStore((state) => state.drillToSegment);
   const thresholdOverrides = useDashboardStore((state) => state.thresholdOverrides);
+  const varianceOverrides = useDashboardStore((state) => state.varianceOverrides);
 
   // Reset to a clean default whenever this tab mounts (including switching back into it),
   // since the drill store is shared across tabs and another tab's path won't match this
@@ -157,7 +158,10 @@ export const CostAnalyticsTab = () => {
   const breadcrumbPath = [ROOT_LABEL[drill.hierarchy], ...drill.path];
   const contextLabel = buildContextLabel(drill, cardKpis);
   const questionContext = resolveQuestionContext(drill, crossFilters);
-  const dynamicSummary = resolveAgentSummary('costAnalytics', kpis, drill, crossFilters);
+  const dynamicSummary = resolveAgentSummary('costAnalytics', kpis, drill, crossFilters, {
+    threshold: thresholdOverrides,
+    variance: varianceOverrides,
+  });
   const overrideNotes = describeOverriddenStatuses(cardKpis, { threshold: thresholdOverrides });
   const baseInsights = dynamicSummary ? [dynamicSummary] : COST_ANALYTICS_INSIGHTS;
   const insights = overrideNotes.length > 0 ? [...baseInsights, ...overrideNotes] : baseInsights;
@@ -215,6 +219,7 @@ export const CostAnalyticsTab = () => {
               categoryKey="period"
               series={[{ key: 'value', label: 'Inventory Days' }]}
               onElementClick={handleChartClick(inventoryDays, inventoryDaysPath)}
+              colorOffset={0}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
@@ -225,6 +230,7 @@ export const CostAnalyticsTab = () => {
               categoryKey="period"
               series={[{ key: 'value', label: 'Inventory Quantity (tonnes)' }]}
               onElementClick={handleChartClick(inventoryQuantity, inventoryQuantityPath)}
+              colorOffset={1}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
@@ -235,6 +241,7 @@ export const CostAnalyticsTab = () => {
               categoryKey="period"
               series={[{ key: 'value', label: 'Dispatch Cost (INR)' }]}
               onElementClick={handleChartClick(dispatchCost, dispatchCostPath)}
+              colorOffset={2}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, lg: 3 }}>

@@ -91,6 +91,7 @@ export const SupplyChainTab = () => {
   const drillToHierarchyRoot = useDashboardStore((state) => state.drillToHierarchyRoot);
   const drillToSegment = useDashboardStore((state) => state.drillToSegment);
   const thresholdOverrides = useDashboardStore((state) => state.thresholdOverrides);
+  const varianceOverrides = useDashboardStore((state) => state.varianceOverrides);
 
   // Reset to a clean default whenever this tab mounts (including switching back into it),
   // since the drill store is shared across tabs and another tab's path won't match this
@@ -150,7 +151,10 @@ export const SupplyChainTab = () => {
 
   const breadcrumbPath = [ROOT_LABEL[drill.hierarchy], ...drill.path];
   const contextLabel = buildContextLabel(drill, cardKpis);
-  const dynamicSummary = resolveAgentSummary('supplyChain', kpis, drill, crossFilters);
+  const dynamicSummary = resolveAgentSummary('supplyChain', kpis, drill, crossFilters, {
+    threshold: thresholdOverrides,
+    variance: varianceOverrides,
+  });
   const questionContext = resolveQuestionContext(drill, crossFilters);
   const overrideNotes = describeOverriddenStatuses(cardKpis, { threshold: thresholdOverrides });
   const baseInsights = dynamicSummary ? [dynamicSummary] : SUPPLY_CHAIN_INSIGHTS;
@@ -209,6 +213,7 @@ export const SupplyChainTab = () => {
               categoryKey="period"
               series={[{ key: 'value', label: 'Inventory (Days)' }]}
               onElementClick={handleChartClick(importedCoalDays, importedCoalDaysPath)}
+              colorOffset={0}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
@@ -217,6 +222,7 @@ export const SupplyChainTab = () => {
               title={`Imported Coal Inventory (Qty) by Origin & Plant${titleSuffix(importedCoalQuantityPath)}`}
               unit="tonnes"
               data={importedCoalQuantityTreemap}
+              colorOffset={1}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
@@ -227,6 +233,7 @@ export const SupplyChainTab = () => {
               categoryKey="period"
               series={[{ key: 'value', label: 'SPC Cost (INR)' }]}
               onElementClick={handleChartClick(spcCost, spcCostPath)}
+              colorOffset={2}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
@@ -237,6 +244,7 @@ export const SupplyChainTab = () => {
               categoryKey="plant"
               series={[{ key: 'value', label: 'Turnover Ratio (x)' }]}
               onElementClick={handleChartClick(inventoryTurnover, inventoryTurnoverPath)}
+              colorOffset={3}
             />
           </Grid>
         </Grid>

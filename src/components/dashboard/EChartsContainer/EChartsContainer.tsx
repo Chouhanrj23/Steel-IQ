@@ -1,12 +1,18 @@
 import type { ComponentType } from 'react';
-import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import BarChartOutlinedIcon from '@mui/icons-material/BarChartOutlined';
 import * as ReactEChartsCoreModule from 'echarts-for-react/lib/core';
 import type { EChartsOption, EChartsReactProps } from 'echarts-for-react/lib/types';
 import echarts from './echartsCore';
-import { STATUS_COLORS, CHART_CHROME, BRAND_PRIMARY, BRAND_PRIMARY_LIGHT } from '../chartPalette';
+import {
+  STATUS_COLORS,
+  CHART_CHROME,
+  CATEGORICAL_COLORS,
+  BRAND_PRIMARY,
+  BRAND_PRIMARY_LIGHT,
+} from '../chartPalette';
+import { ChartCard } from '../ChartCard';
 
 // `echarts-for-react/lib/core` is a CJS module with no package `exports` map for its subpaths,
 // and Vite's dev-time CJS interop doesn't reliably unwrap a deep subpath import's `default`
@@ -63,6 +69,14 @@ interface BaseProps {
    * text, not a currency/number formatter, matching how the rest of the dashboard labels units. */
   unit?: string;
   onElementClick?: (label: string) => void;
+  /** Treemap only: rotates which `CATEGORICAL_COLORS` entry the first top-level branch starts
+   * from, mirroring `ChartContainer`'s own `colorOffset` — so a treemap sitting in the same chart
+   * row as three Recharts charts starts its own color sequence at the same position-based hue
+   * those charts use for their own index, instead of always restarting at index 0 regardless of
+   * where in the row it sits. Ignored by every other chart type, which already have a considered,
+   * semantic color scheme (waterfall's increase/decrease/total, heatmap/bubbleMatrix's brand-teal
+   * gradient) rather than a categorical rotation. */
+  colorOffset?: number;
 }
 
 export type EChartsContainerProps =
@@ -201,8 +215,18 @@ function buildWaterfallOption(data: WaterfallItem[], unit?: string): EChartsOpti
   };
 }
 
-function buildTreemapOption(data: TreemapNode[], unit?: string): EChartsOption {
+// Rotates CATEGORICAL_COLORS to start at `offset` — the treemap's own version of
+// ChartContainer's `colorAt`, so its top-level branches draw from the same palette, in the same
+// position-based order, as the Recharts charts sitting beside it in the same row.
+const rotatedCategoricalColors = (offset: number): string[] => {
+  const n = CATEGORICAL_COLORS.length;
+  const normalized = ((offset % n) + n) % n;
+  return [...CATEGORICAL_COLORS.slice(normalized), ...CATEGORICAL_COLORS.slice(0, normalized)];
+};
+
+function buildTreemapOption(data: TreemapNode[], unit?: string, colorOffset = 0): EChartsOption {
   return {
+    color: rotatedCategoricalColors(colorOffset),
     tooltip: {
       ...ECHARTS_TOOLTIP_STYLE,
       formatter: (info: { name: string; value: number; treePathInfo?: Array<{ name: string }> }) => {
@@ -210,6 +234,9 @@ function buildTreemapOption(data: TreemapNode[], unit?: string): EChartsOption {
           ?.map((p) => p.name)
           .filter(Boolean)
           .join(' / ');
+        // Full name always shown here regardless of whether the box itself was wide enough to
+        // render its own label — hover is the fallback for whatever `label`/`upperLabel` below
+        // had to hide.
         return `<strong>${path || info.name}</strong><br/>${formatValue(info.value ?? 0, unit)}`;
       },
     },
@@ -220,12 +247,20 @@ function buildTreemapOption(data: TreemapNode[], unit?: string): EChartsOption {
         roam: false,
         nodeClick: false,
         breadcrumb: { show: false },
+        // `overflow: 'truncate'` + a single-character `ellipsis` gives every label a clean "…"
+        // cutoff instead of the previous unconfigured default, which could render a bare
+        // mid-word fragment ("Lin") with no ellipsis at all on the smallest cells. Below that,
+        // once even the ellipsis can't fit the box, ECharts drops the label entirely rather than
+        // rendering anything — the "hide on very small cells" behavior falls out of properly
+        // configuring truncation rather than needing a separate size-threshold switch.
         label: {
           show: true,
           color: '#FFFFFF',
-          fontSize: 12,
+          fontSize: 11,
           fontFamily: 'Inter, sans-serif',
           fontWeight: 500,
+          overflow: 'truncate',
+          ellipsis: '…',
         },
         upperLabel: {
           show: true,
@@ -233,6 +268,8 @@ function buildTreemapOption(data: TreemapNode[], unit?: string): EChartsOption {
           color: '#FFFFFF',
           fontSize: 12,
           fontFamily: 'Inter, sans-serif',
+          overflow: 'truncate',
+          ellipsis: '…',
         },
         itemStyle: { borderColor: '#FFFFFF', borderWidth: 2, gapWidth: 2 },
         levels: [
@@ -241,8 +278,11 @@ function buildTreemapOption(data: TreemapNode[], unit?: string): EChartsOption {
             itemStyle: { borderColor: '#FFFFFF', borderWidth: 3, gapWidth: 3 },
           },
           {
+            // The leaf level — smallest boxes, so a smaller font than the shared `label` above
+            // buys extra room before truncation kicks in at all.
             colorSaturation: [0.35, 0.55],
             itemStyle: { borderColorSaturation: 0.6, gapWidth: 1, borderWidth: 1 },
+            label: { fontSize: 10 },
           },
         ],
       },
@@ -397,7 +437,7 @@ const buildOption = (props: EChartsContainerProps): EChartsOption => {
     case 'waterfall':
       return buildWaterfallOption(props.data, props.unit);
     case 'treemap':
-      return buildTreemapOption(props.data, props.unit);
+      return buildTreemapOption(props.data, props.unit, props.colorOffset);
     case 'heatmap':
       return buildHeatmapOption(props.xCategories, props.yCategories, props.data, props.unit);
     case 'bubbleMatrix':
@@ -410,7 +450,11 @@ const buildOption = (props: EChartsContainerProps): EChartsOption => {
  * Every other chart on the dashboard stays on Recharts via `ChartContainer`; this is not a
  * replacement for it. */
 export const EChartsContainer = (props: EChartsContainerProps) => {
-  const { title, height = 300, onElementClick } = props;
+  // Treemaps get more vertical room by default than the other three chart types — the extra
+  // space is what actually fixes cramped labels; the font-size/truncation tuning in
+  // `buildTreemapOption` only controls what happens once space itself is no longer the
+  // constraint. Any caller can still override via its own `height` prop.
+  const { title, height = props.type === 'treemap' ? 340 : 300, onElementClick } = props;
   const hasData = hasRenderableData(props);
 
   const onEvents = onElementClick
@@ -422,12 +466,7 @@ export const EChartsContainer = (props: EChartsContainerProps) => {
     : undefined;
 
   return (
-    <Box>
-      {title && (
-        <Typography variant="subtitle1" sx={{ mb: 1.5 }}>
-          {title}
-        </Typography>
-      )}
+    <ChartCard title={title}>
       {hasData ? (
         <ReactEChartsCore
           echarts={echarts}
@@ -449,7 +488,7 @@ export const EChartsContainer = (props: EChartsContainerProps) => {
           <Typography variant="caption">Try adjusting the plant, time, or filter selection</Typography>
         </Stack>
       )}
-    </Box>
+    </ChartCard>
   );
 };
 

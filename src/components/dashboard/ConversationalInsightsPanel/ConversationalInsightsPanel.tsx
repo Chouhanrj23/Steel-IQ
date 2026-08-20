@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
@@ -6,7 +7,12 @@ import IconButton from '@mui/material/IconButton';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import SendIcon from '@mui/icons-material/Send';
 import { Card } from '@components/common';
-import type { LibraryQuestion, QuestionContext } from '@/data/conversationalQuestions';
+import {
+  matchQuestion,
+  fillAnswerTemplate,
+  type LibraryQuestion,
+  type QuestionContext,
+} from '@/data/conversationalQuestions';
 
 export interface ConversationalQAPair {
   question: string;
@@ -16,22 +22,49 @@ export interface ConversationalQAPair {
 export interface ConversationalInsightsPanelProps {
   /** Static mode: a fixed set of pre-written Q&A pairs, shown as-is (existing tabs). */
   qaPairs?: ConversationalQAPair[];
-  /** Interactive mode: same context-driven panel as the static one, minus suggested-question
-   * chips — kept as a prop (rather than removed from every tab) so tabs don't need touching
-   * just to stop showing suggestions. */
+  /** Interactive mode: typing a question matches it (via `matchQuestion`, searched against the
+   * full global question library, not just this tab's `questionLibrary`) and appends the
+   * resolved Q&A pair to this session's thread. `questionLibrary` itself isn't read directly by
+   * this component — it's what gates interactive vs. static mode, matching every tab's existing
+   * call site (`questionLibrary={X_QUESTIONS}`), and is kept as a prop so a future "suggested
+   * questions" UI has a ready-made per-tab source without touching every tab again. */
   questionLibrary?: LibraryQuestion[];
   context?: QuestionContext;
   contextLabel?: string;
 }
 
+const DEFAULT_CONTEXT: QuestionContext = {
+  plant: 'All Plants',
+  period: 'All Time',
+  bu: 'All Business Units',
+  region: 'All Regions',
+  category: 'All Categories',
+};
+
+const NO_MATCH_ANSWER =
+  'No matching insight for that yet — try asking about a specific KPI on this tab, e.g. why it moved or which plant is driving the change.';
+
 export const ConversationalInsightsPanel = ({
   qaPairs,
   questionLibrary,
+  context,
   contextLabel,
 }: ConversationalInsightsPanelProps) => {
-  // No suggested-question chips — the interactive mode's chat thread stays empty (nothing
-  // populates it without a chip to click) rather than pre-seeding fake conversation history.
-  const displayPairs = questionLibrary ? [] : (qaPairs ?? []);
+  const [inputValue, setInputValue] = useState('');
+  const [askedPairs, setAskedPairs] = useState<ConversationalQAPair[]>([]);
+
+  const displayPairs = questionLibrary ? askedPairs : (qaPairs ?? []);
+
+  const handleSubmit = () => {
+    const query = inputValue.trim();
+    if (!query) return;
+    const matched = matchQuestion(query);
+    const answer = matched
+      ? fillAnswerTemplate(matched.answerTemplate, context ?? DEFAULT_CONTEXT)
+      : NO_MATCH_ANSWER;
+    setAskedPairs((prev) => [...prev, { question: query, answer }]);
+    setInputValue('');
+  };
 
   return (
     <Card>
@@ -92,8 +125,21 @@ export const ConversationalInsightsPanel = ({
           ))}
         </Stack>
         <Stack direction="row" spacing={1}>
-          <TextField size="small" fullWidth placeholder="Ask a question…" disabled />
-          <IconButton disabled>
+          <TextField
+            size="small"
+            fullWidth
+            placeholder="Ask a question…"
+            value={inputValue}
+            onChange={(event) => setInputValue(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                event.preventDefault();
+                handleSubmit();
+              }
+            }}
+            disabled={!questionLibrary}
+          />
+          <IconButton onClick={handleSubmit} disabled={!questionLibrary || !inputValue.trim()}>
             <SendIcon fontSize="small" />
           </IconButton>
         </Stack>

@@ -55,6 +55,7 @@ export const TSKTab = () => {
   const drillToHierarchyRoot = useDashboardStore((state) => state.drillToHierarchyRoot);
   const drillToSegment = useDashboardStore((state) => state.drillToSegment);
   const thresholdOverrides = useDashboardStore((state) => state.thresholdOverrides);
+  const varianceOverrides = useDashboardStore((state) => state.varianceOverrides);
 
   // Reset to a clean default whenever this tab mounts (including switching back into it),
   // since the drill store is shared across tabs and another tab's path won't match this
@@ -119,7 +120,10 @@ export const TSKTab = () => {
   // below assumes index 0 of that array is always the hierarchy root, and inserting an extra
   // leading segment would shift every other segment's click target off by one.
   const contextLabel = buildContextLabel(drill, cardKpis, TSK_FULL_NAME);
-  const dynamicSummary = resolveAgentSummary('tsk', kpis, drill, crossFilters);
+  const dynamicSummary = resolveAgentSummary('tsk', kpis, drill, crossFilters, {
+    threshold: thresholdOverrides,
+    variance: varianceOverrides,
+  });
   const questionContext = resolveQuestionContext(drill, crossFilters);
   const overrideNotes = describeOverriddenStatuses(cardKpis, { threshold: thresholdOverrides });
   const baseInsights = dynamicSummary ? [dynamicSummary] : TSK_INSIGHTS;
@@ -191,6 +195,7 @@ export const TSKTab = () => {
               categoryKey="period"
               series={[{ key: 'value', label: 'Receivables (₹ Lakh)' }]}
               onElementClick={handleChartClick(otherReceivables, otherReceivablesPath)}
+              colorOffset={0}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
@@ -202,6 +207,7 @@ export const TSKTab = () => {
               series={[{ key: 'value', label: 'Realization / Cost (INR)' }]}
               // No onElementClick: company isn't part of the Time/Plant toggle, so this chart is
               // intentionally non-interactive and always shows the full aggregate.
+              colorOffset={1}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
@@ -212,6 +218,7 @@ export const TSKTab = () => {
               categoryKey="period"
               series={[{ key: 'value', label: 'Production Volume (tonnes)' }]}
               onElementClick={handleChartClick(productionVolume, productionVolumePath)}
+              colorOffset={2}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
@@ -222,6 +229,7 @@ export const TSKTab = () => {
               categoryKey="period"
               series={[{ key: 'value', label: 'Cost Efficiency Index' }]}
               onElementClick={handleChartClick(costEfficiencyIndex, costEfficiencyIndexPath)}
+              colorOffset={3}
             />
           </Grid>
         </Grid>

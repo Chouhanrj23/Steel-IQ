@@ -447,3 +447,159 @@ export const fillAnswerTemplate = (template: string, context: QuestionContext): 
     const value = (context as unknown as Record<string, string>)[key];
     return value ?? match;
   });
+
+// Generic connector/pattern words shared across many canned questions ("why did X change",
+// "which plant is driving...", "is X concentrated in one plant or spread across all plants") —
+// stripped before matching so a match hinges on each question's actual distinguishing
+// vocabulary (the KPI name, "wastage", "receivables", etc.) rather than on sentence scaffolding
+// every question shares, which is what would otherwise cause cross-KPI false positives. Includes
+// a couple of common contraction remnants ("whats", "hows") since punctuation is stripped before
+// tokenizing, so "What's" becomes "whats" rather than "what".
+const STOPWORDS = new Set([
+  'a',
+  'an',
+  'the',
+  'is',
+  'are',
+  'was',
+  'were',
+  'why',
+  'what',
+  'whats',
+  'which',
+  'who',
+  'whom',
+  'how',
+  'hows',
+  'did',
+  'does',
+  'do',
+  'for',
+  'to',
+  'in',
+  'on',
+  'at',
+  'of',
+  'this',
+  'that',
+  'these',
+  'those',
+  'it',
+  'its',
+  'we',
+  'our',
+  'change',
+  'changed',
+  'changing',
+  'selected',
+  'period',
+  'across',
+  'or',
+  'and',
+  'driving',
+  'drive',
+  'drives',
+  'contribute',
+  'contributing',
+  'contributes',
+  'most',
+  'concentrated',
+  'spread',
+  'all',
+  'one',
+  'than',
+  'compared',
+  'previous',
+  'compare',
+  'vs',
+  'increase',
+  'decrease',
+  'decline',
+  'improved',
+  'improving',
+  'below',
+  'above',
+]);
+
+const normalize = (text: string): string =>
+  text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s]/g, '');
+
+const significantTokens = (text: string): string[] =>
+  normalize(text)
+    .split(/\s+/)
+    .filter((token) => token.length > 0 && !STOPWORDS.has(token));
+
+// Plain overlap-count scoring (matched tokens ÷ candidate's own token count) systematically
+// favors short candidates: many questions share a "Which plant is driving the change in X?"
+// shape, so a 3-token candidate like "plant / yield / rate" only needs 2 hits to hit 67%, while
+// the genuinely correct but longer "raw / material / wastage / rate / plant / plants" candidate
+// needs proportionally more — a query built around "wastage" could out-score on the wrong,
+// shorter candidate despite never mentioning "yield" at all (this happened in testing). Weighting
+// each token by its rarity across the library (inverse document frequency) fixes it: "wastage" or
+// "receivables", which each appear in exactly one question, carry far more weight than "plant" or
+// "rate", which recur across a dozen — so matches are driven by what actually distinguishes a
+// question, not by incidentally sharing its most common words.
+const QUESTION_TOKEN_SETS: string[][] = QUESTION_LIBRARY.map((q) =>
+  Array.from(new Set(significantTokens(q.question))),
+);
+
+const TOKEN_WEIGHT: Map<string, number> = (() => {
+  const documentFrequency = new Map<string, number>();
+  for (const tokens of QUESTION_TOKEN_SETS) {
+    for (const token of tokens) {
+      documentFrequency.set(token, (documentFrequency.get(token) ?? 0) + 1);
+    }
+  }
+  const weights = new Map<string, number>();
+  for (const [token, df] of documentFrequency) {
+    weights.set(token, 1 / df);
+  }
+  return weights;
+})();
+
+const weightOf = (token: string): number => TOKEN_WEIGHT.get(token) ?? 1;
+
+/** Minimum fraction of a candidate's own *weighted* vocabulary that must appear in the query
+ * before it counts as a match, and the minimum raw (unweighted) token overlap regardless of
+ * weight — both guards exist so an off-topic query (no shared vocabulary at all) reliably scores
+ * 0 and returns `null` instead of matching whatever candidate happens to share one word. */
+const MIN_MATCH_SCORE = 0.4;
+const MIN_MATCH_OVERLAP = 2;
+
+/** Free-text matching for the Conversational Insights input — always searches the full global
+ * `QUESTION_LIBRARY`, not just the current tab's own subset, so a question about any tab's KPI
+ * resolves correctly no matter which tab it's asked from. An exact match (case/punctuation
+ * differences aside) wins outright; otherwise every candidate is scored by its *rarity-weighted*
+ * vocabulary overlap with the query (see the token-weight comment above), and only a confident
+ * match is returned — `null` for anything off-topic. */
+export const matchQuestion = (query: string): LibraryQuestion | null => {
+  const normalizedQuery = normalize(query);
+  if (!normalizedQuery) return null;
+
+  const exact = QUESTION_LIBRARY.find((candidate) => normalize(candidate.question) === normalizedQuery);
+  if (exact) return exact;
+
+  const queryTokens = new Set(significantTokens(query));
+  if (queryTokens.size === 0) return null;
+
+  let best: LibraryQuestion | null = null;
+  let bestScore = 0;
+  QUESTION_LIBRARY.forEach((candidate, index) => {
+    const candidateTokens = QUESTION_TOKEN_SETS[index] ?? [];
+    if (candidateTokens.length === 0) return;
+    const overlapTokens = candidateTokens.filter((token) => queryTokens.has(token));
+    if (overlapTokens.length < MIN_MATCH_OVERLAP) return;
+    const overlapWeight = overlapTokens.reduce((sum, token) => sum + weightOf(token), 0);
+    const candidateWeight = candidateTokens.reduce((sum, token) => sum + weightOf(token), 0);
+    const score = overlapWeight / candidateWeight;
+    if (score > bestScore) {
+      bestScore = score;
+      best = candidate;
+    }
+  });
+
+  return bestScore >= MIN_MATCH_SCORE ? best : null;
+};

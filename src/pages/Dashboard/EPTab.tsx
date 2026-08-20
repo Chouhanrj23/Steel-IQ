@@ -52,6 +52,7 @@ export const EPTab = () => {
   const drillToHierarchyRoot = useDashboardStore((state) => state.drillToHierarchyRoot);
   const drillToSegment = useDashboardStore((state) => state.drillToSegment);
   const thresholdOverrides = useDashboardStore((state) => state.thresholdOverrides);
+  const varianceOverrides = useDashboardStore((state) => state.varianceOverrides);
 
   // Reset to a clean default whenever this tab mounts (including switching back into it),
   // since the drill store is shared across tabs and another tab's path won't match this
@@ -109,7 +110,10 @@ export const EPTab = () => {
 
   const breadcrumbPath = [ROOT_LABEL[drill.hierarchy], ...drill.path];
   const contextLabel = buildContextLabel(drill, cardKpis);
-  const dynamicSummary = resolveAgentSummary('ep', kpis, drill, crossFilters);
+  const dynamicSummary = resolveAgentSummary('ep', kpis, drill, crossFilters, {
+    threshold: thresholdOverrides,
+    variance: varianceOverrides,
+  });
   const questionContext = resolveQuestionContext(drill, crossFilters);
   const overrideNotes = describeOverriddenStatuses(cardKpis, { threshold: thresholdOverrides });
   const baseInsights = dynamicSummary ? [dynamicSummary] : EP_INSIGHTS;
@@ -168,6 +172,7 @@ export const EPTab = () => {
               categoryKey="period"
               series={[{ key: 'value', label: 'Spend vs Plan (INR Cr)' }]}
               onElementClick={handleChartClick(spendVsPlan, spendVsPlanPath)}
+              colorOffset={0}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
@@ -178,6 +183,7 @@ export const EPTab = () => {
               categoryKey="period"
               series={[{ key: 'value', label: 'Scheme Closure (%)' }]}
               onElementClick={handleChartClick(schemeClosure, schemeClosurePath)}
+              colorOffset={1}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
@@ -188,6 +194,7 @@ export const EPTab = () => {
               categoryKey="period"
               series={[{ key: 'value', label: 'Capex Utilization Rate (%)' }]}
               onElementClick={handleChartClick(capexUtilizationRate, capexUtilizationRatePath)}
+              colorOffset={2}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
@@ -198,6 +205,7 @@ export const EPTab = () => {
               categoryKey="period"
               series={[{ key: 'value', label: 'Milestone Adherence (%)' }]}
               onElementClick={handleChartClick(projectMilestoneAdherence, projectMilestoneAdherencePath)}
+              colorOffset={3}
             />
           </Grid>
         </Grid>

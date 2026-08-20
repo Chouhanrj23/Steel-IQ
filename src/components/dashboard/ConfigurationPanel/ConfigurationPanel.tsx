@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Box from '@mui/material/Box';
 import ButtonBase from '@mui/material/ButtonBase';
 import Stack from '@mui/material/Stack';
@@ -6,11 +6,11 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import Chip from '@mui/material/Chip';
-import Divider from '@mui/material/Divider';
 import Collapse from '@mui/material/Collapse';
 import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import CheckIcon from '@mui/icons-material/Check';
 import { Card, Button } from '@components/common';
 import { useDashboardStore } from '@store/dashboard';
 import {
@@ -33,26 +33,216 @@ const toNumber = (raw: string): number | null => {
   return raw.trim() === '' || Number.isNaN(value) ? null : value;
 };
 
-/** Per-tab, session-only Early Warning rule tuning — lets a user drag a KPI's Threshold boundary
- * or Variance tolerance and immediately see the change cascade into that KPI's card badge, the
- * Early Warning Strip, the Exceptions view, and the Agent Summary text. Collapsed by default (see
- * the brief) since a tab can have several configurable KPIs and this sits above two other sidebar
- * panels. Nothing here is saved anywhere real — see the caption below the header. */
+// Wide enough for the largest values these fields actually show (targets run up to 6 digits,
+// e.g. Sale of Iron Ore's ~182000 tonnes) plus the widest unit ("tonnes"/"₹ Lakh"/"INR Cr") without
+// clipping — 120px only fit ~3 digits before the unit adornment crowded the number out. Also
+// drops the native number-input spin buttons, which were eating into that same space.
+const NUMBER_FIELD_SX = {
+  width: 176,
+  '& input[type=number]': {
+    MozAppearance: 'textfield',
+  },
+  '& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button': {
+    WebkitAppearance: 'none',
+    margin: 0,
+  },
+} as const;
+
+/** Smaller, muted unit label — frees up horizontal room for the number itself (the actual value
+ * being configured) rather than giving the unit text equal visual weight. */
+const UnitAdornment = ({ unit }: { unit: string }) => (
+  <InputAdornment position="end">
+    <Typography variant="caption" color="text.disabled" sx={{ whiteSpace: 'nowrap' }}>
+      {unit}
+    </Typography>
+  </InputAdornment>
+);
+
+interface KpiConfigRowProps {
+  kpi: KPI;
+  thresholdOverride: number | undefined;
+  varianceOverride: number | undefined;
+  onApply: (kpiId: string, threshold: number, variance: number) => void;
+  onClear: (kpiId: string) => void;
+}
+
+// How long the "Applied" confirmation shows on the button before the section auto-collapses —
+// long enough to register as feedback, short enough that it doesn't feel like a stuck state.
+const APPLY_CONFIRMATION_MS = 1100;
+
+/** One KPI's controls — collapsed by default to just its name + a chevron (identical
+ * expand/collapse language to the Early Warning Strip's tiles), expanding in place to reveal the
+ * Threshold/Variance/Trend fields plus Apply and Reset. Threshold/Variance each keep their own
+ * local "draft" text, decoupled from the committed store value both so a controlled field never
+ * snaps back mid-edit (see the earlier fix for that) and — now — because edits are meant to stay
+ * local until Apply is clicked: nothing here touches the store, and therefore nothing cascades
+ * into the KPI card/Strip/Agent Summary, until that explicit action. */
+const KpiConfigRow = ({ kpi, thresholdOverride, varianceOverride, onApply, onClear }: KpiConfigRowProps) => {
+  const polarity = KPI_POLARITY[kpi.id];
+  const direction = polarity === 'up-good' ? 'below' : 'above';
+  const defaultThreshold = getDefaultThresholdBoundary(kpi);
+
+  const [expanded, setExpanded] = useState(false);
+  const [thresholdDraft, setThresholdDraft] = useState(String(thresholdOverride ?? defaultThreshold));
+  const [varianceDraft, setVarianceDraft] = useState(String(varianceOverride ?? VARIANCE_THRESHOLD_PCT));
+  const [justApplied, setJustApplied] = useState(false);
+  const applyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(
+    () => () => {
+      if (applyTimeoutRef.current) clearTimeout(applyTimeoutRef.current);
+    },
+    [],
+  );
+
+  const appliedThreshold = thresholdOverride ?? defaultThreshold;
+  const appliedVariance = varianceOverride ?? VARIANCE_THRESHOLD_PCT;
+  const draftThresholdNum = toNumber(thresholdDraft);
+  const draftVarianceNum = toNumber(varianceDraft);
+  const isDirty =
+    draftThresholdNum !== null &&
+    draftVarianceNum !== null &&
+    (draftThresholdNum !== appliedThreshold || draftVarianceNum !== appliedVariance);
+  const hasOverride = thresholdOverride !== undefined || varianceOverride !== undefined;
+
+  const handleApply = () => {
+    if (draftThresholdNum === null || draftVarianceNum === null) return;
+    onApply(kpi.id, draftThresholdNum, draftVarianceNum);
+    setJustApplied(true);
+    applyTimeoutRef.current = setTimeout(() => {
+      setJustApplied(false);
+      setExpanded(false);
+    }, APPLY_CONFIRMATION_MS);
+  };
+
+  const handleReset = () => {
+    onClear(kpi.id);
+    setThresholdDraft(String(defaultThreshold));
+    setVarianceDraft(String(VARIANCE_THRESHOLD_PCT));
+  };
+
+  return (
+    <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1.5, overflow: 'hidden' }}>
+      <ButtonBase
+        onClick={() => setExpanded((prev) => !prev)}
+        aria-expanded={expanded}
+        sx={{
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          textAlign: 'left',
+          px: 1.25,
+          py: 0.75,
+        }}
+      >
+        <Typography variant="body2" sx={{ fontWeight: 600 }}>
+          {kpi.name}
+        </Typography>
+        <ExpandMoreIcon
+          fontSize="small"
+          sx={{
+            color: 'text.secondary',
+            flexShrink: 0,
+            ml: 1,
+            transform: expanded ? 'rotate(180deg)' : 'none',
+            transition: 'transform 0.15s ease',
+          }}
+        />
+      </ButtonBase>
+      <Collapse in={expanded}>
+        <Stack spacing={1.25} sx={{ px: 1.25, pb: 1.25, pt: 0.5 }}>
+          <Stack direction="row" alignItems="center" spacing={1.5} flexWrap="wrap" rowGap={1}>
+            <Typography variant="caption" color="text.secondary" sx={{ minWidth: 120 }}>
+              Flag if {direction}
+            </Typography>
+            <TextField
+              type="number"
+              size="small"
+              value={thresholdDraft}
+              onChange={(event) => setThresholdDraft(event.target.value)}
+              slotProps={{
+                input: { endAdornment: <UnitAdornment unit={kpi.unit} /> },
+              }}
+              sx={NUMBER_FIELD_SX}
+            />
+          </Stack>
+
+          <Stack direction="row" alignItems="center" spacing={1.5} flexWrap="wrap" rowGap={1}>
+            <Typography variant="caption" color="text.secondary" sx={{ minWidth: 120 }}>
+              Variance tolerance
+            </Typography>
+            <TextField
+              type="number"
+              size="small"
+              value={varianceDraft}
+              onChange={(event) => setVarianceDraft(event.target.value)}
+              slotProps={{ input: { endAdornment: <UnitAdornment unit="%" /> } }}
+              sx={NUMBER_FIELD_SX}
+            />
+          </Stack>
+
+          <Stack direction="row" alignItems="center" spacing={1.5}>
+            <Typography variant="caption" color="text.secondary" sx={{ minWidth: 120 }}>
+              Trend sensitivity
+            </Typography>
+            <Chip
+              size="small"
+              label={`±${TREND_THRESHOLD_PCT}% (fixed)`}
+              variant="outlined"
+              sx={{ color: 'text.disabled', borderColor: 'divider' }}
+            />
+          </Stack>
+
+          <Stack direction="row" spacing={1} sx={{ pt: 0.5 }}>
+            <Button
+              size="small"
+              variant="contained"
+              color={justApplied ? 'success' : 'primary'}
+              disabled={!isDirty}
+              onClick={handleApply}
+              startIcon={justApplied ? <CheckIcon fontSize="small" /> : undefined}
+            >
+              {justApplied ? 'Applied' : 'Apply'}
+            </Button>
+            <Button size="small" variant="outlined" disabled={!hasOverride && !isDirty} onClick={handleReset}>
+              Reset to defaults
+            </Button>
+          </Stack>
+        </Stack>
+      </Collapse>
+    </Box>
+  );
+};
+
+/** Per-tab, session-only Early Warning rule tuning — lets a user adjust a KPI's Threshold
+ * boundary or Variance tolerance and, on Apply, cascade that change into the KPI card badge, the
+ * Early Warning Strip, and the Agent Summary text. Collapsed by default at both levels: the panel
+ * itself, and (once open) each KPI's own section — matching the Early Warning Strip's tile
+ * pattern, so a tab with several configurable KPIs still reads as a short list, not a wall of
+ * fields. Nothing here is saved anywhere real — see the caption below the header. */
 export const ConfigurationPanel = ({ module, kpis }: ConfigurationPanelProps) => {
   const [expanded, setExpanded] = useState(false);
   const thresholdOverrides = useDashboardStore((state) => state.thresholdOverrides);
   const varianceOverrides = useDashboardStore((state) => state.varianceOverrides);
   const setThresholdOverride = useDashboardStore((state) => state.setThresholdOverride);
   const setVarianceOverride = useDashboardStore((state) => state.setVarianceOverride);
-  const resetConfigOverrides = useDashboardStore((state) => state.resetConfigOverrides);
+  const clearThresholdOverride = useDashboardStore((state) => state.clearThresholdOverride);
+  const clearVarianceOverride = useDashboardStore((state) => state.clearVarianceOverride);
 
   const configurableKpis = kpis.filter((kpi) => kpi.module === module && KPI_POLARITY[kpi.id] !== undefined);
   if (configurableKpis.length === 0) {
     return null;
   }
 
-  const hasAnyOverride =
-    Object.keys(thresholdOverrides).length > 0 || Object.keys(varianceOverrides).length > 0;
+  const handleApply = (kpiId: string, threshold: number, variance: number) => {
+    setThresholdOverride(kpiId, threshold);
+    setVarianceOverride(kpiId, variance);
+  };
+  const handleClear = (kpiId: string) => {
+    clearThresholdOverride(kpiId);
+    clearVarianceOverride(kpiId);
+  };
 
   return (
     <Card>
@@ -91,80 +281,22 @@ export const ConfigurationPanel = ({ module, kpis }: ConfigurationPanelProps) =>
           )}
         </ButtonBase>
         <Typography variant="caption" color="text.secondary">
-          Session-only demo controls — adjustments apply to this browser session and are lost on reload.
-          Nothing here is saved.
+          Session-only demo controls — edits stay local until you click Apply, and are lost on reload. Nothing
+          here is saved.
         </Typography>
 
         <Collapse in={expanded}>
-          <Stack divider={<Divider />} spacing={2} sx={{ pt: 1 }}>
-            {configurableKpis.map((kpi) => {
-              const polarity = KPI_POLARITY[kpi.id];
-              const direction = polarity === 'up-good' ? 'below' : 'above';
-              const thresholdValue = thresholdOverrides[kpi.id] ?? getDefaultThresholdBoundary(kpi);
-              const varianceValue = varianceOverrides[kpi.id] ?? VARIANCE_THRESHOLD_PCT;
-
-              return (
-                <Stack key={kpi.id} spacing={1.25}>
-                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                    {kpi.name}
-                  </Typography>
-
-                  <Stack direction="row" alignItems="center" spacing={1.5} flexWrap="wrap" rowGap={1}>
-                    <Typography variant="caption" color="text.secondary" sx={{ minWidth: 120 }}>
-                      Flag if {direction}
-                    </Typography>
-                    <TextField
-                      type="number"
-                      size="small"
-                      value={thresholdValue}
-                      onChange={(event) => {
-                        const next = toNumber(event.target.value);
-                        if (next !== null) setThresholdOverride(kpi.id, next);
-                      }}
-                      slotProps={{
-                        input: { endAdornment: <InputAdornment position="end">{kpi.unit}</InputAdornment> },
-                      }}
-                      sx={{ width: 120 }}
-                    />
-                  </Stack>
-
-                  <Stack direction="row" alignItems="center" spacing={1.5} flexWrap="wrap" rowGap={1}>
-                    <Typography variant="caption" color="text.secondary" sx={{ minWidth: 120 }}>
-                      Variance tolerance
-                    </Typography>
-                    <TextField
-                      type="number"
-                      size="small"
-                      value={varianceValue}
-                      onChange={(event) => {
-                        const next = toNumber(event.target.value);
-                        if (next !== null) setVarianceOverride(kpi.id, next);
-                      }}
-                      slotProps={{
-                        input: { endAdornment: <InputAdornment position="end">%</InputAdornment> },
-                      }}
-                      sx={{ width: 120 }}
-                    />
-                  </Stack>
-
-                  <Stack direction="row" alignItems="center" spacing={1.5}>
-                    <Typography variant="caption" color="text.secondary" sx={{ minWidth: 120 }}>
-                      Trend sensitivity
-                    </Typography>
-                    <Chip
-                      size="small"
-                      label={`±${TREND_THRESHOLD_PCT}% (fixed)`}
-                      variant="outlined"
-                      sx={{ color: 'text.disabled', borderColor: 'divider' }}
-                    />
-                  </Stack>
-                </Stack>
-              );
-            })}
-
-            <Button size="small" variant="outlined" disabled={!hasAnyOverride} onClick={resetConfigOverrides}>
-              Reset to defaults
-            </Button>
+          <Stack spacing={0.75} sx={{ pt: 0.5 }}>
+            {configurableKpis.map((kpi) => (
+              <KpiConfigRow
+                key={kpi.id}
+                kpi={kpi}
+                thresholdOverride={thresholdOverrides[kpi.id]}
+                varianceOverride={varianceOverrides[kpi.id]}
+                onApply={handleApply}
+                onClear={handleClear}
+              />
+            ))}
           </Stack>
         </Collapse>
       </Stack>

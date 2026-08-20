@@ -55,6 +55,7 @@ export const TSJTab = () => {
   const drillToHierarchyRoot = useDashboardStore((state) => state.drillToHierarchyRoot);
   const drillToSegment = useDashboardStore((state) => state.drillToSegment);
   const thresholdOverrides = useDashboardStore((state) => state.thresholdOverrides);
+  const varianceOverrides = useDashboardStore((state) => state.varianceOverrides);
 
   // Reset to a clean default whenever this tab mounts (including switching back into it),
   // since the drill store is shared across tabs and another tab's path won't match this
@@ -123,7 +124,10 @@ export const TSJTab = () => {
   // below assumes index 0 of that array is always the hierarchy root, and inserting an extra
   // leading segment would shift every other segment's click target off by one.
   const contextLabel = buildContextLabel(drill, cardKpis, TSJ_FULL_NAME);
-  const dynamicSummary = resolveAgentSummary('tsj', kpis, drill, crossFilters);
+  const dynamicSummary = resolveAgentSummary('tsj', kpis, drill, crossFilters, {
+    threshold: thresholdOverrides,
+    variance: varianceOverrides,
+  });
   const questionContext = resolveQuestionContext(drill, crossFilters);
   const overrideNotes = describeOverriddenStatuses(cardKpis, { threshold: thresholdOverrides });
   const baseInsights = dynamicSummary ? [dynamicSummary] : TSJ_INSIGHTS;
@@ -196,6 +200,7 @@ export const TSJTab = () => {
               series={[{ key: 'value', label: 'Profitability (%)' }]}
               // No onElementClick: customer isn't part of the Time/Plant toggle, so this chart
               // is intentionally non-interactive and always shows the full aggregate.
+              colorOffset={0}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
@@ -207,6 +212,7 @@ export const TSJTab = () => {
               series={[{ key: 'value', label: 'Plan Adherence (%)' }]}
               // No onElementClick: metric category isn't part of the Time/Plant toggle, so this
               // chart is intentionally non-interactive and always shows the full aggregate.
+              colorOffset={1}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
@@ -217,6 +223,7 @@ export const TSJTab = () => {
               categoryKey="plant"
               series={[{ key: 'value', label: 'Yield Rate (%)' }]}
               onElementClick={handleChartClick(yieldRate, yieldRatePath)}
+              colorOffset={2}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
@@ -227,6 +234,7 @@ export const TSJTab = () => {
               categoryKey="plant"
               series={[{ key: 'value', label: 'Defect Rate (%)' }]}
               onElementClick={handleChartClick(defectRate, defectRatePath)}
+              colorOffset={3}
             />
           </Grid>
         </Grid>

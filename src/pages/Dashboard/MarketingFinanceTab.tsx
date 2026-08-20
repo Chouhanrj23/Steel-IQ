@@ -27,7 +27,6 @@ import {
 import { resolveAgentSummary } from '@/data/agentSummaryTemplates';
 import { getQuestionsForTab, resolveQuestionContext } from '@/data/conversationalQuestions';
 import { describeOverriddenStatuses } from '@/data/earlyWarningRules';
-import { verticalColorOffset } from '@components/dashboard/verticalTheme';
 
 const mockData = mockDataJson as DashboardMockData;
 
@@ -53,6 +52,7 @@ export const MarketingFinanceTab = () => {
   const drillToHierarchyRoot = useDashboardStore((state) => state.drillToHierarchyRoot);
   const drillToSegment = useDashboardStore((state) => state.drillToSegment);
   const thresholdOverrides = useDashboardStore((state) => state.thresholdOverrides);
+  const varianceOverrides = useDashboardStore((state) => state.varianceOverrides);
 
   // Reset to a clean default whenever this tab mounts (including switching back into it),
   // since the drill store is shared across tabs and another tab's path won't match this
@@ -110,7 +110,10 @@ export const MarketingFinanceTab = () => {
 
   const breadcrumbPath = [ROOT_LABEL[drill.hierarchy], ...drill.path];
   const contextLabel = buildContextLabel(drill, cardKpis);
-  const dynamicSummary = resolveAgentSummary('marketingFinance', kpis, drill, crossFilters);
+  const dynamicSummary = resolveAgentSummary('marketingFinance', kpis, drill, crossFilters, {
+    threshold: thresholdOverrides,
+    variance: varianceOverrides,
+  });
   const questionContext = resolveQuestionContext(drill, crossFilters);
   const overrideNotes = describeOverriddenStatuses(cardKpis, { threshold: thresholdOverrides });
   const baseInsights = dynamicSummary ? [dynamicSummary] : MARKETING_FINANCE_INSIGHTS;
@@ -169,7 +172,7 @@ export const MarketingFinanceTab = () => {
               categoryKey="period"
               series={[{ key: 'value', label: 'Collections (₹ Lakh)' }]}
               onElementClick={handleChartClick(factoringCollection, factoringCollectionPath)}
-              colorOffset={verticalColorOffset('marketingFinance', 0)}
+              colorOffset={0}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
@@ -180,7 +183,7 @@ export const MarketingFinanceTab = () => {
               categoryKey="period"
               series={[{ key: 'value', label: 'Interest (₹ Lakh)' }]}
               onElementClick={handleChartClick(interestOnOverdue, interestOnOverduePath)}
-              colorOffset={verticalColorOffset('marketingFinance', 1)}
+              colorOffset={1}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
@@ -191,7 +194,7 @@ export const MarketingFinanceTab = () => {
               categoryKey="period"
               series={[{ key: 'value', label: 'Conversion Cost (INR)' }]}
               onElementClick={handleChartClick(conversionCost, conversionCostPath)}
-              colorOffset={verticalColorOffset('marketingFinance', 2)}
+              colorOffset={2}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
@@ -202,7 +205,7 @@ export const MarketingFinanceTab = () => {
               categoryKey="period"
               series={[{ key: 'value', label: 'Net Profit (INR Cr)' }]}
               onElementClick={handleChartClick(netProfit, netProfitPath)}
-              colorOffset={verticalColorOffset('marketingFinance', 3)}
+              colorOffset={3}
             />
           </Grid>
         </Grid>

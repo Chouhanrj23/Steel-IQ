@@ -1,7 +1,7 @@
 import Grid from '@mui/material/Grid';
 import { useKpiCardFocus } from '@hooks/useKpiCardFocus';
 import { getAgeingBreakdown, getEffectiveStatus } from '@/data/earlyWarningRules';
-import { kpiSupportsProductCategory } from '@pages/Dashboard/drillDownUtils';
+import { kpiSupportsProductCategory, kpiSupportsPlant } from '@pages/Dashboard/drillDownUtils';
 import { useDashboardStore } from '@store/dashboard';
 import type { KPI } from '@/types/dashboard';
 import { KPI_ICONS } from '../kpiIcons';
@@ -22,9 +22,18 @@ export interface ConnectedKpiCardProps {
 export const ConnectedKpiCard = ({ kpi, value, onClick }: ConnectedKpiCardProps) => {
   const { lens, setLens } = useKpiCardFocus(kpi.id);
   const productCategoryFilter = useDashboardStore((state) => state.crossFilters.productCategory);
+  const plantFilter = useDashboardStore((state) => state.crossFilters.plant);
   const thresholdOverrides = useDashboardStore((state) => state.thresholdOverrides);
-  const notApplicable =
-    productCategoryFilter !== null && !kpiSupportsProductCategory(kpi, productCategoryFilter);
+  // Same "never modeled, not just empty" gap as Product Category, but for Plant — most
+  // non-plant-dimensioned KPIs are each missing exactly one Plant value from their mock leaves,
+  // so without this check that Plant would silently render an unexplained "0" instead of "N/A".
+  const unsupportedFilterValues = [
+    productCategoryFilter !== null && !kpiSupportsProductCategory(kpi, productCategoryFilter)
+      ? productCategoryFilter
+      : null,
+    plantFilter !== null && !kpiSupportsPlant(kpi, plantFilter) ? plantFilter : null,
+  ].filter((value): value is string => value !== null);
+  const notApplicable = unsupportedFilterValues.length > 0;
   const vertical = VERTICAL_THEME[kpi.module];
   const previewActive = isPreviewModule(kpi.module);
   const effectiveStatus = getEffectiveStatus(kpi, { threshold: thresholdOverrides });
@@ -47,7 +56,9 @@ export const ConnectedKpiCard = ({ kpi, value, onClick }: ConnectedKpiCardProps)
         onLensChange={setLens}
         onClick={onClick}
         icon={KPI_ICONS[kpi.id]}
-        notApplicable={notApplicable ? `Not modeled for "${productCategoryFilter}"` : undefined}
+        notApplicable={
+          notApplicable ? `Not modeled for "${unsupportedFilterValues.join('", "')}"` : undefined
+        }
         accentColor={previewActive ? vertical.accent : undefined}
         density={previewActive ? vertical.density : undefined}
       />

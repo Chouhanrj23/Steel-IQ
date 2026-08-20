@@ -71,7 +71,11 @@ export interface DashboardState {
   setPendingPlantFilter: (plant: string | null) => void;
   setThresholdOverride: (kpiId: string, boundary: number) => void;
   setVarianceOverride: (kpiId: string, tolerancePct: number) => void;
-  resetConfigOverrides: () => void;
+  /** Removes just this KPI's Threshold override, reverting it to its authored status — scoped
+   * per-KPI (rather than one global "reset everything") since the Configuration panel's "Reset
+   * to defaults" now lives inside each KPI's own accordion section. */
+  clearThresholdOverride: (kpiId: string) => void;
+  clearVarianceOverride: (kpiId: string) => void;
 }
 
 const INITIAL_DRILL: DrillSelection = { hierarchy: 'plant', path: [] };
@@ -124,5 +128,14 @@ export const useDashboardStore = create<DashboardState>((set) => ({
     set((state) => ({ thresholdOverrides: { ...state.thresholdOverrides, [kpiId]: boundary } })),
   setVarianceOverride: (kpiId, tolerancePct) =>
     set((state) => ({ varianceOverrides: { ...state.varianceOverrides, [kpiId]: tolerancePct } })),
-  resetConfigOverrides: () => set({ thresholdOverrides: {}, varianceOverrides: {} }),
+  clearThresholdOverride: (kpiId) =>
+    set((state) => {
+      const { [kpiId]: _removed, ...rest } = state.thresholdOverrides;
+      return { thresholdOverrides: rest };
+    }),
+  clearVarianceOverride: (kpiId) =>
+    set((state) => {
+      const { [kpiId]: _removed, ...rest } = state.varianceOverrides;
+      return { varianceOverrides: rest };
+    }),
 }));

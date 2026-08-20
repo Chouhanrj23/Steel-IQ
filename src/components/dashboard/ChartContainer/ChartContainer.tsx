@@ -1,5 +1,4 @@
 import { useId } from 'react';
-import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import BarChartOutlinedIcon from '@mui/icons-material/BarChartOutlined';
@@ -21,6 +20,7 @@ import {
   Legend,
 } from 'recharts';
 import { CATEGORICAL_COLORS, CHART_CHROME, TOOLTIP_STYLE } from '../chartPalette';
+import { ChartCard } from '../ChartCard';
 
 export type ChartType = 'bar' | 'line' | 'area' | 'pie' | 'donut' | 'stackedBar';
 
@@ -322,12 +322,7 @@ export const ChartContainer = ({
   const hasData = hasRenderableData(data, series);
 
   return (
-    <Box>
-      {title && (
-        <Typography variant="subtitle1" sx={{ mb: 1.5 }}>
-          {title}
-        </Typography>
-      )}
+    <ChartCard title={title}>
       {hasData ? (
         <ResponsiveContainer width="100%" height={height}>
           {renderChart(
@@ -353,6 +348,6 @@ export const ChartContainer = ({
           <Typography variant="caption">Try adjusting the plant, time, or filter selection</Typography>
         </Stack>
       )}
-    </Box>
+    </ChartCard>
   );
 };
