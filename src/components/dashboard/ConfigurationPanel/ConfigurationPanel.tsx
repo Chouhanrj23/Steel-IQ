@@ -248,7 +248,10 @@ export const ConfigurationPanel = ({ module, kpis }: ConfigurationPanelProps) =>
     <Card>
       <Stack spacing={1.5}>
         <ButtonBase
+          id={`configuration-panel-header-${module}`}
           onClick={() => setExpanded((prev) => !prev)}
+          aria-expanded={expanded}
+          aria-controls={`configuration-panel-body-${module}`}
           sx={{
             width: '100%',
             display: 'flex',
@@ -286,7 +289,13 @@ export const ConfigurationPanel = ({ module, kpis }: ConfigurationPanelProps) =>
         </Typography>
 
         <Collapse in={expanded}>
-          <Stack spacing={0.75} sx={{ pt: 0.5 }}>
+          <Stack
+            role="region"
+            id={`configuration-panel-body-${module}`}
+            aria-labelledby={`configuration-panel-header-${module}`}
+            spacing={0.75}
+            sx={{ pt: 0.5 }}
+          >
             {configurableKpis.map((kpi) => (
               <KpiConfigRow
                 key={kpi.id}

@@ -33,7 +33,7 @@ const unwrapDefault = (mod: unknown): unknown => {
 
 const ReactEChartsCore = unwrapDefault(ReactEChartsCoreModule) as ComponentType<EChartsReactProps>;
 
-export type EChartType = 'waterfall' | 'treemap' | 'heatmap' | 'bubbleMatrix';
+export type EChartType = 'waterfall' | 'treemap' | 'heatmap' | 'bubbleMatrix' | 'sunburst';
 
 export interface WaterfallItem {
   label: string;
@@ -47,6 +47,16 @@ export interface TreemapNode {
   name: string;
   value?: number;
   children?: TreemapNode[];
+}
+
+/** Same shape as `TreemapNode` (a Sunburst and a Treemap are both "hierarchical value" charts in
+ * ECharts, taking identical `{name, value, children}` data) — kept as its own named type rather
+ * than reusing `TreemapNode` directly so a caller's intent (which chart this data is for) stays
+ * clear at the call site, and so the two can diverge later without a shared-type refactor. */
+export interface SunburstNode {
+  name: string;
+  value?: number;
+  children?: SunburstNode[];
 }
 
 export interface HeatmapCell {
@@ -83,7 +93,8 @@ export type EChartsContainerProps =
   | (BaseProps & { type: 'waterfall'; data: WaterfallItem[] })
   | (BaseProps & { type: 'treemap'; data: TreemapNode[] })
   | (BaseProps & { type: 'heatmap'; xCategories: string[]; yCategories: string[]; data: HeatmapCell[] })
-  | (BaseProps & { type: 'bubbleMatrix'; data: BubblePoint[]; xLabel?: string; yLabel?: string });
+  | (BaseProps & { type: 'bubbleMatrix'; data: BubblePoint[]; xLabel?: string; yLabel?: string })
+  | (BaseProps & { type: 'sunburst'; data: SunburstNode[] });
 
 // Mirrors chartPalette.ts's TOOLTIP_STYLE (same white background, hairline border, rounded
 // corners, soft shadow, Inter type) so an ECharts tooltip and a Recharts tooltip read as the
@@ -290,6 +301,64 @@ function buildTreemapOption(data: TreemapNode[], unit?: string, colorOffset = 0)
   };
 }
 
+function buildSunburstOption(data: SunburstNode[], unit?: string, colorOffset = 0): EChartsOption {
+  return {
+    color: rotatedCategoricalColors(colorOffset),
+    tooltip: {
+      ...ECHARTS_TOOLTIP_STYLE,
+      formatter: (info: { name: string; value: number; treePathInfo?: Array<{ name: string }> }) => {
+        const path = info.treePathInfo
+          ?.map((p) => p.name)
+          .filter(Boolean)
+          .join(' / ');
+        return `<strong>${path || info.name}</strong><br/>${formatValue(info.value ?? 0, unit)}`;
+      },
+    },
+    series: [
+      {
+        type: 'sunburst',
+        data,
+        // Radial label rotation (below) is far more space-efficient than the old horizontal
+        // "outside" labels were, so the pie can safely fill more of the canvas than the original
+        // 72% while still leaving enough margin for the outermost ring's text.
+        radius: [0, '82%'],
+        // Clicking a ring zooms into that branch (ECharts' own built-in behavior for this
+        // setting) rather than firing `onElementClick` — a Sunburst's rings are for exploring
+        // proportion/contribution visually, not for driving the page's Time/Plant drill-down
+        // (that's what the KPI cards/other charts already do); this keeps the two interactions
+        // from fighting over what a click means on this particular chart.
+        nodeClick: 'rootToNode',
+        emphasis: { focus: 'ancestor' },
+        label: {
+          show: true,
+          color: '#FFFFFF',
+          fontFamily: 'Inter, sans-serif',
+          // Text runs along each wedge's own radial line instead of staying horizontal — a
+          // narrow outer-ring wedge can fit a far longer label this way before truncating, since
+          // the label's length now follows the wedge's length rather than fighting its width.
+          // This (not a smaller minAngle) is what actually recovers labels that were previously
+          // getting hidden — most of them weren't too small to show, they just couldn't fit
+          // horizontally in a thin wedge.
+          rotate: 'radial',
+          overflow: 'truncate',
+          // Every real segment still gets a label down to a fairly thin sliver — below that,
+          // ECharts hides it automatically rather than overlapping neighbors, same "hide once too
+          // small to fit" principle the treemap's own truncation already follows. Lower than
+          // before since radial rotation lets genuinely thin wedges show a label now too.
+          minAngle: 5,
+        },
+        itemStyle: { borderColor: '#FFFFFF', borderWidth: 1 },
+        levels: [
+          {},
+          { r0: '10%', r: '38%', itemStyle: { borderWidth: 2 }, label: { fontSize: 13 } },
+          { r0: '38%', r: '60%', label: { fontSize: 11 } },
+          { r0: '60%', r: '82%', label: { fontSize: 10 } },
+        ],
+      },
+    ],
+  };
+}
+
 function buildHeatmapOption(
   xCategories: string[],
   yCategories: string[],
@@ -429,6 +498,11 @@ const hasRenderableData = (props: EChartsContainerProps): boolean => {
       return props.data.some((c) => c.value !== 0);
     case 'bubbleMatrix':
       return props.data.length > 0;
+    case 'sunburst': {
+      const sum = (nodes: SunburstNode[]): number =>
+        nodes.reduce((acc, n) => acc + (n.value ?? 0) + sum(n.children ?? []), 0);
+      return props.data.length > 0 && sum(props.data) !== 0;
+    }
   }
 };
 
@@ -442,6 +516,8 @@ const buildOption = (props: EChartsContainerProps): EChartsOption => {
       return buildHeatmapOption(props.xCategories, props.yCategories, props.data, props.unit);
     case 'bubbleMatrix':
       return buildBubbleMatrixOption(props.data, props.xLabel, props.yLabel);
+    case 'sunburst':
+      return buildSunburstOption(props.data, props.unit, props.colorOffset);
   }
 };
 
@@ -450,11 +526,16 @@ const buildOption = (props: EChartsContainerProps): EChartsOption => {
  * Every other chart on the dashboard stays on Recharts via `ChartContainer`; this is not a
  * replacement for it. */
 export const EChartsContainer = (props: EChartsContainerProps) => {
-  // Treemaps get more vertical room by default than the other three chart types — the extra
-  // space is what actually fixes cramped labels; the font-size/truncation tuning in
-  // `buildTreemapOption` only controls what happens once space itself is no longer the
-  // constraint. Any caller can still override via its own `height` prop.
-  const { title, height = props.type === 'treemap' ? 340 : 300, onElementClick } = props;
+  // Treemap and Sunburst get more vertical room by default than the other chart types — both are
+  // space-filling hierarchical charts where cramped labels are primarily a room problem, not a
+  // font-size problem (the font-size/truncation tuning in `buildTreemapOption`/
+  // `buildSunburstOption` only controls what happens once space itself is no longer the
+  // constraint). Any caller can still override via its own `height` prop.
+  const {
+    title,
+    height = props.type === 'treemap' || props.type === 'sunburst' ? 340 : 300,
+    onElementClick,
+  } = props;
   const hasData = hasRenderableData(props);
 
   const onEvents = onElementClick

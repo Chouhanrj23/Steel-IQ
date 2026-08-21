@@ -1,6 +1,11 @@
-import type { KPI, ModuleKey } from '@/types/dashboard';
+import type { KPI, ModuleKey, DrillDownNode } from '@/types/dashboard';
 import type { DrillSelection, CrossFilters } from '@store/dashboard';
-import { applyCrossFilters, getNodeAtPath, sumRootValues } from '@pages/Dashboard/drillDownUtils';
+import {
+  applyCrossFilters,
+  getNodeAtPath,
+  getNodesAtPath,
+  sumRootValues,
+} from '@pages/Dashboard/drillDownUtils';
 import { resolveQuestionContext } from './conversationalQuestions';
 import {
   evaluateKpiSignals,
@@ -304,6 +309,18 @@ const TREND_VERB: Record<KPI['trend'], string> = {
 const formatPercentChange = (percentChange: number): string =>
   `${percentChange > 0 ? '+' : ''}${percentChange}%`;
 
+/** `resolveQuestionContext`'s "All Plants"/"All Regions" placeholders read fine as standalone UI
+ * labels (a filter dropdown, a "Showing: All Plants" caption) but not woven into a flowing
+ * sentence — "in All Time across All Regions" reads like unfinished template text, not prose.
+ * Lower-cases just those "All X" sentinels for narrative use (leaving an actual drilled-into
+ * value, e.g. "Rourkela Plant", untouched) — every consumer other than this file still gets the
+ * original capitalized form from `resolveQuestionContext` directly. */
+const forNarrative = (value: string): string => (value.startsWith('All ') ? value.toLowerCase() : value);
+
+/** "All Time" specifically doesn't read as English inside a sentence ("in all time") the way
+ * "all regions"/"all plants" do — it needs a different phrase, not just a case change. */
+const narrativePeriod = (period: string): string => (period === 'All Time' ? 'this period' : period);
+
 const PLACEHOLDER_PATTERN = /\{(\w+)\}/g;
 
 /** Appended to the templated sentence whenever Business Unit and/or Product Category are
@@ -353,25 +370,81 @@ const resolveRecommendationState = (
   return favorable ? 'favorable' : 'unfavorableNotFlagged';
 };
 
+/** "%" reads fine directly after a number ("3.8%"); every other unit needs the space ("3.8
+ * tonnes") — shared so every hand-formatted number+unit pairing in this file agrees. */
+const formatUnit = (value: number, unit: string): string => `${value}${unit === '%' ? '%' : ` ${unit}`}`;
+
 const formatConfigThreshold = (kpi: KPI, overrides?: EarlyWarningOverrides): string => {
   const boundary = overrides?.threshold?.[kpi.id] ?? getDefaultThresholdBoundary(kpi);
-  return `${boundary}${kpi.unit === '%' ? '%' : ` ${kpi.unit}`}`;
+  return formatUnit(boundary, kpi.unit);
 };
 
+// Below this margin, a drilled node reads as "in line with" its peers rather than meaningfully
+// above/below them — avoids reporting something like "6% above the average" as if it were a real
+// standout when it's within normal noise.
+const PEER_COMPARISON_THRESHOLD_PCT = 5;
+
+/** `resolveRecommendationState` is computed from the KPI's own whole-aggregate fields (status/
+ * trend/percentChange vs its single target) — those never change no matter which specific plant
+ * or period a user drills into, so without this, every plant under the same KPI got the exact
+ * same recommendation sentence back, differing only in which {plant} name got substituted in.
+ * This grounds the recommendation in the specific drilled node's own real value instead: how it
+ * compares to the average of its real siblings (the other plants, or the other periods at that
+ * same level) — genuinely different numbers per node, computed from the same tree every chart on
+ * the tab already reads, never fabricated. Returns `null` when there are too few siblings for
+ * "average" to mean anything (a lone node, or an empty/zero-valued comparison group). */
+const describePeerComparison = (
+  node: DrillDownNode,
+  siblings: DrillDownNode[],
+  unit: string,
+  axisNoun: string,
+): string | null => {
+  // Excludes the node itself from its own comparison group — "20% above the other 4 plants'
+  // average" is the real, honest comparison; averaging it in with itself would quietly dampen
+  // its own signal against the very group it's being measured against.
+  const peers = siblings.filter((sibling) => sibling.label !== node.label);
+  if (peers.length < 1) return null;
+  const average = peers.reduce((sum, peer) => sum + peer.value, 0) / peers.length;
+  if (average === 0) return null;
+
+  const deltaPct = Math.round(((node.value - average) / average) * 100);
+  const roundedAverage = formatUnit(Math.round(average * 10) / 10, unit);
+
+  if (Math.abs(deltaPct) < PEER_COMPARISON_THRESHOLD_PCT) {
+    return `${node.label} is running in line with the other ${peers.length} ${axisNoun}s, which average ${roundedAverage}`;
+  }
+  const direction = deltaPct > 0 ? 'above' : 'below';
+  return `${node.label} is ${Math.abs(deltaPct)}% ${direction} the other ${peers.length} ${axisNoun}s' average of ${roundedAverage}`;
+};
+
+/** What `resolveAgentSummary` returns — kept as two distinct fields, not one concatenated
+ * sentence, so a caller can render "Insight" and "Recommended Action" as clearly separate,
+ * labeled pieces (matching the business-scenario cards' own Insight/Recommended Actions
+ * treatment) instead of one flowing paragraph that buries the action inside descriptive text. */
+export interface AgentSummaryResult {
+  /** What happened — the descriptive sentence, plus the active Business Unit/Product Category
+   * filter note when one is set. */
+  insight: string;
+  /** The forward-looking action to take, chosen by `resolveRecommendationState`. */
+  recommendedAction: string;
+}
+
 /**
- * Resolves the Agent Summary sentence for the given tab's current drill/filter state, or `null`
- * when there's nothing to narrate (no drill *and* no cross-filter active) or no template exists
- * for this tab at all — callers should fall back to their static top-level summary in either
- * case, exactly as the panel already did before this generator existed. Reacts to Region/
- * Business Unit/Product Category/Plant on their own now, not just an active Time/Plant drill —
- * previously a cross-filter-only change (no drill) always fell through to the static summary,
- * even though the underlying KPI values had genuinely changed.
+ * Resolves the Agent Summary content for the given tab, or `null` only when this tab genuinely
+ * has no template/KPI to narrate — callers should fall back to their static top-level summary in
+ * that case, same safety net the panel already had before this generator existed. Every one of
+ * the 9 module tabs has at least one template today, so in practice this always returns a result
+ * — including at rest, with no drill and no cross-filter active, narrating the KPI's full
+ * aggregate (the same value its own KPI card already shows undrilled). Client feedback was that
+ * the Agent Summary needs to suggest a recommended action from the data on screen, not just
+ * describe it — this always resolves a recommendation (no drill/filter required to see one), and
+ * returns it as its own field rather than folded into one paragraph, so the UI can label it
+ * explicitly as "Recommended Action" instead of leaving it for the reader to notice.
  *
- * Returns two sentences: the original descriptive one (what happened), plus a second,
- * forward-looking recommendation sentence chosen by `resolveRecommendationState` — the KPI's
- * current Early Warning state (Threshold/Trend/Variance-flagged, favorable, unfavorable-but-
- * unflagged, or stable), factoring in `overrides` (the Configuration panel's session thresholds)
- * exactly as the Strip and Exceptions view already do.
+ * `insight` is the descriptive "what happened" sentence; `recommendedAction` is chosen by
+ * `resolveRecommendationState` — the KPI's current Early Warning state (Threshold/Trend/Variance-
+ * flagged, favorable, unfavorable-but-unflagged, or stable), factoring in `overrides` (the
+ * Configuration panel's session thresholds) exactly as the Strip and Exceptions view already do.
  */
 export const resolveAgentSummary = (
   tab: ModuleKey,
@@ -379,12 +452,8 @@ export const resolveAgentSummary = (
   drill: DrillSelection,
   crossFilters: CrossFilters,
   overrides?: EarlyWarningOverrides,
-): string | null => {
+): AgentSummaryResult | null => {
   const hasDrill = drill.path.length > 0 && (drill.hierarchy === 'plant' || drill.hierarchy === 'time');
-  const hasCrossFilter = Boolean(
-    crossFilters.region || crossFilters.businessUnit || crossFilters.productCategory || crossFilters.plant,
-  );
-  if (!hasDrill && !hasCrossFilter) return null;
 
   // Prefer the template matching the in-page drill's current axis; fall back to whichever axis
   // this tab actually has a template for, so a cross-filter-only change still produces dynamic
@@ -409,9 +478,9 @@ export const resolveAgentSummary = (
 
   const { plant, period, region, bu, category } = resolveQuestionContext(drill, crossFilters);
   const context: Record<string, string> = {
-    plant,
-    period,
-    region,
+    plant: forNarrative(plant),
+    period: narrativePeriod(period),
+    region: forNarrative(region),
     bu,
     category,
     value: `${value} ${kpi.unit}`,
@@ -424,6 +493,20 @@ export const resolveAgentSummary = (
     text.replace(PLACEHOLDER_PATTERN, (match, key: string) => context[key] ?? match);
 
   const state = resolveRecommendationState(kpi, tab, overrides);
-  const sentence = `${fill(template.template)} ${fill(template.recommendations[state])}`;
-  return sentence + activeFilterSuffix(crossFilters);
+  let recommendedAction = fill(template.recommendations[state]);
+
+  // Grounds the recommendation in the specific drilled node's own real standing — without this,
+  // every plant/period under this KPI gets the exact same sentence back (the state above is
+  // fixed per-KPI, not per-node), differing only in which {plant} name got substituted in.
+  if (node) {
+    const siblings = getNodesAtPath(filteredRoot, drill.path.slice(0, -1));
+    const axisNoun = template.axis === 'plant' ? 'plant' : 'period';
+    const peerComparison = describePeerComparison(node, siblings, kpi.unit, axisNoun);
+    if (peerComparison) recommendedAction = `${recommendedAction} ${peerComparison}.`;
+  }
+
+  return {
+    insight: fill(template.template) + activeFilterSuffix(crossFilters),
+    recommendedAction,
+  };
 };

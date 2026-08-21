@@ -1,5 +1,5 @@
 import * as echarts from 'echarts/core';
-import { BarChart, TreemapChart, HeatmapChart, ScatterChart } from 'echarts/charts';
+import { BarChart, TreemapChart, HeatmapChart, ScatterChart, SunburstChart } from 'echarts/charts';
 import {
   TooltipComponent,
   GridComponent,
@@ -11,15 +11,16 @@ import { CanvasRenderer } from 'echarts/renderers';
 import { CATEGORICAL_COLORS } from '../chartPalette';
 
 // Registers only the chart types/components EChartsContainer actually uses (waterfall runs on
-// BarChart, treemap/heatmap/bubbleMatrix on their own renderers) rather than importing all of
-// `echarts`, which pulls in every chart type Steel IQ doesn't use — full `echarts` adds well
-// over 1 MB minified to the bundle; this tree-shaken core entry keeps the delta closer to what
-// these four chart types actually cost.
+// BarChart, treemap/heatmap/bubbleMatrix/sunburst on their own renderers) rather than importing
+// all of `echarts`, which pulls in every chart type Steel IQ doesn't use — full `echarts` adds
+// well over 1 MB minified to the bundle; this tree-shaken core entry keeps the delta closer to
+// what these five chart types actually cost.
 echarts.use([
   BarChart,
   TreemapChart,
   HeatmapChart,
   ScatterChart,
+  SunburstChart,
   TooltipComponent,
   GridComponent,
   TitleComponent,

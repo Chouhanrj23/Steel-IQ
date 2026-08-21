@@ -125,8 +125,7 @@ export const TSPLTab = () => {
   });
   const questionContext = resolveQuestionContext(drill, crossFilters);
   const overrideNotes = describeOverriddenStatuses(cardKpis, { threshold: thresholdOverrides });
-  const baseInsights = dynamicSummary ? [dynamicSummary] : TSPL_INSIGHTS;
-  const insights = overrideNotes.length > 0 ? [...baseInsights, ...overrideNotes] : baseInsights;
+  const insights = dynamicSummary ? overrideNotes : [...TSPL_INSIGHTS, ...overrideNotes];
 
   return (
     <Stack direction={{ xs: 'column', lg: 'row' }} spacing={3} alignItems="flex-start">
@@ -235,7 +234,7 @@ export const TSPLTab = () => {
 
       <Stack spacing={3} sx={{ width: { xs: '100%', lg: 360 }, flexShrink: 0 }}>
         <ConfigurationPanel module="tspl" kpis={kpis} />
-        <AgentSummaryPanel insights={insights} contextLabel={contextLabel} />
+        <AgentSummaryPanel insights={insights} contextLabel={contextLabel} dynamicSummary={dynamicSummary} />
         <ConversationalInsightsPanel
           questionLibrary={TSPL_QUESTIONS}
           context={questionContext}

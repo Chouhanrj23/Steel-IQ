@@ -15,6 +15,51 @@ export const HIERARCHY_OPTIONS: { value: HierarchyKey; label: string }[] = [
   { value: 'plant', label: 'Plant' },
 ];
 
+/** Every time-dimensioned KPI's tree is exactly Year > Quarter > Month before its own real
+ * business sub-hierarchy begins underneath — the same 3-level shape `GlobalFilterBar`'s Year/
+ * Quarter/Month selects already assume for every time-dimensioned KPI in the app. Named here
+ * rather than left as a bare `3` wherever it's used. */
+export const TIME_HIERARCHY_DEPTH = 3;
+
+export interface ResolvedPeriodNode {
+  node: DrillDownNode;
+  /** The full Year/Quarter/Month labels actually resolved to reach `node`, e.g.
+   * `['2024', 'Q4', 'Dec']` — for a caption that never leaves which period ambiguous (a bare
+   * "Dec" doesn't say which year), joined the same way `DepthNode.qualifiedLabel` already does
+   * elsewhere in this file. */
+  path: string[];
+}
+
+/** Descends from `root` — first along `path` (an explicit Time drill-down selection, however far
+ * it goes), then continues taking the chronologically-last child at each further level up to
+ * `timeDepth` total levels (trees are authored in chronological order, so "last child" is always
+ * "most recent") — landing on a single period's node once every time level is resolved one way or
+ * the other. Used to scope a business-hierarchy visualization (e.g. a Sunburst of a KPI's real
+ * sub-tree) to exactly one period's data: it reacts to whatever Year/Quarter/Month the user has
+ * actually drilled into, and falls back to the latest period when nothing is drilled, rather than
+ * an all-time aggregate — each period holds its own separate copy of the business sub-tree below
+ * it, so summing across periods would double-count the same-labeled branches instead of
+ * aggregating them. Assumes `root` is a time-dimensioned KPI's tree; returns `null` if `root` is
+ * empty or a level is missing. */
+export const resolveLatestPeriodNode = (
+  root: DrillDownNode[],
+  path: string[],
+  timeDepth: number,
+): ResolvedPeriodNode | null => {
+  let level = root;
+  let node: DrillDownNode | null = null;
+  const resolvedPath: string[] = [];
+  for (let depth = 0; depth < timeDepth; depth++) {
+    const explicitLabel = path[depth];
+    const match = explicitLabel ? level.find((n) => n.label === explicitLabel) : level[level.length - 1];
+    if (!match) return node ? { node, path: resolvedPath } : null;
+    node = match;
+    resolvedPath.push(match.label);
+    level = match.children ?? [];
+  }
+  return node ? { node, path: resolvedPath } : null;
+};
+
 /** Depth-first search for a node labeled `label` anywhere under `nodes` (not just its
  * immediate children). Different tabs' trees put the same kind of label at different
  * depths (e.g. Raw Material's plant hierarchy has Plant at level 1, Cost Analytics' still

@@ -30,6 +30,8 @@ import {
 import { resolveAgentSummary } from '@/data/agentSummaryTemplates';
 import { describeOverriddenStatuses } from '@/data/earlyWarningRules';
 import { getQuestionsForTab, resolveQuestionContext } from '@/data/conversationalQuestions';
+import { matchBusinessScenariosForModule } from '@/data/businessScenarios';
+import { buildHierarchyVisualData } from '@/data/agentSummaryVisuals';
 
 const mockData = mockDataJson as DashboardMockData;
 
@@ -132,8 +134,22 @@ export const RawMaterialTab = () => {
   });
   const questionContext = resolveQuestionContext(drill, crossFilters);
   const overrideNotes = describeOverriddenStatuses(cardKpis, { threshold: thresholdOverrides });
-  const baseInsights = dynamicSummary ? [dynamicSummary] : RAW_MATERIAL_INSIGHTS;
-  const insights = overrideNotes.length > 0 ? [...baseInsights, ...overrideNotes] : baseInsights;
+  const insights = dynamicSummary ? overrideNotes : [...RAW_MATERIAL_INSIGHTS, ...overrideNotes];
+  // Structured, actionable Insight/Why/Business-Impact/Recommended-Actions card for any business
+  // scenario (Sales + Production, per the reference sheet) that currently matches this module's
+  // live KPI values — rendered by AgentSummaryPanel above the plain `insights` text. Client
+  // feedback was that a WHAT-only summary isn't sufficient on its own. Note: Sales + Iron Ore
+  // Production stays inactive (returns no match) until a genuine Iron Ore Production KPI exists
+  // in mockData.json — see IRON_ORE_PRODUCTION_KPI_ID in businessScenarios.ts. Clean Coal
+  // Production is never used as a substitute for it.
+  const matchedScenarios = matchBusinessScenariosForModule('rawMaterial', kpis);
+  // Sale of Iron Ore's real drilldown tree splits Plant, then Process (Mining/Beneficiation),
+  // then Grade (Lumps/Fines) beneath each month — a genuine business-hierarchy breakdown (not
+  // fabricated), used for the Agent Summary's Sunburst + Contribution visuals per the client's
+  // visual-quality feedback. Kept independent of `matchedScenarios` deliberately — this KPI's own
+  // visual should render regardless of whether the (currently inactive) Sales + Iron Ore
+  // Production scenario matches.
+  const hierarchyVisual = buildHierarchyVisualData(saleOfIronOre, 'Plant', drill, crossFilters);
 
   return (
     <Stack direction={{ xs: 'column', lg: 'row' }} spacing={3} alignItems="flex-start">
@@ -231,7 +247,13 @@ export const RawMaterialTab = () => {
 
       <Stack spacing={3} sx={{ width: { xs: '100%', lg: 360 }, flexShrink: 0 }}>
         <ConfigurationPanel module="rawMaterial" kpis={kpis} />
-        <AgentSummaryPanel insights={insights} contextLabel={contextLabel} />
+        <AgentSummaryPanel
+          insights={insights}
+          contextLabel={contextLabel}
+          scenarios={matchedScenarios}
+          dynamicSummary={dynamicSummary}
+          hierarchyVisual={hierarchyVisual}
+        />
         <ConversationalInsightsPanel
           questionLibrary={RAW_MATERIAL_QUESTIONS}
           context={questionContext}

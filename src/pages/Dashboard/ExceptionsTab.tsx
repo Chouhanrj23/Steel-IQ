@@ -2,16 +2,17 @@ import { useState } from 'react';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Chip from '@mui/material/Chip';
-import Divider from '@mui/material/Divider';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import mockDataJson from '@mock/mockData.json';
 import type { DashboardMockData } from '@/types/dashboard';
 import { evaluateAllSignals, type Signal } from '@/data/earlyWarningRules';
+import { matchBusinessScenariosForModule, findScenarioForKpi } from '@/data/businessScenarios';
 import { useDashboardStore } from '@store/dashboard';
 import { STATUS_COLORS } from '@components/dashboard/chartPalette';
 import { VERTICAL_THEME, isPreviewModule } from '@components/dashboard/verticalTheme';
 import { ExceptionDetailModal } from '@components/dashboard/ExceptionDetailModal';
-import { Card, Button, EmptyState } from '@components/common';
+import { WarningAccordionItem } from '@components/dashboard/WarningAccordionItem';
+import { Card, EmptyState } from '@components/common';
 import { MODULE_TAB_ORDER, MODULE_LABELS, MODULE_FULL_NAMES } from './moduleTabs';
 
 const mockData = mockDataJson as DashboardMockData;
@@ -31,42 +32,6 @@ const SummaryStat = ({ label, value, color }: SummaryStatProps) => (
       {label}
     </Typography>
   </Card>
-);
-
-interface ExceptionRowProps {
-  signal: Signal;
-  onViewDetails: () => void;
-}
-
-// Alert (KPI + trigger type) → Description (1-2 sentence context) → CTA, so every triggered
-// signal reads as a self-contained card instead of a flat message line. The CTA opens the shared
-// ExceptionDetailModal rather than jumping straight to the KPI — that jump is still one click
-// away, as the modal's own primary action.
-const ExceptionRow = ({ signal, onViewDetails }: ExceptionRowProps) => (
-  <Stack direction="row" alignItems="flex-start" justifyContent="space-between" spacing={2}>
-    <Stack spacing={0.5} sx={{ flex: 1, minWidth: 0 }}>
-      <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" rowGap={0.5}>
-        <Typography variant="subtitle2">{signal.kpiName}</Typography>
-        <Chip
-          size="small"
-          label={signal.type}
-          variant="outlined"
-          sx={{ color: STATUS_COLORS[signal.severity], borderColor: STATUS_COLORS[signal.severity] }}
-        />
-      </Stack>
-      <Typography variant="body2" color="text.secondary">
-        {signal.description}
-      </Typography>
-    </Stack>
-    <Button
-      size="small"
-      variant="outlined"
-      onClick={onViewDetails}
-      sx={{ flexShrink: 0, whiteSpace: 'nowrap' }}
-    >
-      View Details
-    </Button>
-  </Stack>
 );
 
 export const ExceptionsTab = () => {
@@ -100,6 +65,8 @@ export const ExceptionsTab = () => {
       <Stack spacing={2}>
         {MODULE_TAB_ORDER.map((module) => {
           const moduleSignals = signals.filter((s) => s.module === module);
+          const moduleKpis = mockData.modules[module].kpis;
+          const moduleScenarios = matchBusinessScenariosForModule(module, moduleKpis);
           const fullName = MODULE_FULL_NAMES[module];
           const { icon: ModuleIcon, accent } = VERTICAL_THEME[module];
           const accented = isPreviewModule(module);
@@ -130,14 +97,20 @@ export const ExceptionsTab = () => {
                   description="Every KPI in this module is within its expected range."
                 />
               ) : (
-                <Stack divider={<Divider />} spacing={1.5}>
-                  {moduleSignals.map((signal, index) => (
-                    <ExceptionRow
-                      key={`${signal.kpiId}-${signal.type}-${index}`}
-                      signal={signal}
-                      onViewDetails={() => setDetailSignal(signal)}
-                    />
-                  ))}
+                <Stack spacing={1}>
+                  {moduleSignals.map((signal, index) => {
+                    const kpi = moduleKpis.find((k) => k.id === signal.kpiId);
+                    const scenario = findScenarioForKpi(signal.kpiId, moduleScenarios);
+                    return (
+                      <WarningAccordionItem
+                        key={`${signal.kpiId}-${signal.type}-${index}`}
+                        signal={signal}
+                        kpi={kpi}
+                        scenario={scenario}
+                        onViewDetails={() => setDetailSignal(signal)}
+                      />
+                    );
+                  })}
                 </Stack>
               )}
             </Card>

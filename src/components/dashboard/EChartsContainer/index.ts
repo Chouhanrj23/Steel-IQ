@@ -8,6 +8,7 @@ export type {
   EChartType,
   WaterfallItem,
   TreemapNode,
+  SunburstNode,
   HeatmapCell,
   BubblePoint,
 } from './EChartsContainer';

@@ -13,6 +13,8 @@ export * from './ConversationalInsightsPanel';
 export * from './KPILensToggle';
 export * from './EarlyWarningStrip';
 export * from './ExceptionDetailModal';
+export * from './ScenarioNarrativeSections';
+export * from './WarningAccordionItem';
 export * from './ConfigurationPanel';
 export * from './HealthCard';
 export * from './ExploreBuilder';

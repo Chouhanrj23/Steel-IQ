@@ -1,19 +1,15 @@
 import { useState } from 'react';
 import Box from '@mui/material/Box';
-import ButtonBase from '@mui/material/ButtonBase';
 import Stack from '@mui/material/Stack';
-import Chip from '@mui/material/Chip';
-import Collapse from '@mui/material/Collapse';
 import Typography from '@mui/material/Typography';
 import { alpha } from '@mui/material/styles';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Button } from '@components/common';
 import { evaluateKpiSignals, type Signal } from '@/data/earlyWarningRules';
+import { matchBusinessScenariosForModule, findScenarioForKpi } from '@/data/businessScenarios';
 import { useDashboardStore } from '@store/dashboard';
 import { STATUS_COLORS } from '../chartPalette';
 import { ExceptionDetailModal } from '../ExceptionDetailModal';
+import { WarningAccordionItem } from '../WarningAccordionItem';
 import type { KPI, ModuleKey } from '@/types/dashboard';
 
 export interface EarlyWarningStripProps {
@@ -23,100 +19,20 @@ export interface EarlyWarningStripProps {
   kpis: KPI[];
 }
 
-interface WarningTileProps {
-  signal: Signal;
-  onViewDetails: () => void;
-}
-
-/** One signal, collapsed by default to a single-line chip-weight tile (icon + KPI name + trigger
- * type only) — click anywhere on the tile to expand it in place for the description and "View
- * Details", click again to collapse. Each tile owns its own expanded state independently, so any
- * number can be open at once — simpler than coordinating a single-open accordion, and there's no
- * reason a user comparing two warnings should be forced to close one first. */
-const WarningTile = ({ signal, onViewDetails }: WarningTileProps) => {
-  const [expanded, setExpanded] = useState(false);
-  const SeverityIcon = signal.severity === 'critical' ? ErrorOutlineIcon : WarningAmberIcon;
-  const severityColor = STATUS_COLORS[signal.severity];
-
-  return (
-    <Box
-      sx={{
-        border: '1px solid',
-        borderColor: alpha(severityColor, 0.35),
-        bgcolor: 'background.paper',
-        borderRadius: 1.5,
-        overflow: 'hidden',
-      }}
-    >
-      <ButtonBase
-        onClick={() => setExpanded((prev) => !prev)}
-        aria-expanded={expanded}
-        sx={{
-          width: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          textAlign: 'left',
-          px: 1.25,
-          py: 0.625,
-        }}
-      >
-        <Stack direction="row" alignItems="center" spacing={0.75} sx={{ minWidth: 0, flex: 1 }}>
-          <SeverityIcon sx={{ fontSize: 16, color: severityColor, flexShrink: 0 }} />
-          <Typography
-            variant="body2"
-            sx={{ fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
-          >
-            {signal.kpiName}
-          </Typography>
-          <Chip
-            size="small"
-            label={signal.type}
-            variant="outlined"
-            sx={{
-              color: severityColor,
-              borderColor: severityColor,
-              height: 20,
-              flexShrink: 0,
-              '& .MuiChip-label': { px: 0.75, fontSize: '0.7rem' },
-            }}
-          />
-        </Stack>
-        <ExpandMoreIcon
-          fontSize="small"
-          sx={{
-            color: 'text.secondary',
-            flexShrink: 0,
-            ml: 1,
-            transform: expanded ? 'rotate(180deg)' : 'none',
-            transition: 'transform 0.15s ease',
-          }}
-        />
-      </ButtonBase>
-      <Collapse in={expanded}>
-        <Stack spacing={1} sx={{ px: 1.25, pb: 1.25, pt: 0.25 }}>
-          <Typography variant="body2" color="text.secondary">
-            {signal.description}
-          </Typography>
-          <Button
-            size="small"
-            variant="outlined"
-            onClick={onViewDetails}
-            sx={{ alignSelf: 'flex-start', whiteSpace: 'nowrap' }}
-          >
-            View Details
-          </Button>
-        </Stack>
-      </Collapse>
-    </Box>
-  );
-};
+// Bounds the list's own height so a tab with many simultaneous warnings doesn't push its KPI
+// cards and charts far down the page — every warning still renders inside this box (never
+// truncated), it just scrolls internally once there are enough to exceed this height. A tab with
+// only 2-3 warnings never shows a scrollbar at all, since the box only grows to fit its content
+// up to this cap.
+const LIST_MAX_HEIGHT = 420;
 
 /** Compact per-tab list of currently-triggered Early Warning Signals — the same
- * `evaluateKpiSignals` call the Exceptions view uses, so the two never disagree. Collapsed by
- * default to one chip-weight tile per signal; each expands in place on click for its description
- * and "View Details" (which opens the same ExceptionDetailModal the Exceptions view uses).
- * Purely store-driven (no polling): recomputes on every render from the KPI data passed in. */
+ * `evaluateKpiSignals` call the Exceptions view uses, so the two never disagree. Every signal
+ * renders as its own expandable/collapsible row (`WarningAccordionItem`), collapsed by default;
+ * expanding one shows the matched business scenario's full Insight/Why/Business-Impact/
+ * Recommended-Actions narrative when its KPI participates in one, else falls back to the signal's
+ * own description exactly as before scenarios existed. Purely store-driven (no polling):
+ * recomputes on every render from the KPI data passed in. */
 export const EarlyWarningStrip = ({ module, kpis }: EarlyWarningStripProps) => {
   const [detailSignal, setDetailSignal] = useState<Signal | null>(null);
   const thresholdOverrides = useDashboardStore((state) => state.thresholdOverrides);
@@ -129,6 +45,7 @@ export const EarlyWarningStrip = ({ module, kpis }: EarlyWarningStripProps) => {
 
   const criticalCount = signals.filter((s) => s.severity === 'critical').length;
   const warningCount = signals.length - criticalCount;
+  const moduleScenarios = matchBusinessScenariosForModule(module, kpis);
 
   return (
     <Box
@@ -150,14 +67,20 @@ export const EarlyWarningStrip = ({ module, kpis }: EarlyWarningStripProps) => {
           ({criticalCount} critical, {warningCount} warning)
         </Typography>
       </Stack>
-      <Stack spacing={0.75}>
-        {signals.map((signal, index) => (
-          <WarningTile
-            key={`${signal.kpiId}-${signal.type}-${index}`}
-            signal={signal}
-            onViewDetails={() => setDetailSignal(signal)}
-          />
-        ))}
+      <Stack spacing={0.75} sx={{ maxHeight: LIST_MAX_HEIGHT, overflowY: 'auto', pr: 0.5 }}>
+        {signals.map((signal, index) => {
+          const kpi = kpis.find((k) => k.id === signal.kpiId);
+          const scenario = findScenarioForKpi(signal.kpiId, moduleScenarios);
+          return (
+            <WarningAccordionItem
+              key={`${signal.kpiId}-${signal.type}-${index}`}
+              signal={signal}
+              kpi={kpi}
+              scenario={scenario}
+              onViewDetails={() => setDetailSignal(signal)}
+            />
+          );
+        })}
       </Stack>
 
       <ExceptionDetailModal signal={detailSignal} onClose={() => setDetailSignal(null)} />

@@ -30,6 +30,8 @@ import {
 import { getQuestionsForTab, resolveQuestionContext } from '@/data/conversationalQuestions';
 import { resolveAgentSummary } from '@/data/agentSummaryTemplates';
 import { describeOverriddenStatuses } from '@/data/earlyWarningRules';
+import { matchBusinessScenariosForModule } from '@/data/businessScenarios';
+import { buildHierarchyVisualData } from '@/data/agentSummaryVisuals';
 
 const mockData = mockDataJson as DashboardMockData;
 
@@ -163,8 +165,16 @@ export const CostAnalyticsTab = () => {
     variance: varianceOverrides,
   });
   const overrideNotes = describeOverriddenStatuses(cardKpis, { threshold: thresholdOverrides });
-  const baseInsights = dynamicSummary ? [dynamicSummary] : COST_ANALYTICS_INSIGHTS;
-  const insights = overrideNotes.length > 0 ? [...baseInsights, ...overrideNotes] : baseInsights;
+  const insights = dynamicSummary ? overrideNotes : [...COST_ANALYTICS_INSIGHTS, ...overrideNotes];
+  // Structured, actionable Insight/Why/Business-Impact/Recommended-Actions card for any business
+  // scenario (Inventory + Dispatch Cost, per the reference sheet) that currently matches this
+  // module's live KPI values — rendered by AgentSummaryPanel above the plain `insights` text.
+  // Client feedback was that a WHAT-only summary isn't sufficient on its own.
+  const matchedScenarios = matchBusinessScenariosForModule('costAnalytics', kpis);
+  // Inventory Quantity's real drilldown tree splits Raw Material / WIP / Finished Goods beneath
+  // each month — a genuine business-hierarchy breakdown (not fabricated), used for the Agent
+  // Summary's Sunburst + Contribution visuals per the client's visual-quality feedback.
+  const hierarchyVisual = buildHierarchyVisualData(inventoryQuantity, 'Category', drill, crossFilters);
 
   return (
     <Stack direction={{ xs: 'column', lg: 'row' }} spacing={3} alignItems="flex-start">
@@ -257,7 +267,13 @@ export const CostAnalyticsTab = () => {
 
       <Stack spacing={3} sx={{ width: { xs: '100%', lg: 360 }, flexShrink: 0 }}>
         <ConfigurationPanel module="costAnalytics" kpis={kpis} />
-        <AgentSummaryPanel insights={insights} contextLabel={contextLabel} />
+        <AgentSummaryPanel
+          insights={insights}
+          contextLabel={contextLabel}
+          scenarios={matchedScenarios}
+          dynamicSummary={dynamicSummary}
+          hierarchyVisual={hierarchyVisual}
+        />
         <ConversationalInsightsPanel
           questionLibrary={COST_ANALYTICS_QUESTIONS}
           context={questionContext}
